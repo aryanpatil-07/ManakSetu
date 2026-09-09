@@ -36,7 +36,7 @@
       "rule_name": "Excessive or Tailored Financial / Technical Pre-Qualification Criteria",
       "authority": "CVC Guidelines on Pre-Qualification Criteria (PQC)",
       "severity": "MEDIUM",
-      "pattern": "(?i)\\b(turnover\\s*(?:should\\s*be|minimum|shall\\s*be|exceeding)\\s*(?:INR|Rs\\.?)\\s*(?:[5-9]\\d{2}|\\d{4,})\\s*(?:Cr|Crores))|(\\bmust\\s+have\\s+supplied\\s+only\\s+to\\s+state\\s+government\\b)|(\\bsole\\s+authorized\\s+distributor\\s+only\\b)",
+      "pattern": "(?i)\\b(turnover\\s*(?:(?:should\\s*be|shall\\s*be|is|minimum|exceeding)\\s*)+(?:INR|Rs\\.?)\\s*(?:[5-9]\\d{2}|\\d{4,})\\s*(?:Cr|Crores))|(\\bmust\\s+have\\s+supplied\\s+only\\s+to\\s+state\\s+government\\b)|(\\bsole\\s+authorized\\s+distributor\\s+only\\b)",
       "message": "Disproportionate financial turnover or restrictive single-vendor eligibility conditions unduly restrict fair competition.",
       "recommended_action": "Align turnover criteria with CVC formula (typically 30% to 50% of estimated annual tender value)."
     },

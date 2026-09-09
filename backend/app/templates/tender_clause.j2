@@ -1,0 +1,59 @@
+### TECHNICAL SPECIFICATION & STATUTORY COMPLIANCE SCHEDULE
+**Item Nomenclature / Scope:** {{ item_category }}
+**Governing National Standard:** {{ standard_code }} — {{ standard_title }}
+{% if division %}**BIS Technical Division:** {{ division }}{% endif %}
+
+---
+
+#### 1. MANDATORY NATIONAL STANDARD & REVISION STATUS
+1.1 The materials, components, and finished goods supplied under this contract shall strictly conform to the latest active revision of **{{ standard_code }}** along with all gazetted amendments.
+{% if active_amendments and active_amendments|length > 0 %}
+1.2 The bidder shall ensure compliance with the following active statutory amendments:
+{% for am in active_amendments %}
+    - {{ am }}
+{% endfor %}
+{% endif %}
+1.3 Citing obsolete, superseded, or withdrawn revisions of the standard is strictly prohibited under GFR 2017 Rule 144.
+
+#### 2. STATUTORY QUALITY CONTROL ORDER (QCO) ENFORCEMENT
+{% if is_qco_mandatory %}
+2.1 **MANDATORY STATUTORY REGULATION IN FORCE:** Pursuant to the **{{ qco_order }}** gazetted by the **{{ notifying_ministry }}** under Notification No. **{{ gazette_notification_no }}** in exercise of powers conferred by Section 16 of the Bureau of Indian Standards Act, 2016:
+    (a) All goods supplied under this schedule must compulsorily bear the authentic Standard Mark (**{{ scheme }}**) under a valid and operational BIS license.
+    (b) The bidder / OEM must hold an active BIS License (CM/L or CRS Registration Number) for the offered product category on the date of technical bid opening.
+    (c) **Summary Technical Disqualification:** Any bid proposing uncertified products, self-certification, or goods not bearing the mandatory BIS Standard Mark shall be summarily rejected during technical evaluation without seeking post-bid clarification.
+    (d) **Penal Safeguards:** Contravention of Section 16 of the BIS Act, 2016 is a cognizable statutory offense punishable under Section 29 with imprisonment up to two years or fine.
+{% else %}
+2.1 **VOLUNTARY QUALITY BENCHMARK:** While this product category is not currently notified under a mandatory Quality Control Order, compliance with {{ standard_code }} is prescribed as the mandatory technical quality baseline for this tender. Bidders holding a valid BIS license shall be accorded technical preference.
+{% endif %}
+
+#### 3. NORMATIVE RAW MATERIAL & TESTING PROTOCOLS
+3.1 The supplied items shall adhere to the normative reference standards cited within {{ standard_code }}:
+{% if raw_materials and raw_materials|length > 0 %}
+    - **Governing Raw Material Specifications:** {{ raw_materials|join(', ') }}
+{% endif %}
+{% if testing_methods and testing_methods|length > 0 %}
+    - **Prescribed Testing Protocols:** {{ testing_methods|join(', ') }}
+{% endif %}
+{% if allied_standards and allied_standards|length > 0 %}
+    - **Allied & Installation Practices:** {{ allied_standards|join(', ') }}
+{% endif %}
+3.2 **Pre-Dispatch Inspection Checklist:**
+{% if inspection_checklist and inspection_checklist|length > 0 %}
+{% for check in inspection_checklist %}
+    - {{ check }}
+{% endfor %}
+{% else %}
+    - Verification of Manufacturer Test Certificate (MTC) for each production lot.
+    - Verification of BIS license validity on the BIS Care Portal (manakonline.in).
+    - Dimension, tensile, and pressure/performance testing per {{ standard_code }}.
+{% endif %}
+
+#### 4. QUALITY ASSURANCE, LAB TESTING & ACCEPTANCE
+4.1 The contractor shall submit authentic Manufacturer Test Certificates (MTC) alongside dispatch documents confirming 100% batch testing in an NABL-accredited or BIS-recognized testing laboratory.
+4.2 The Purchaser reserves the statutory right to appoint an independent Third-Party Inspection (TPI) agency (e.g., RITES / EIL / CEIL / BIS) for stage-wise inspection and sampling at the manufacturer's works prior to dispatch.
+
+#### 5. CVC BRAND NEUTRALITY & ANTI-TAILORING SAFEGUARDS
+5.1 In strict accordance with Central Vigilance Commission (CVC) Directives (Office Memorandum No. 03-05-1-CTE-9) and General Financial Rules (GFR 2017) Rule 144(vii) & Rule 157:
+    (a) This specification is strictly generic and performance-based. No proprietary make, trade name, patent, or restrictive dimension is mandated.
+    (b) Any inadvertent or historical reference in tender documents to specific brand names or makes shall be construed strictly as illustrative and shall be read as *"or equivalent product certified to {{ standard_code }}"*.
+    (c) Foreign standards (ASTM / DIN / ISO / BS / IEC / EN) cited by prospective bidders shall be evaluated strictly against the equivalent Indian Standard (**{{ standard_code }}**) pursuant to GFR 2017 Rule 144(vii).
