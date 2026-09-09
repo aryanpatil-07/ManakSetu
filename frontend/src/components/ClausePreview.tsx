@@ -1,13 +1,15 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Copy, Check, FileText, Download } from 'lucide-react';
+import { Copy, Check, FileText, Download, Award } from 'lucide-react';
+import { generateAuditCertificatePDF, AuditCertificateData } from '@/lib/pdf_export';
 
 interface ClausePreviewProps {
   clauseText: string;
   category?: string;
   regulations?: string[];
   checklist?: string[];
+  certificateData?: AuditCertificateData;
 }
 
 export const ClausePreview: React.FC<ClausePreviewProps> = ({
@@ -15,6 +17,7 @@ export const ClausePreview: React.FC<ClausePreviewProps> = ({
   category = 'Procurement Item',
   regulations = [],
   checklist = [],
+  certificateData,
 }) => {
   const [copied, setCopied] = useState(false);
 
@@ -40,33 +43,54 @@ export const ClausePreview: React.FC<ClausePreviewProps> = ({
     URL.revokeObjectURL(url);
   };
 
+  const handleDownloadPdfCertificate = () => {
+    const certPayload: AuditCertificateData = certificateData || {
+      tenderId: `TND-${category.toUpperCase().replace(/\s+/g, '-')}`,
+      tenderTitle: `${category} Procurement Specification`,
+      department: 'Central / State Public Procurement Directorate',
+      complianceScore: 92,
+      overallStatus: 'COMPLIANT',
+      recommendedStandard: 'IS 4984:2016',
+      standardTitle: `${category} Standard Specifications`,
+      qcoMandatory: true,
+      synthesizedClause: clauseText,
+    };
+    generateAuditCertificatePDF(certPayload);
+  };
+
   return (
     <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 shadow-2xl backdrop-blur-xl">
-      <div className="flex items-center justify-between pb-4 border-b border-slate-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-800 gap-3">
         <div className="flex items-center gap-2">
           <FileText className="w-5 h-5 text-emerald-400" />
           <h4 className="font-semibold text-white">Bid-Ready Compliant Procurement Clause</h4>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={handleCopy}
             className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 transition"
           >
             {copied ? (
               <>
-                <Check className="w-3.5 h-3.5 text-emerald-400" /> Copied!
+                <Check className="w-3.5 h-3.5 text-emerald-400" /> Copied for GeM!
               </>
             ) : (
               <>
-                <Copy className="w-3.5 h-3.5" /> Copy Clause
+                <Copy className="w-3.5 h-3.5" /> Copy Clause for GeM
               </>
             )}
           </button>
           <button
-            onClick={handleDownload}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white transition"
+            onClick={handleDownloadPdfCertificate}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-white shadow-md shadow-amber-950/40 transition"
           >
-            <Download className="w-3.5 h-3.5" /> Download .md
+            <Award className="w-3.5 h-3.5" /> Download CAG Audit Certificate (PDF)
+          </button>
+          <button
+            onClick={handleDownload}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition"
+          >
+            <Download className="w-3.5 h-3.5" /> .md
           </button>
         </div>
       </div>

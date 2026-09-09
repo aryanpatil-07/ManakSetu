@@ -6,12 +6,13 @@ import { Network, ZoomIn, ZoomOut, RefreshCw } from 'lucide-react';
 
 interface StandardsGraphProps {
   initialData?: GraphData;
+  focusStandard?: string;
 }
 
-export const StandardsGraph: React.FC<StandardsGraphProps> = ({ initialData }) => {
+export const StandardsGraph: React.FC<StandardsGraphProps> = ({ initialData, focusStandard }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const cyRef = useRef<any>(null);
-  const [loading, setLoading] = useState<boolean>(!initialData);
+  const [loading, setLoading] = useState<boolean>(true);
   const [selectedNode, setSelectedNode] = useState<any>(null);
 
   useEffect(() => {
@@ -19,11 +20,17 @@ export const StandardsGraph: React.FC<StandardsGraphProps> = ({ initialData }) =
 
     async function initCytoscape() {
       if (!containerRef.current) return;
+      setLoading(true);
 
       try {
         let graphData = initialData;
         if (!graphData) {
-          graphData = await fetchStandardsGraph();
+          if (focusStandard) {
+            const { fetchStandardsSubgraph } = await import('@/lib/api');
+            graphData = await fetchStandardsSubgraph(focusStandard, 2);
+          } else {
+            graphData = await fetchStandardsGraph();
+          }
         }
 
         if (!isMounted || !containerRef.current) return;
@@ -147,7 +154,7 @@ export const StandardsGraph: React.FC<StandardsGraphProps> = ({ initialData }) =
         cyRef.current.destroy();
       }
     };
-  }, [initialData]);
+  }, [initialData, focusStandard]);
 
   const handleZoomIn = () => cyRef.current?.zoom(cyRef.current.zoom() * 1.25);
   const handleZoomOut = () => cyRef.current?.zoom(cyRef.current.zoom() * 0.8);

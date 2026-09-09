@@ -6,7 +6,7 @@ import { FileUploader } from '@/components/FileUploader';
 import { AuditScorecard } from '@/components/AuditScorecard';
 import { DiffViewer } from '@/components/DiffViewer';
 import { ClausePreview } from '@/components/ClausePreview';
-import { uploadTenderPdf, auditTender, TenderAuditResponse } from '@/lib/api';
+import { uploadTenderPdf, auditTender, TenderAuditResponse, PdfScorecardResponse } from '@/lib/api';
 
 const SAMPLE_FLAWED_PDF_TEXT = `URBAN WATER SUPPLY & DRAINAGE BOARD - TENDER SPECIFICATION
 Tender Ref: UWSD/WS/2026/HDPE-044
@@ -36,16 +36,35 @@ export default function RfpScannerPage() {
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [auditResult, setAuditResult] = useState<TenderAuditResponse | null>(null);
+  const [pdfScorecard, setPdfScorecard] = useState<PdfScorecardResponse | null>(null);
 
   const handleFileSelected = async (selectedFile: File) => {
     setFile(selectedFile);
     setLoading(true);
     try {
-      const result = await uploadTenderPdf(selectedFile, selectedFile.name);
-      setAuditResult(result);
+      const scorecard = await uploadTenderPdf(selectedFile, selectedFile.name);
+      setPdfScorecard(scorecard);
+
+      // Adapt to TenderAuditResponse for UI components
+      const criticalCount = scorecard.cvc_audit.severity_counts.CRITICAL + scorecard.standards_audit.withdrawn_count;
+      const highCount = scorecard.cvc_audit.severity_counts.HIGH + scorecard.standards_audit.superseded_count;
+      const mediumCount = scorecard.cvc_audit.severity_counts.MEDIUM + scorecard.standards_audit.unspecified_count;
+
+      const adapted: TenderAuditResponse = {
+        tender_id: scorecard.tender_id || selectedFile.name,
+        compliance_score: Math.round(scorecard.overall_compliance_score),
+        overall_status: scorecard.risk_rating === 'CRITICAL' ? 'NON_COMPLIANT' : scorecard.risk_rating === 'HIGH' ? 'ACTION_REQUIRED' : 'COMPLIANT',
+        critical_issues_count: criticalCount,
+        high_issues_count: highCount,
+        medium_issues_count: mediumCount,
+        detected_standards: scorecard.standards_audit.audits,
+        violations: scorecard.cvc_audit.violations,
+        generated_compliant_clause: scorecard.synthesized_harmonized_clause,
+        summary_advisory: scorecard.executive_summary,
+      };
+      setAuditResult(adapted);
     } catch (err) {
       console.warn('Backend upload failed, falling back to local text parse demo:', err);
-      // Fallback for live testing demo
       const mockAudit = await auditTender({
         tender_id: selectedFile.name,
         title: 'Water Supply Pipeline Tender',
@@ -123,6 +142,25 @@ export default function RfpScannerPage() {
             tenderId={auditResult.tender_id}
           />
 
+          {/* Discovered Document Sections (PyMuPDF) */}
+          {pdfScorecard && pdfScorecard.sections_identified && pdfScorecard.sections_identified.length > 0 && (
+            <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-xl">
+              <h3 className="font-bold text-white text-sm mb-3 flex items-center gap-2">
+                <FileText className="w-4 h-4 text-indigo-400" />
+                Parsed Document Sections ({pdfScorecard.sections_identified.length})
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {pdfScorecard.sections_identified.map((sec, idx) => (
+                  <div key={idx} className="p-3 rounded-xl bg-slate-950 border border-slate-800">
+                    <div className="text-xs font-semibold text-emerald-400">{sec.title}</div>
+                    <div className="text-[11px] font-mono text-slate-400 mt-1">{sec.header}</div>
+                    <p className="text-[11px] text-slate-500 mt-1 line-clamp-2">{sec.preview}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Diff Viewer */}
           <DiffViewer
             originalText="All HDPE pipes must strictly conform to IS 4984:1995. Alternatively, ASTM D3035 without Indian Standard equivalence. Only Supreme or Astral make pipes will be accepted."
@@ -147,6 +185,20 @@ export default function RfpScannerPage() {
                 'Third party NABL batch testing certificate included in bid requirements',
                 'Brand exclusivity clauses struck down',
               ]}
+              certificateData={{
+                tenderId: auditResult.tender_id,
+                tenderTitle: 'Water Supply Pipeline Technical Specifications',
+                department: 'Urban Water Supply & Drainage Board',
+                complianceScore: auditResult.compliance_score,
+                overallStatus: auditResult.overall_status,
+                recommendedStandard: 'IS 4984:2016',
+                standardTitle: 'High Density Polyethylene Pipes for Water Supply (Fifth Revision)',
+                qcoMandatory: true,
+                qcoOrder: 'Pipes and Fittings (Quality Control) Order, 2020',
+                detectedStandards: auditResult.detected_standards,
+                violations: auditResult.violations,
+                synthesizedClause: auditResult.generated_compliant_clause,
+              }}
             />
           )}
 

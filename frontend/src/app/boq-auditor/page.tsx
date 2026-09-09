@@ -253,12 +253,24 @@ export default function BoqAuditorPage() {
               ))}
             </div>
 
-            <button
-              onClick={exportCsv}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white transition"
-            >
-              <Download className="w-4 h-4" /> Export Audited Schedule (.csv)
-            </button>
+            <div className="flex items-center gap-3">
+              {boqData?.download_url && (
+                <a
+                  href={`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}${boqData.download_url}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-950/40 transition"
+                >
+                  <Download className="w-4 h-4" /> Download Cleaned Excel (.xlsx)
+                </a>
+              )}
+              <button
+                onClick={exportCsv}
+                className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition"
+              >
+                <Download className="w-4 h-4" /> Export (.csv)
+              </button>
+            </div>
           </div>
 
           {/* Schedule Table */}
