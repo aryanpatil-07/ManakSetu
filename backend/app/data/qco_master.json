@@ -1,88 +1,336 @@
 [
   {
-    "order_id": "QCO-STEEL-2020",
-    "order_title": "Steel and Steel Products (Quality Control) Order, 2020",
-    "ministry": "Ministry of Steel",
-    "covered_standards": [
-      "IS 1786",
-      "IS 2062",
-      "IS 2830",
-      "IS 2831",
-      "IS 1079"
-    ],
-    "date_notified": "2020-07-17",
-    "date_effective": "2021-01-15",
+    "qco_id": "QCO-DPIIT-PLASTIC-PIPES-2021",
+    "order_id": "QCO-DPIIT-PLASTIC-PIPES-2021",
+    "order_title": "Pipes and Fittings (Quality Control) Order, 2021",
+    "notifying_ministry": "Ministry of Commerce and Industry (DPIIT)",
+    "ministry": "Ministry of Commerce and Industry (DPIIT)",
+    "gazette_notification_no": "S.O. 4321(E)",
+    "notification_date": "2021-10-15",
+    "enforcement_date": "2022-04-15",
+    "is_mandatory": true,
     "mandatory_bis_mark": true,
-    "prohibition": "No person shall manufacture, import, distribute, sell, hire, lease, store or exhibit for sale any steel product without Standard Mark (ISI mark)."
-  },
-  {
-    "order_id": "QCO-PIPES-2020",
-    "order_title": "Pipes and Fittings (Quality Control) Order, 2020",
-    "ministry": "Ministry of Chemicals and Fertilizers",
-    "covered_standards": [
+    "legal_provision": "Section 16, BIS Act 2016",
+    "scheme": "Scheme-I (ISI Mark)",
+    "covered_is_codes": [
+      "IS 4984:2016",
       "IS 4984",
+      "IS 4985:2021",
       "IS 4985",
+      "IS 14333:1996",
+      "IS 14333",
+      "IS 12786:1989",
+      "IS 12786",
+      "IS 12818:2010",
       "IS 12818",
+      "IS 15778:2007",
       "IS 15778"
     ],
-    "date_notified": "2020-12-04",
-    "date_effective": "2021-06-01",
-    "mandatory_bis_mark": true,
-    "prohibition": "Mandatory ISI mark compliance under Scheme-I of BIS (Conformity Assessment) Regulations, 2018."
+    "statutory_clause": "In terms of the Pipes and Fittings (Quality Control) Order 2021, all HDPE and uPVC pipes procured under this bid must carry a valid BIS License (ISI Mark) as per Section 16 of the BIS Act, 2016. Any bid offering non-certified goods shall be summarily rejected at technical evaluation."
   },
   {
-    "order_id": "QCO-TRANSFORMERS-2014",
-    "order_title": "Distribution Transformers (Quality Control) Order, 2014",
+    "qco_id": "QCO-STEEL-REBARS-2012",
+    "order_id": "QCO-STEEL-REBARS-2012",
+    "order_title": "Steel and Steel Products (Quality Control) Order, 2012 / 2020",
+    "notifying_ministry": "Ministry of Steel",
+    "ministry": "Ministry of Steel",
+    "gazette_notification_no": "S.O. 463(E) / S.O. 2400(E)",
+    "notification_date": "2012-03-12",
+    "enforcement_date": "2012-09-12",
+    "is_mandatory": true,
+    "mandatory_bis_mark": true,
+    "legal_provision": "Section 16, BIS Act 2016",
+    "scheme": "Scheme-I (ISI Mark)",
+    "covered_is_codes": [
+      "IS 1786:2008",
+      "IS 1786",
+      "IS 2062:2011",
+      "IS 2062",
+      "IS 2830:2012",
+      "IS 2830",
+      "IS 2831:2012",
+      "IS 2831",
+      "IS 1079:2017",
+      "IS 1079"
+    ],
+    "statutory_clause": "Under the Steel and Steel Products (Quality Control) Order, manufacturing, importing, selling, or procuring non-BIS certified TMT rebars (IS 1786) or structural steel (IS 2062) is a punishable regulatory offense under Section 16 of the BIS Act, 2016. Valid BIS license number (CM/L) must be provided in the technical bid."
+  },
+  {
+    "qco_id": "QCO-STEEL-STRUCTURAL-2020",
+    "order_id": "QCO-STEEL-STRUCTURAL-2020",
+    "order_title": "Steel and Steel Products (Quality Control) Order, 2020",
+    "notifying_ministry": "Ministry of Steel",
+    "ministry": "Ministry of Steel",
+    "gazette_notification_no": "S.O. 2400(E)",
+    "notification_date": "2020-07-17",
+    "enforcement_date": "2021-01-15",
+    "is_mandatory": true,
+    "mandatory_bis_mark": true,
+    "legal_provision": "Section 16, BIS Act 2016",
+    "scheme": "Scheme-I (ISI Mark)",
+    "covered_is_codes": [
+      "IS 2062:2011",
+      "IS 2062",
+      "IS 808:1989",
+      "IS 808"
+    ],
+    "statutory_clause": "Under the Steel QCO 2020, all structural steel sections supplied for this works contract must conform to IS 2062:2011 with authentic BIS Standard Mark. Self-declaration without BIS license is strictly prohibited."
+  },
+  {
+    "qco_id": "QCO-STEEL-DI-PIPES-2021",
+    "order_id": "QCO-STEEL-DI-PIPES-2021",
+    "order_title": "Ductile Iron Pipes (Quality Control) Order, 2021",
+    "notifying_ministry": "Ministry of Steel",
+    "ministry": "Ministry of Steel",
+    "gazette_notification_no": "S.O. 1294(E)",
+    "notification_date": "2021-03-23",
+    "enforcement_date": "2021-09-23",
+    "is_mandatory": true,
+    "mandatory_bis_mark": true,
+    "legal_provision": "Section 16, BIS Act 2016",
+    "scheme": "Scheme-I (ISI Mark)",
+    "covered_is_codes": [
+      "IS 8329:2000",
+      "IS 8329",
+      "IS 9523:2000",
+      "IS 9523"
+    ],
+    "statutory_clause": "All ductile iron pressure pipes supplied must bear the Standard Mark (ISI Mark) under IS 8329:2000 pursuant to the Ductile Iron Pipes QCO 2021 issued under Section 16 of the BIS Act, 2016."
+  },
+  {
+    "qco_id": "QCO-DPIIT-CEMENT-2003",
+    "order_id": "QCO-DPIIT-CEMENT-2003",
+    "order_title": "Cement (Quality Control) Order, 2003",
+    "notifying_ministry": "Department for Promotion of Industry and Internal Trade (DPIIT)",
     "ministry": "Department for Promotion of Industry and Internal Trade (DPIIT)",
-    "covered_standards": [
+    "gazette_notification_no": "S.O. 191(E)",
+    "notification_date": "2003-02-17",
+    "enforcement_date": "2003-02-17",
+    "is_mandatory": true,
+    "mandatory_bis_mark": true,
+    "legal_provision": "Section 16, BIS Act 2016",
+    "scheme": "Scheme-I (ISI Mark)",
+    "covered_is_codes": [
+      "IS 269:2015",
+      "IS 269",
+      "IS 1489 (Part 1):2015",
+      "IS 1489",
+      "IS 455:2015",
+      "IS 455"
+    ],
+    "statutory_clause": "No person shall manufacture, import, store, or supply cement of any variety without compulsory certification under Scheme-I of BIS (Conformity Assessment) Regulations."
+  },
+  {
+    "qco_id": "QCO-STEEL-PIPES-TUBES-2020",
+    "order_id": "QCO-STEEL-PIPES-TUBES-2020",
+    "order_title": "Steel Tubes and Pipes (Quality Control) Order, 2020",
+    "notifying_ministry": "Ministry of Steel",
+    "ministry": "Ministry of Steel",
+    "gazette_notification_no": "S.O. 3822(E)",
+    "notification_date": "2020-10-27",
+    "enforcement_date": "2021-04-27",
+    "is_mandatory": true,
+    "mandatory_bis_mark": true,
+    "legal_provision": "Section 16, BIS Act 2016",
+    "scheme": "Scheme-I (ISI Mark)",
+    "covered_is_codes": [
+      "IS 1239 (Part 1):2004",
+      "IS 1239",
+      "IS 1239 (Part 2):2011",
+      "IS 1161:2014",
+      "IS 3589:2001"
+    ],
+    "statutory_clause": "All mild steel tubes and galvanized iron (GI) pipes supplied must bear the BIS Standard Mark (ISI mark) conforming to IS 1239 (Part 1):2004."
+  },
+  {
+    "qco_id": "QCO-DPIIT-POLYMER-2021",
+    "order_id": "QCO-DPIIT-POLYMER-2021",
+    "order_title": "Polyethylene Material for Moulding and Extrusion (Quality Control) Order, 2021",
+    "notifying_ministry": "Department of Chemicals and Petrochemicals",
+    "ministry": "Department of Chemicals and Petrochemicals",
+    "gazette_notification_no": "S.O. 1827(E)",
+    "notification_date": "2021-04-15",
+    "enforcement_date": "2021-10-15",
+    "is_mandatory": true,
+    "mandatory_bis_mark": true,
+    "legal_provision": "Section 16, BIS Act 2016",
+    "scheme": "Scheme-I (ISI Mark)",
+    "covered_is_codes": [
+      "IS 7328:2020",
+      "IS 7328"
+    ],
+    "statutory_clause": "All virgin high-density polyethylene polymer resins supplied for pipe manufacturing must hold valid BIS license under IS 7328:2020."
+  },
+  {
+    "qco_id": "QCO-DPIIT-TRANSFORMERS-2014",
+    "order_id": "QCO-DPIIT-TRANSFORMERS-2014",
+    "order_title": "Distribution Transformers (Quality Control) Order, 2014",
+    "notifying_ministry": "Department for Promotion of Industry and Internal Trade (DPIIT)",
+    "ministry": "Department for Promotion of Industry and Internal Trade (DPIIT)",
+    "gazette_notification_no": "S.O. 1621(E)",
+    "notification_date": "2014-01-27",
+    "enforcement_date": "2014-08-01",
+    "is_mandatory": true,
+    "mandatory_bis_mark": true,
+    "legal_provision": "Section 16, BIS Act 2016",
+    "scheme": "Scheme-I (ISI Mark)",
+    "covered_is_codes": [
+      "IS 1180 (Part 1):2014",
+      "IS 1180",
       "IS 1180 (Part 1)"
     ],
-    "date_notified": "2014-01-27",
-    "date_effective": "2014-08-01",
-    "mandatory_bis_mark": true,
-    "prohibition": "All outdoor distribution transformers up to 2500 kVA must be BIS certified and BEE Star labeled."
+    "statutory_clause": "In terms of the Distribution Transformers (Quality Control) Order 2014 and Ministry of Power directives, all outdoor distribution transformers up to 2500 kVA, 33 kV must bear the mandatory BIS Standard Mark (ISI mark) and BEE Star Energy Efficiency label. Uncertified units shall be rejected."
   },
   {
-    "order_id": "QCO-CEMENT-2003",
-    "order_title": "Cement (Quality Control) Order, 2003",
-    "ministry": "Department of Industrial Policy and Promotion (DPIIT)",
-    "covered_standards": [
-      "IS 269",
-      "IS 1489 (Part 1)",
-      "IS 1489 (Part 2)",
-      "IS 455",
-      "IS 8041"
-    ],
-    "date_notified": "2003-02-17",
-    "date_effective": "2003-02-17",
-    "mandatory_bis_mark": true,
-    "prohibition": "Mandatory certification of all cement varieties under BIS licensing scheme."
-  },
-  {
-    "order_id": "QCO-CABLES-2021",
-    "order_title": "Cables (Quality Control) Order, 2021",
+    "qco_id": "QCO-DPIIT-CABLES-2021",
+    "order_id": "QCO-DPIIT-CABLES-2021",
+    "order_title": "Electrical Wires and Cable (Quality Control) Order, 2021",
+    "notifying_ministry": "DPIIT",
     "ministry": "DPIIT",
-    "covered_standards": [
-      "IS 694",
-      "IS 7098 (Part 1)",
-      "IS 7098 (Part 2)",
-      "IS 1554 (Part 1)"
-    ],
-    "date_notified": "2021-03-12",
-    "date_effective": "2021-09-01",
+    "gazette_notification_no": "S.O. 1102(E)",
+    "notification_date": "2021-03-12",
+    "enforcement_date": "2021-09-01",
+    "is_mandatory": true,
     "mandatory_bis_mark": true,
-    "prohibition": "Mandatory standard mark for all PVC and XLPE electrical conductors and wires."
+    "legal_provision": "Section 16, BIS Act 2016",
+    "scheme": "Scheme-I (ISI Mark)",
+    "covered_is_codes": [
+      "IS 694:2010",
+      "IS 694",
+      "IS 7098 (Part 1):1988",
+      "IS 7098 (Part 1)",
+      "IS 7098",
+      "IS 7098 (Part 2):2011",
+      "IS 7098 (Part 2)",
+      "IS 1554 (Part 1):1988",
+      "IS 1554"
+    ],
+    "statutory_clause": "Under the Electrical Wires and Cable QCO 2021, all PVC insulated wires and XLPE power cables must bear the authentic BIS ISI Mark. Non-ISI branded or unbranded cables are illegal for public procurement."
   },
   {
-    "order_id": "QCO-SAFETY-MATS-2020",
-    "order_title": "Electrical Appliances & Safety Mats QCO, 2020",
+    "qco_id": "QCO-MEITY-ELECTRONICS-CRS-2021",
+    "order_id": "QCO-MEITY-ELECTRONICS-CRS-2021",
+    "order_title": "Electronics and Information Technology Goods (Compulsory Registration) Order, 2021",
+    "notifying_ministry": "Ministry of Electronics and Information Technology (MeitY)",
+    "ministry": "Ministry of Electronics and Information Technology (MeitY)",
+    "gazette_notification_no": "S.O. 2357(E)",
+    "notification_date": "2021-03-18",
+    "enforcement_date": "2021-09-18",
+    "is_mandatory": true,
+    "mandatory_bis_mark": true,
+    "legal_provision": "Section 16, BIS Act 2016",
+    "scheme": "Scheme-II (Compulsory Registration Scheme - CRS)",
+    "covered_is_codes": [
+      "IS 13252 (Part 1):2010",
+      "IS 13252",
+      "IS 13252 (Part 1)",
+      "IS 16102 (Part 1):2012",
+      "IS 16102",
+      "IS 16102 (Part 1)",
+      "IS 10322 (Part 5/Sec 3):2012",
+      "IS 10322",
+      "IS 16242 (Part 1):2014",
+      "IS 16242",
+      "IS 16046 (Part 1 & 2):2018",
+      "IS 16046"
+    ],
+    "statutory_clause": "In accordance with the MeitY Electronics and Information Technology Goods Compulsory Registration Order, all laptops, LED luminaires, and UPS systems must possess a valid BIS CRS Registration Number (R-XXXXXXXX) registered on the official BIS portal."
+  },
+  {
+    "qco_id": "QCO-MHI-SAFETY-MATS-2020",
+    "order_id": "QCO-MHI-SAFETY-MATS-2020",
+    "order_title": "Electrical Appliances and Insulation Mats (Quality Control) Order, 2020",
+    "notifying_ministry": "Ministry of Heavy Industries",
     "ministry": "Ministry of Heavy Industries",
-    "covered_standards": [
+    "gazette_notification_no": "S.O. 4104(E)",
+    "notification_date": "2020-11-09",
+    "enforcement_date": "2021-05-01",
+    "is_mandatory": true,
+    "mandatory_bis_mark": true,
+    "legal_provision": "Section 16, BIS Act 2016",
+    "scheme": "Scheme-I (ISI Mark)",
+    "covered_is_codes": [
+      "IS 15652:2006",
       "IS 15652"
     ],
-    "date_notified": "2020-11-09",
-    "date_effective": "2021-05-01",
+    "statutory_clause": "All electrical insulating mats supplied must bear the authentic ISI Mark under IS 15652:2006. Citing obsolete IS 5424 or foreign IEC 61111 without BIS license violates safety mandates."
+  },
+  {
+    "qco_id": "QCO-DPIIT-FOOTWEAR-2020",
+    "order_id": "QCO-DPIIT-FOOTWEAR-2020",
+    "order_title": "Footwear made from Leather and other Materials (Quality Control) Order, 2020",
+    "notifying_ministry": "DPIIT",
+    "ministry": "DPIIT",
+    "gazette_notification_no": "S.O. 3858(E)",
+    "notification_date": "2020-10-27",
+    "enforcement_date": "2021-07-01",
+    "is_mandatory": true,
     "mandatory_bis_mark": true,
-    "prohibition": "Mandatory IS 15652 ISI mark certification on all electrical insulation floor mats."
+    "legal_provision": "Section 16, BIS Act 2016",
+    "scheme": "Scheme-I (ISI Mark)",
+    "covered_is_codes": [
+      "IS 15298 (Part 2):2016",
+      "IS 15298"
+    ],
+    "statutory_clause": "All personal protective safety shoes supplied must bear the BIS Standard Mark (ISI Mark) under IS 15298 (Part 2):2016."
+  },
+  {
+    "qco_id": "QCO-DPIIT-PPE-HELMETS-2021",
+    "order_id": "QCO-DPIIT-PPE-HELMETS-2021",
+    "order_title": "Personal Protective Equipment — Helmets (Quality Control) Order, 2021",
+    "notifying_ministry": "DPIIT",
+    "ministry": "DPIIT",
+    "gazette_notification_no": "S.O. 2195(E)",
+    "notification_date": "2021-05-24",
+    "enforcement_date": "2021-11-24",
+    "is_mandatory": true,
+    "mandatory_bis_mark": true,
+    "legal_provision": "Section 16, BIS Act 2016",
+    "scheme": "Scheme-I (ISI Mark)",
+    "covered_is_codes": [
+      "IS 2925:1984",
+      "IS 2925"
+    ],
+    "statutory_clause": "All industrial safety helmets must be certified with the BIS ISI Mark under IS 2925:1984 as per mandatory DPIIT safety orders."
+  },
+  {
+    "qco_id": "QCO-DPIIT-FIRE-SAFETY-2022",
+    "order_id": "QCO-DPIIT-FIRE-SAFETY-2022",
+    "order_title": "Fire Safety Equipment (Quality Control) Order, 2022",
+    "notifying_ministry": "Ministry of Commerce and Industry (DPIIT)",
+    "ministry": "Ministry of Commerce and Industry (DPIIT)",
+    "gazette_notification_no": "S.O. 1954(E)",
+    "notification_date": "2022-04-18",
+    "enforcement_date": "2022-10-18",
+    "is_mandatory": true,
+    "mandatory_bis_mark": true,
+    "legal_provision": "Section 16, BIS Act 2016",
+    "scheme": "Scheme-I (ISI Mark)",
+    "covered_is_codes": [
+      "IS 15683:2018",
+      "IS 15683"
+    ],
+    "statutory_clause": "All portable fire extinguishers supplied must bear the BIS Standard Mark under IS 15683:2018. Uncertified fire extinguishers are legally prohibited."
+  },
+  {
+    "qco_id": "QCO-MNRE-SOLAR-PV-2017",
+    "order_id": "QCO-MNRE-SOLAR-PV-2017",
+    "order_title": "Solar Photovoltaics, Systems, Devices and Components Goods (Requirements for Compulsory Registration) Order, 2017",
+    "notifying_ministry": "Ministry of New and Renewable Energy (MNRE)",
+    "ministry": "Ministry of New and Renewable Energy (MNRE)",
+    "gazette_notification_no": "S.O. 2920(E)",
+    "notification_date": "2017-09-05",
+    "enforcement_date": "2018-04-16",
+    "is_mandatory": true,
+    "mandatory_bis_mark": true,
+    "legal_provision": "Section 16, BIS Act 2016",
+    "scheme": "Scheme-II (Compulsory Registration Scheme - CRS)",
+    "covered_is_codes": [
+      "IS 14286:2010",
+      "IS 14286",
+      "IS/IEC 61730:2016",
+      "IS 16221:2015"
+    ],
+    "statutory_clause": "Solar PV modules must be registered under the BIS Compulsory Registration Scheme (CRS) and enlisted in the MNRE Approved List of Models and Manufacturers (ALMM)."
   }
 ]

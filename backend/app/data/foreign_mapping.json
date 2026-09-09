@@ -1,56 +1,156 @@
 {
   "ASTM D3035": {
+    "foreign_standard": "ASTM D3035",
+    "issuing_body": "ASTM International (USA)",
+    "title": "Standard Specification for Polyethylene (PE) Plastic Pipe (DR-PR) Based on Controlled Outside Diameter",
+    "equivalent_is_code": "IS 4984:2016",
     "equivalent_is": "IS 4984:2016",
+    "equivalence_level": "Technically Equivalent",
     "equivalence_type": "DIRECT_EQUIVALENT",
-    "title": "High Density Polyethylene Pipes for Water Supply",
-    "advisory": "ASTM D3035 is not permitted in Indian public procurement without mandatory BIS certification under IS 4984:2016 as per DPIIT QCO 2020."
-  },
-  "ASTM A36": {
-    "equivalent_is": "IS 2062:2011",
-    "equivalence_type": "DIRECT_EQUIVALENT",
-    "title": "Hot Rolled Medium and High Tensile Structural Steel",
-    "advisory": "Specify IS 2062 Grade E250/E350. ASTM A36 without BIS standard mark violates Steel QCO 2020."
+    "gfr_citation": "GFR 2017 Rule 144(vii) prohibits mandating foreign standard ASTM D3035 when national standard IS 4984:2016 is in force.",
+    "advisory": "Convert ASTM D3035 to national equivalent IS 4984:2016 with mandatory ISI marking as per DPIIT QCO 2021."
   },
   "ASTM A615": {
+    "foreign_standard": "ASTM A615",
+    "issuing_body": "ASTM International (USA)",
+    "title": "Standard Specification for Deformed and Plain Carbon-Steel Bars for Concrete Reinforcement",
+    "equivalent_is_code": "IS 1786:2008",
     "equivalent_is": "IS 1786:2008",
+    "equivalence_level": "Direct National Equivalent",
     "equivalence_type": "DIRECT_EQUIVALENT",
-    "title": "High Strength Deformed Steel Bars for Concrete Reinforcement",
-    "advisory": "Specify IS 1786 Fe 500D/Fe 550D. Citing ASTM A615 alone violates CVC circulars on national standard precedence."
+    "gfr_citation": "GFR 2017 Rule 144(vii) prohibits mandating foreign standard ASTM A615 when national standard IS 1786:2008 (High strength deformed steel bars Fe500D) is in force.",
+    "advisory": "Mandate IS 1786:2008 Grade Fe 500D with mandatory BIS license under Steel QCO 2012."
+  },
+  "ASTM A36": {
+    "foreign_standard": "ASTM A36",
+    "issuing_body": "ASTM International (USA)",
+    "title": "Standard Specification for Carbon Structural Steel",
+    "equivalent_is_code": "IS 2062:2011",
+    "equivalent_is": "IS 2062:2011",
+    "equivalence_level": "Direct National Equivalent",
+    "equivalence_type": "DIRECT_EQUIVALENT",
+    "gfr_citation": "Specify IS 2062:2011 Grade E250. ASTM A36 without BIS standard mark violates Steel QCO 2020 and GFR 144(vii).",
+    "advisory": "Replace ASTM A36 with IS 2062:2011 Grade E250 Quality A/B."
+  },
+  "ASTM D1785": {
+    "foreign_standard": "ASTM D1785",
+    "issuing_body": "ASTM International (USA)",
+    "title": "Standard Specification for Poly(Vinyl Chloride) (PVC) Plastic Pipe, Schedules 40, 80, and 120",
+    "equivalent_is_code": "IS 4985:2021",
+    "equivalent_is": "IS 4985:2021",
+    "equivalence_level": "Technically Equivalent",
+    "equivalence_type": "HARMONIZED_EQUIVALENT",
+    "gfr_citation": "Under GFR Rule 144(vii), uPVC pressure pipes must cite IS 4985:2021 rather than US Schedule 40/80 standards.",
+    "advisory": "Convert to IS 4985:2021 Class 3 (0.6 MPa) or Class 4 (1.0 MPa)."
   },
   "DIN 8074": {
+    "foreign_standard": "DIN 8074",
+    "issuing_body": "Deutsches Institut fur Normung (Germany)",
+    "title": "Polyethylene (PE) Pipes - PE 80, PE 100 - Dimensions",
+    "equivalent_is_code": "IS 4984:2016",
     "equivalent_is": "IS 4984:2016",
+    "equivalence_level": "Direct National Equivalent",
     "equivalence_type": "DIRECT_EQUIVALENT",
-    "title": "Polyethylene (PE) Pipes - Dimensions",
-    "advisory": "Substitute with IS 4984:2016 SDR 11/17."
+    "gfr_citation": "Under GFR 2017 Rule 144(vii), DIN 8074 dimensions are covered under national standard IS 4984:2016 SDR series (SDR 17 / SDR 11).",
+    "advisory": "Substitute DIN 8074 with IS 4984:2016 with mandatory ISI Mark."
+  },
+  "DIN 17100": {
+    "foreign_standard": "DIN 17100",
+    "issuing_body": "DIN (Germany)",
+    "title": "Steels for General Structural Purposes",
+    "equivalent_is_code": "IS 2062:2011",
+    "equivalent_is": "IS 2062:2011",
+    "equivalence_level": "Direct National Equivalent",
+    "equivalence_type": "DIRECT_EQUIVALENT",
+    "gfr_citation": "Under GFR 2017 Rule 144(vii), DIN 17100 St 37-2 / St 52-3 must be converted to national equivalent IS 2062:2011 E250 / E350.",
+    "advisory": "Convert to IS 2062:2011 E250."
   },
   "ISO 4427": {
+    "foreign_standard": "ISO 4427",
+    "issuing_body": "International Organization for Standardization",
+    "title": "Plastics piping systems — Polyethylene (PE) pipes and fittings for water supply",
+    "equivalent_is_code": "IS 4984:2016",
     "equivalent_is": "IS 4984:2016",
+    "equivalence_level": "Technically Aligned",
     "equivalence_type": "HARMONIZED_EQUIVALENT",
-    "title": "Polyethylene (PE) pipes for water supply",
-    "advisory": "IS 4984 is technically aligned with ISO 4427. Indian procurement mandates BIS license on product."
+    "gfr_citation": "Under GFR 2017 Rule 144(vii), national standard IS 4984:2016 must be specified. Physical products must bear valid BIS License (ISI Mark).",
+    "advisory": "Cite IS 4984:2016 conforming to ISO 4427 parameters with mandatory ISI mark."
   },
-  "IEC 60076": {
-    "equivalent_is": "IS 1180 (Part 1):2014",
+  "ISO 1452": {
+    "foreign_standard": "ISO 1452",
+    "issuing_body": "International Organization for Standardization",
+    "title": "Plastics piping systems for water supply — Unplasticized poly(vinyl chloride) (PVC-U)",
+    "equivalent_is_code": "IS 4985:2021",
+    "equivalent_is": "IS 4985:2021",
+    "equivalence_level": "Technically Aligned",
     "equivalence_type": "HARMONIZED_EQUIVALENT",
-    "title": "Power Transformers",
-    "advisory": "Distribution transformers must comply with IS 1180:2014 and mandatory BEE star rating."
+    "gfr_citation": "National standard IS 4985:2021 takes precedence under GFR 2017 Rule 144(vii).",
+    "advisory": "Specify IS 4985:2021 with ISI mark."
   },
   "BS 1387": {
+    "foreign_standard": "BS 1387",
+    "issuing_body": "British Standards Institution (UK)",
+    "title": "Specification for Screwed and Socketed Steel Tubes and Tubulars",
+    "equivalent_is_code": "IS 1239 (Part 1):2004",
     "equivalent_is": "IS 1239 (Part 1):2004",
+    "equivalence_level": "Direct National Equivalent",
     "equivalence_type": "DIRECT_EQUIVALENT",
-    "title": "Screwed and socketed steel tubes and tubulars",
-    "advisory": "BS 1387 has been withdrawn internationally. Mandatory IS 1239 applies."
+    "gfr_citation": "Under GFR 2017 Rule 144(vii), British Standard BS 1387 is superseded in India by national standard IS 1239 (Part 1):2004.",
+    "advisory": "Substitute BS 1239 / BS 1387 with IS 1239 (Part 1):2004 Medium/Heavy class."
   },
   "BS 6004": {
+    "foreign_standard": "BS 6004",
+    "issuing_body": "British Standards Institution (UK)",
+    "title": "Electric cables — PVC insulated and PVC sheathed cables for power and lighting",
+    "equivalent_is_code": "IS 694:2010",
     "equivalent_is": "IS 694:2010",
+    "equivalence_level": "Direct National Equivalent",
     "equivalence_type": "DIRECT_EQUIVALENT",
-    "title": "Electric cables - PVC insulated",
-    "advisory": "Substitute with IS 694:2010."
+    "gfr_citation": "Under GFR 2017 Rule 144(vii), mandatory Indian Standard IS 694:2010 applies over British Standard BS 6004.",
+    "advisory": "Substitute BS 6004 with IS 694:2010 with ISI mark."
+  },
+  "IEC 60076": {
+    "foreign_standard": "IEC 60076",
+    "issuing_body": "International Electrotechnical Commission",
+    "title": "Power Transformers — General and Temperature Rise",
+    "equivalent_is_code": "IS 1180 (Part 1):2014",
+    "equivalent_is": "IS 1180 (Part 1):2014",
+    "equivalence_level": "Harmonized Equivalent",
+    "equivalence_type": "HARMONIZED_EQUIVALENT",
+    "gfr_citation": "Under GFR 2017 Rule 144(vii), distribution transformers in India must cite IS 1180 (Part 1):2014 with mandatory BEE Star Labeling.",
+    "advisory": "Specify IS 1180 (Part 1):2014 with mandatory BEE Energy Efficiency rating."
+  },
+  "IEC 60502": {
+    "foreign_standard": "IEC 60502",
+    "issuing_body": "International Electrotechnical Commission",
+    "title": "Power cables with extruded insulation and their accessories for rated voltages from 1 kV up to 30 kV",
+    "equivalent_is_code": "IS 7098 (Part 1/2)",
+    "equivalent_is": "IS 7098 (Part 1):1988",
+    "equivalence_level": "Harmonized Equivalent",
+    "equivalence_type": "HARMONIZED_EQUIVALENT",
+    "gfr_citation": "Under GFR 2017 Rule 144(vii), cite IS 7098 (Part 1) for LT cables or IS 7098 (Part 2) for HT cables under Cables QCO 2021.",
+    "advisory": "Specify IS 7098 with mandatory ISI Mark."
   },
   "IEC 61111": {
+    "foreign_standard": "IEC 61111",
+    "issuing_body": "International Electrotechnical Commission",
+    "title": "Live working — Electrical insulating matting",
+    "equivalent_is_code": "IS 15652:2006",
     "equivalent_is": "IS 15652:2006",
+    "equivalence_level": "Direct National Equivalent",
     "equivalence_type": "DIRECT_EQUIVALENT",
-    "title": "Live working - Electrical insulating matting",
-    "advisory": "Indian Electrical Inspectorate strictly enforces IS 15652:2006 over obsolete IS 5424 or foreign IEC standards."
+    "gfr_citation": "Under GFR 2017 Rule 144(vii), Central Electricity Authority (CEA) strictly enforces IS 15652:2006 over foreign IEC 61111.",
+    "advisory": "Convert IEC 61111 to IS 15652:2006 Class A/B/C with mandatory ISI Mark."
+  },
+  "ISO 20345": {
+    "foreign_standard": "ISO 20345",
+    "issuing_body": "International Organization for Standardization",
+    "title": "Personal protective equipment — Safety footwear",
+    "equivalent_is_code": "IS 15298 (Part 2):2016",
+    "equivalent_is": "IS 15298 (Part 2):2016",
+    "equivalence_level": "Identical / Direct Equivalent",
+    "equivalence_type": "DIRECT_EQUIVALENT",
+    "gfr_citation": "Under GFR 2017 Rule 144(vii), IS 15298 (Part 2):2016 is an identical adoption of ISO 20345 and mandatory under DPIIT Footwear QCO 2020.",
+    "advisory": "Specify IS 15298 (Part 2):2016 with mandatory ISI Mark."
   }
 }
