@@ -1208,6 +1208,29 @@ STANDARDS = [
         "conformity_scheme": "Scheme-I (ISI Mark)",
         "qco_id": "QCO-DPIIT-VALVES-2022",
         "foreign_equivalents": ["BS 5154", "EN 12288"]
+    },
+    {
+        "is_code": "IS 226:1975",
+        "standard_number": "IS 226",
+        "year": 1975,
+        "edition": "Fifth Revision",
+        "title": "Structural Steel (Standard Quality) — Specification [WITHDRAWN]",
+        "division": "Metallurgical Engineering",
+        "sectional_committee": "MTD 04",
+        "category": "Civil & Construction Materials",
+        "status": "WITHDRAWN",
+        "withdrawn_date": "2006-03-31",
+        "replacement_standard": "IS 2062:2011",
+        "supersedes": [],
+        "active_amendments": [],
+        "scope": "WITHDRAWN BY BIS: Formerly specified standard quality structural steel. Withdrawn and merged into IS 2062. Cannot be cited in public tenders under GFR 2017.",
+        "keywords": ["structural steel", "mild steel", "is 226", "withdrawn standard", "angles", "beams", "channels"],
+        "material_grades": ["St 42-S"],
+        "pressure_ratings": [],
+        "normative_references": {},
+        "conformity_scheme": "None",
+        "qco_id": None,
+        "foreign_equivalents": ["BS 4360"]
     }
 ]
 
