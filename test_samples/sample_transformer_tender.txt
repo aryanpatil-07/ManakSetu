@@ -1,0 +1,20 @@
+MUNICIPAL CORPORATION ELECTRICITY INFRASTRUCTURE DIVISION
+NOTICE INVITING TENDER (NIT No: MCED/2026/TR-098)
+
+SUBJECT: Supply, Installation, Testing and Commissioning of 500 kVA, 11/0.433 kV Outdoor Type Distribution Transformers for Substation Augmentation Project.
+
+1. ELIGIBILITY CRITERIA & BRAND MANDATE:
+Bidders must offer only ABB or Siemens or Schneider make distribution transformers. 
+No other make shall be considered under any circumstances.
+The bidder must have an annual financial turnover exceeding Rs. 650 Crores in each of the last three preceding financial years.
+
+2. TECHNICAL SPECIFICATIONS:
+The distribution transformers shall be outdoor type, oil-immersed, naturally cooled, conforming to IS 1180:1989 (Part 1).
+Core material shall be high grade cold rolled grain oriented (CRGO) silicon steel laminations.
+Energy loss limits shall follow old 2008 guidelines without mandatory BEE 3-Star or 4-Star rating labels.
+Standard factory routine tests only. Mandatory type test certificates from CPRI / ERDA within last 5 years are waived for preferred OEMs.
+Supplier must guarantee 12 months defect liability from date of energisation.
+
+3. SPECIAL CONDITIONS:
+Third-party inspection is not mandatory if OEM self-inspection report is submitted.
+BIS license verification on portal is not required for established brands.

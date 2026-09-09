@@ -1,0 +1,88 @@
+[
+  {
+    "order_id": "QCO-STEEL-2020",
+    "order_title": "Steel and Steel Products (Quality Control) Order, 2020",
+    "ministry": "Ministry of Steel",
+    "covered_standards": [
+      "IS 1786",
+      "IS 2062",
+      "IS 2830",
+      "IS 2831",
+      "IS 1079"
+    ],
+    "date_notified": "2020-07-17",
+    "date_effective": "2021-01-15",
+    "mandatory_bis_mark": true,
+    "prohibition": "No person shall manufacture, import, distribute, sell, hire, lease, store or exhibit for sale any steel product without Standard Mark (ISI mark)."
+  },
+  {
+    "order_id": "QCO-PIPES-2020",
+    "order_title": "Pipes and Fittings (Quality Control) Order, 2020",
+    "ministry": "Ministry of Chemicals and Fertilizers",
+    "covered_standards": [
+      "IS 4984",
+      "IS 4985",
+      "IS 12818",
+      "IS 15778"
+    ],
+    "date_notified": "2020-12-04",
+    "date_effective": "2021-06-01",
+    "mandatory_bis_mark": true,
+    "prohibition": "Mandatory ISI mark compliance under Scheme-I of BIS (Conformity Assessment) Regulations, 2018."
+  },
+  {
+    "order_id": "QCO-TRANSFORMERS-2014",
+    "order_title": "Distribution Transformers (Quality Control) Order, 2014",
+    "ministry": "Department for Promotion of Industry and Internal Trade (DPIIT)",
+    "covered_standards": [
+      "IS 1180 (Part 1)"
+    ],
+    "date_notified": "2014-01-27",
+    "date_effective": "2014-08-01",
+    "mandatory_bis_mark": true,
+    "prohibition": "All outdoor distribution transformers up to 2500 kVA must be BIS certified and BEE Star labeled."
+  },
+  {
+    "order_id": "QCO-CEMENT-2003",
+    "order_title": "Cement (Quality Control) Order, 2003",
+    "ministry": "Department of Industrial Policy and Promotion (DPIIT)",
+    "covered_standards": [
+      "IS 269",
+      "IS 1489 (Part 1)",
+      "IS 1489 (Part 2)",
+      "IS 455",
+      "IS 8041"
+    ],
+    "date_notified": "2003-02-17",
+    "date_effective": "2003-02-17",
+    "mandatory_bis_mark": true,
+    "prohibition": "Mandatory certification of all cement varieties under BIS licensing scheme."
+  },
+  {
+    "order_id": "QCO-CABLES-2021",
+    "order_title": "Cables (Quality Control) Order, 2021",
+    "ministry": "DPIIT",
+    "covered_standards": [
+      "IS 694",
+      "IS 7098 (Part 1)",
+      "IS 7098 (Part 2)",
+      "IS 1554 (Part 1)"
+    ],
+    "date_notified": "2021-03-12",
+    "date_effective": "2021-09-01",
+    "mandatory_bis_mark": true,
+    "prohibition": "Mandatory standard mark for all PVC and XLPE electrical conductors and wires."
+  },
+  {
+    "order_id": "QCO-SAFETY-MATS-2020",
+    "order_title": "Electrical Appliances & Safety Mats QCO, 2020",
+    "ministry": "Ministry of Heavy Industries",
+    "covered_standards": [
+      "IS 15652"
+    ],
+    "date_notified": "2020-11-09",
+    "date_effective": "2021-05-01",
+    "mandatory_bis_mark": true,
+    "prohibition": "Mandatory IS 15652 ISI mark certification on all electrical insulation floor mats."
+  }
+]

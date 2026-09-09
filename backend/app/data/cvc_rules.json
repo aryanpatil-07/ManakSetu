@@ -1,0 +1,49 @@
+{
+  "rules": [
+    {
+      "rule_id": "CVC-01-BRAND-SPEC",
+      "rule_name": "Prohibition of Proprietary Brand Names in Tender Specifications",
+      "authority": "CVC Office Memorandum No. 03-05-1-CTE-9 / Manual for Procurement of Goods Rule 144",
+      "severity": "CRITICAL",
+      "pattern": "(?i)\\b(only\\s+(Tata|ABB|Siemens|Schneider|L&T|Havells|Polycab|Supreme|Astral|Finolex|Jindal|Sail|Kirloskar|Crompton))\\b|\\b(make\\s*:\\s*(Tata|ABB|Siemens|Schneider|L&T|Havells|Polycab))\\b",
+      "message": "Specific brand names without generic technical specifications or without 'or equivalent' qualify as tender tailoring under CVC guidelines.",
+      "recommended_action": "Remove proprietary brand names. Specify objective parameters and relevant Indian Standard (IS) with 'or equivalent certified to IS'."
+    },
+    {
+      "rule_id": "CVC-02-OBSOLETE-STD",
+      "rule_name": "Citation of Obsolete or Withdrawn BIS Standards",
+      "authority": "BIS Act 2016 / GFR Rule 144(i)",
+      "severity": "HIGH",
+      "pattern": "(?i)\\b(IS\\s*4984\\s*:\\s*1995|IS\\s*1180\\s*:\\s*1989|IS\\s*5424|IS\\s*456\\s*:\\s*1978|IS\\s*2062\\s*:\\s*2006|IS\\s*1786\\s*:\\s*1985)\\b",
+      "message": "Citing obsolete revisions restricts participation and violates public procurement quality mandates.",
+      "recommended_action": "Update to latest valid revision and ensure compliance with current amendments."
+    },
+    {
+      "rule_id": "CVC-03-UNJUSTIFIED-FOREIGN-STD",
+      "rule_name": "Foreign Standards Citing Without Equivalence Clause",
+      "authority": "Make in India Public Procurement Order (PPO) 2017 & CVC Guidelines",
+      "severity": "HIGH",
+      "pattern": "(?i)\\b(ASTM\\s+[A-Z0-9]+|DIN\\s+[0-9]+|BS\\s+[0-9]+|EN\\s+[0-9]+)\\b(?!\\s+(?:or|equivalent|IS))",
+      "message": "Mandating foreign standards when national standards exist discriminates against domestic manufacturers.",
+      "recommended_action": "Replace with harmonized Indian Standard (IS) or explicitly state 'or equivalent Indian Standard (IS)'."
+    },
+    {
+      "rule_id": "CVC-04-RESTRICTIVE-EXPERIENCE",
+      "rule_name": "Excessive or Tailored Qualification Criteria",
+      "authority": "CVC Guidelines on Pre-Qualification Criteria",
+      "severity": "MEDIUM",
+      "pattern": "(?i)\\b(turnover\\s*(?:should\\s*be|minimum|shall\\s*be|exceeding)\\s*(?:INR|Rs\\.?)\\s*(?:[5-9]\\d{2}|\\d{4,})\\s*(?:Cr|Crores))\\b|\\b(must\\s+have\\s+supplied\\s+only\\s+to\\s+state\\s+government)\\b",
+      "message": "Disproportionate financial turnover or restrictive client requirements restrict competitive bidding.",
+      "recommended_action": "Align turnover criteria with standard formula (typically 30% to 50% of estimated tender value)."
+    },
+    {
+      "rule_id": "CVC-05-MANDATORY-QCO-VIOLATION",
+      "rule_name": "Missing Mandatory BIS Quality Control Order (QCO) Certification Clause",
+      "authority": "BIS Act 2016 Section 16 & Respective Ministry QCO Gazettes",
+      "severity": "CRITICAL",
+      "pattern": "(?i)\\b(without\\s+BIS\\s+license|self-declaration\\s+acceptable\\s+for\\s+steel|unbranded\\s+pipes|non-isi\\s+cables)\\b",
+      "message": "Procuring items covered under QCO without mandatory BIS standard mark is illegal.",
+      "recommended_action": "Insert mandatory clause: 'The supplied goods must bear valid BIS Standard Mark (ISI mark) and the manufacturer must hold a valid BIS license as on the date of bid submission.'"
+    }
+  ]
+}

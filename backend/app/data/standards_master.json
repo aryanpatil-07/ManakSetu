@@ -1,0 +1,472 @@
+[
+  {
+    "is_code": "IS 4984:2016",
+    "standard_number": "IS 4984",
+    "year": 2016,
+    "title": "High Density Polyethylene Pipes for Water Supply - Specification (Fifth Revision)",
+    "category": "Civil & Water Infrastructure",
+    "status": "ACTIVE",
+    "supersedes": [
+      "IS 4984:1995",
+      "IS 4984:1987"
+    ],
+    "qco_mandatory": true,
+    "qco_order": "Pipes and Fittings (Quality Control) Order, 2020",
+    "keywords": [
+      "hdpe",
+      "pipe",
+      "water supply",
+      "pe-100",
+      "pe-80",
+      "polyethylene",
+      "potable water"
+    ],
+    "replaces": "IS 4984:1995",
+    "amendments": [
+      "Amendment No. 1 (2018)",
+      "Amendment No. 2 (2021)"
+    ],
+    "scope": "Requirements for high density polyethylene pipes from 16 mm to 1000 mm diameter for potable water supply.",
+    "foreign_equivalents": [
+      "ISO 4427",
+      "ASTM D3035",
+      "DIN 8074"
+    ]
+  },
+  {
+    "is_code": "IS 1180 (Part 1):2014",
+    "standard_number": "IS 1180",
+    "year": 2014,
+    "title": "Outdoor Type Three-Phase Distribution Transformers Up To and Including 2500 kVA, 33 kV - Specification",
+    "category": "Electrical & Power",
+    "status": "ACTIVE",
+    "supersedes": [
+      "IS 1180:1989",
+      "IS 2026"
+    ],
+    "qco_mandatory": true,
+    "qco_order": "Distribution Transformers (Quality Control) Order, 2014",
+    "keywords": [
+      "transformer",
+      "distribution transformer",
+      "kva",
+      "star rating",
+      "energy efficiency",
+      "loss levels",
+      "bushing"
+    ],
+    "replaces": "IS 1180 (Part 1):1989",
+    "amendments": [
+      "Amendment 1 (2016)",
+      "Amendment 2 (2019)",
+      "Amendment 3 (2021)"
+    ],
+    "scope": "Mineral oil-immersed naturally cooled outdoor three-phase distribution transformers up to 2500 kVA.",
+    "foreign_equivalents": [
+      "IEC 60076",
+      "IEEE C57.12.00"
+    ]
+  },
+  {
+    "is_code": "IS 1786:2008",
+    "standard_number": "IS 1786",
+    "year": 2008,
+    "title": "High Strength Deformed Steel Bars and Wires for Concrete Reinforcement - Specification (Fourth Revision)",
+    "category": "Civil & Structural",
+    "status": "ACTIVE",
+    "supersedes": [
+      "IS 1786:1985"
+    ],
+    "qco_mandatory": true,
+    "qco_order": "Steel and Steel Products (Quality Control) Order, 2020",
+    "keywords": [
+      "tmt",
+      "steel bars",
+      "fe 500",
+      "fe 500d",
+      "fe 550d",
+      "reinforcement",
+      "rebars",
+      "elongation"
+    ],
+    "replaces": "IS 1786:1985",
+    "amendments": [
+      "Amendment No. 1 (2012)",
+      "Amendment No. 2 (2017)",
+      "Amendment No. 3 (2019)"
+    ],
+    "scope": "Specifies requirements for high strength deformed steel bars and wires for concrete reinforcement (Fe 415, Fe 500, Fe 500D, Fe 550, Fe 600).",
+    "foreign_equivalents": [
+      "ASTM A615",
+      "BS 4449",
+      "DIN 488"
+    ]
+  },
+  {
+    "is_code": "IS 2062:2011",
+    "standard_number": "IS 2062",
+    "year": 2011,
+    "title": "Hot Rolled Medium and High Tensile Structural Steel - Specification (Seventh Revision)",
+    "category": "Civil & Structural",
+    "status": "ACTIVE",
+    "supersedes": [
+      "IS 2062:2006"
+    ],
+    "qco_mandatory": true,
+    "qco_order": "Steel and Steel Products (Quality Control) Order, 2020",
+    "keywords": [
+      "structural steel",
+      "plates",
+      "sections",
+      "e250",
+      "e350",
+      "angles",
+      "beams",
+      "channels"
+    ],
+    "replaces": "IS 2062:2006",
+    "amendments": [
+      "Amendment No. 1 (2015)",
+      "Amendment No. 2 (2019)"
+    ],
+    "scope": "Requirements for hot rolled medium and high tensile structural steel plates, shapes, sections.",
+    "foreign_equivalents": [
+      "ASTM A36",
+      "EN 10025-2",
+      "JIS G3101"
+    ]
+  },
+  {
+    "is_code": "IS 456:2000",
+    "standard_number": "IS 456",
+    "year": 2000,
+    "title": "Plain and Reinforced Concrete - Code of Practice (Fourth Revision)",
+    "category": "Civil & Structural",
+    "status": "ACTIVE",
+    "supersedes": [
+      "IS 456:1978"
+    ],
+    "qco_mandatory": false,
+    "qco_order": null,
+    "keywords": [
+      "concrete",
+      "reinforced concrete",
+      "rcc",
+      "cube strength",
+      "m25",
+      "m30",
+      "water cement ratio"
+    ],
+    "replaces": "IS 456:1978",
+    "amendments": [
+      "Amendment No. 1 (2001)",
+      "Amendment No. 5 (2019)"
+    ],
+    "scope": "General structural use of plain and reinforced concrete.",
+    "foreign_equivalents": [
+      "ACI 318",
+      "BS 8110",
+      "Eurocode 2"
+    ]
+  },
+  {
+    "is_code": "IS 1239 (Part 1):2004",
+    "standard_number": "IS 1239",
+    "year": 2004,
+    "title": "Steel Tubes, Tubulars and Other Wrought Steel Fittings - Specification - Part 1: Steel Tubes",
+    "category": "Mechanical & Piping",
+    "status": "ACTIVE",
+    "supersedes": [
+      "IS 1239:1990"
+    ],
+    "qco_mandatory": true,
+    "qco_order": "Steel Tubes and Tubulars (Quality Control) Order, 2020",
+    "keywords": [
+      "gi pipe",
+      "ms pipe",
+      "galvanized iron",
+      "mild steel tubes",
+      "heavy class",
+      "medium class"
+    ],
+    "replaces": "IS 1239:1990",
+    "amendments": [
+      "Amendment No. 1 to 5"
+    ],
+    "scope": "Requirements for welded and seamless plain end or screwed and socketed steel tubes.",
+    "foreign_equivalents": [
+      "BS 1387",
+      "ASTM A53",
+      "DIN 2440"
+    ]
+  },
+  {
+    "is_code": "IS 694:2010",
+    "standard_number": "IS 694",
+    "year": 2010,
+    "title": "Polyvinyl Chloride Insulated Unsheathed and Sheathed Cables/Cords with Rigid and Flexible Conductor",
+    "category": "Electrical & Power",
+    "status": "ACTIVE",
+    "supersedes": [
+      "IS 694:1990"
+    ],
+    "qco_mandatory": true,
+    "qco_order": "Cables (Quality Control) Order, 2021",
+    "keywords": [
+      "pvc cables",
+      "frls",
+      "copper conductor",
+      "flexible cord",
+      "wiring",
+      "building wire"
+    ],
+    "replaces": "IS 694:1990",
+    "amendments": [
+      "Amendment No. 1 (2014)",
+      "Amendment No. 2 (2020)"
+    ],
+    "scope": "PVC insulated cables with copper or aluminium conductors for rated voltages up to 1100V.",
+    "foreign_equivalents": [
+      "IEC 60227",
+      "BS 6004"
+    ]
+  },
+  {
+    "is_code": "IS 7098 (Part 1):1988",
+    "standard_number": "IS 7098",
+    "year": 1988,
+    "title": "Cross-linked Polyethylene Insulated Thermoplastic Sheathed Cables - Part 1: For Working Voltages up to and Including 1100 V",
+    "category": "Electrical & Power",
+    "status": "ACTIVE",
+    "supersedes": [],
+    "qco_mandatory": true,
+    "qco_order": "Cables (Quality Control) Order, 2021",
+    "keywords": [
+      "xlpe cable",
+      "armoured cable",
+      "power cable",
+      "underground cable",
+      "lt cable"
+    ],
+    "replaces": null,
+    "amendments": [
+      "Amendment No. 1 (1998)",
+      "Amendment No. 2 (2011)"
+    ],
+    "scope": "XLPE insulated cables for electrical power transmission and distribution.",
+    "foreign_equivalents": [
+      "IEC 60502-1"
+    ]
+  },
+  {
+    "is_code": "IS 10500:2012",
+    "standard_number": "IS 10500",
+    "year": 2012,
+    "title": "Drinking Water - Specification (Second Revision)",
+    "category": "Public Health & Environment",
+    "status": "ACTIVE",
+    "supersedes": [
+      "IS 10500:1991"
+    ],
+    "qco_mandatory": true,
+    "qco_order": "Drinking Water Quality Control Order, 2021",
+    "keywords": [
+      "drinking water",
+      "potable water",
+      "tds",
+      "turbidity",
+      "ph",
+      "chlorine",
+      "heavy metals"
+    ],
+    "replaces": "IS 10500:1991",
+    "amendments": [
+      "Amendment No. 1 (2015)",
+      "Amendment No. 2 (2018)",
+      "Amendment No. 3 (2021)"
+    ],
+    "scope": "Requirements and methods of sampling and test for drinking water.",
+    "foreign_equivalents": [
+      "WHO Guidelines for Drinking-water Quality",
+      "EPA Primary Standards"
+    ]
+  },
+  {
+    "is_code": "IS 269:2015",
+    "standard_number": "IS 269",
+    "year": 2015,
+    "title": "Ordinary Portland Cement - Specification (Sixth Revision)",
+    "category": "Civil & Structural",
+    "status": "ACTIVE",
+    "supersedes": [
+      "IS 8112:2013",
+      "IS 12269:2013",
+      "IS 269:1989"
+    ],
+    "qco_mandatory": true,
+    "qco_order": "Cement (Quality Control) Order, 2003",
+    "keywords": [
+      "opc",
+      "cement",
+      "33 grade",
+      "43 grade",
+      "53 grade",
+      "compressive strength",
+      "soundness"
+    ],
+    "replaces": "IS 269:1989 (Unified 33, 43, 53 grades into single standard in 2015)",
+    "amendments": [
+      "Amendment No. 1 (2018)",
+      "Amendment No. 2 (2021)"
+    ],
+    "scope": "Manufacture and chemical and physical requirements of ordinary Portland cement.",
+    "foreign_equivalents": [
+      "ASTM C150",
+      "EN 197-1"
+    ]
+  },
+  {
+    "is_code": "IS 15652:2006",
+    "standard_number": "IS 15652",
+    "year": 2006,
+    "title": "Insulating Mats for Electrical Purposes - Specification",
+    "category": "Electrical Safety",
+    "status": "ACTIVE",
+    "supersedes": [
+      "IS 5424:1969"
+    ],
+    "qco_mandatory": true,
+    "qco_order": "Electrical Appliances & Safety Mats QCO, 2020",
+    "keywords": [
+      "insulating mat",
+      "electrical rubber mat",
+      "substation mat",
+      "dielectric strength",
+      "safety mat"
+    ],
+    "replaces": "IS 5424:1969",
+    "amendments": [
+      "Amendment No. 1 (2012)"
+    ],
+    "scope": "Elastomeric mats for protection against electric shock in substations and switchgear rooms.",
+    "foreign_equivalents": [
+      "IEC 61111"
+    ]
+  },
+  {
+    "is_code": "IS 3043:2018",
+    "standard_number": "IS 3043",
+    "year": 2018,
+    "title": "Code of Practice for Earthing (First Revision)",
+    "category": "Electrical Safety",
+    "status": "ACTIVE",
+    "supersedes": [
+      "IS 3043:1987"
+    ],
+    "qco_mandatory": false,
+    "qco_order": null,
+    "keywords": [
+      "earthing",
+      "grounding",
+      "chemical earthing",
+      "earth electrode",
+      "earth resistance",
+      "fault current"
+    ],
+    "replaces": "IS 3043:1987",
+    "amendments": [],
+    "scope": "Design, installation and testing of earthing systems.",
+    "foreign_equivalents": [
+      "IEEE 80",
+      "BS 7430"
+    ]
+  },
+  {
+    "is_code": "IS 383:2016",
+    "standard_number": "IS 383",
+    "year": 2016,
+    "title": "Coarse and Fine Aggregate for Concrete - Specification (Third Revision)",
+    "category": "Civil & Structural",
+    "status": "ACTIVE",
+    "supersedes": [
+      "IS 383:1970"
+    ],
+    "qco_mandatory": false,
+    "qco_order": null,
+    "keywords": [
+      "aggregate",
+      "sand",
+      "coarse aggregate",
+      "m-sand",
+      "recycled aggregate",
+      "grading zone"
+    ],
+    "replaces": "IS 383:1970",
+    "amendments": [
+      "Amendment No. 1 (2019)"
+    ],
+    "scope": "Requirements for aggregates from natural sources and manufactured aggregates for concrete.",
+    "foreign_equivalents": [
+      "ASTM C33",
+      "EN 12620"
+    ]
+  },
+  {
+    "is_code": "IS 1489 (Part 1):2015",
+    "standard_number": "IS 1489",
+    "year": 2015,
+    "title": "Portland Pozzolana Cement - Specification - Part 1: Fly Ash Based",
+    "category": "Civil & Structural",
+    "status": "ACTIVE",
+    "supersedes": [
+      "IS 1489:1991"
+    ],
+    "qco_mandatory": true,
+    "qco_order": "Cement (Quality Control) Order, 2003",
+    "keywords": [
+      "ppc",
+      "pozzolana cement",
+      "fly ash cement",
+      "fineness",
+      "setting time"
+    ],
+    "replaces": "IS 1489 (Part 1):1991",
+    "amendments": [
+      "Amendment No. 1 (2017)"
+    ],
+    "scope": "Manufacture and physical/chemical requirements of fly ash based Portland pozzolana cement.",
+    "foreign_equivalents": [
+      "ASTM C595"
+    ]
+  },
+  {
+    "is_code": "IS 800:2007",
+    "standard_number": "IS 800",
+    "year": 2007,
+    "title": "General Construction in Steel - Code of Practice (Third Revision)",
+    "category": "Civil & Structural",
+    "status": "ACTIVE",
+    "supersedes": [
+      "IS 800:1984"
+    ],
+    "qco_mandatory": false,
+    "qco_order": null,
+    "keywords": [
+      "steel construction",
+      "limit state design",
+      "structural members",
+      "bolted connections",
+      "welded connections"
+    ],
+    "replaces": "IS 800:1984",
+    "amendments": [
+      "Amendment No. 1 (2012)",
+      "Amendment No. 2 (2015)"
+    ],
+    "scope": "General construction in structural steel using limit state design method.",
+    "foreign_equivalents": [
+      "AISC 360",
+      "Eurocode 3"
+    ]
+  }
+]
