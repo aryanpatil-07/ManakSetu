@@ -1,16 +1,32 @@
-fastapi>=0.104.0
-uvicorn[standard]>=0.24.0
-pydantic>=2.5.0
-pydantic-settings>=2.1.0
-python-multipart>=0.0.6
-requests>=2.31.0
-httpx>=0.25.0
-pandas>=2.1.0
-openpyxl>=3.1.0
-xlsxwriter>=3.2.0
-networkx>=3.2.0
-PyMuPDF>=1.23.0
-jinja2>=3.1.2
-python-dotenv>=1.0.0
-numpy>=1.26.0
-scikit-learn>=1.3.0
+# --- Web Framework & API Server ---
+fastapi>=0.111.0,<0.115.0
+uvicorn[standard]>=0.30.0
+pydantic>=2.7.0,<3.0.0
+pydantic-settings>=2.2.0
+python-multipart>=0.0.9
+# --- AI, NLP & Semantic Retrieval ---
+sentence-transformers>=3.0.0
+torch>=2.2.0 --extra-index-url https://download.pytorch.org/whl/cpu
+rank-bm25>=0.2.2
+spacy>=3.7.4
+numpy>=1.26.0,<2.0.0
+scikit-learn>=1.4.0
+# --- Vector Database & Storage ---
+qdrant-client>=1.9.0
+chromadb>=0.5.0
+# --- Knowledge Graph & Relational Logic ---
+networkx>=3.2.1
+sqlalchemy>=2.0.30
+# --- Document & Data File Ingestion ---
+pymupdf>=1.24.0
+pandas>=2.2.0
+openpyxl>=3.1.2
+# --- Templating & LLM Client ---
+jinja2>=3.1.4
+groq>=0.9.0
+google-generativeai>=0.7.0
+# --- Utilities & Performance ---
+python-dotenv>=1.0.1
+requests>=2.32.0
+aiofiles>=23.2.1
+tqdm>=4.66.0
