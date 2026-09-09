@@ -32,13 +32,18 @@ class TenderAuditResponse(BaseModel):
     summary_advisory: str
 
 class BoqItemAuditResult(BaseModel):
-    item_no: int
-    description: str
-    detected_standards: List[str]
-    compliance_status: str  # PASS, WARN, FAIL
-    findings: List[str]
-    suggested_correction: Optional[str] = None
-    qco_compliant: bool = True
+    item_no: Any
+    original_description: Optional[str] = None
+    description: Optional[str] = None
+    quantity: Optional[str] = None
+    unit: Optional[str] = None
+    recommended_is_code: Optional[str] = None
+    standard_title: Optional[str] = None
+    lifecycle_status: Optional[str] = None
+    mandatory_qco: Optional[str] = None
+    cvc_tailoring_alerts: Optional[str] = None
+    compliance_action: Optional[str] = None
+    status: Optional[str] = "PASS"
 
 class BoqAuditResponse(BaseModel):
     tender_id: str
@@ -46,7 +51,9 @@ class BoqAuditResponse(BaseModel):
     compliant_items: int
     flagged_items: int
     overall_compliance_rate: float
-    items: List[BoqItemAuditResult]
+    export_filename: Optional[str] = None
+    download_url: Optional[str] = None
+    items: List[Dict[str, Any]]
 
 class GraphNode(BaseModel):
     id: str

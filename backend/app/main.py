@@ -1,7 +1,9 @@
 from contextlib import asynccontextmanager
+from pathlib import Path
 from fastapi import FastAPI, UploadFile, File, Form, Depends, HTTPException, Query
 from fastapi.responses import JSONResponse
-from typing import Optional
+from fastapi.staticfiles import StaticFiles
+from typing import Optional, Dict, Any, List
 
 from app.core.config import settings
 from app.core.security import setup_cors, check_rate_limit
@@ -21,6 +23,7 @@ from app.services.hybrid_retriever import HybridRetriever
 from app.services.knowledge_graph import StandardsKnowledgeGraph
 from app.services.regulatory_engine import RegulatoryEngine
 from app.services.cvc_linter import CVCLinter
+from app.services.foreign_converter import ForeignConverter
 from app.services.document_parser import DocumentParser
 from app.services.boq_processor import BoQProcessor
 from app.services.clause_generator import ClauseGenerator
@@ -30,6 +33,7 @@ retriever: Optional[HybridRetriever] = None
 kg: Optional[StandardsKnowledgeGraph] = None
 regulatory_engine: Optional[RegulatoryEngine] = None
 cvc_linter: Optional[CVCLinter] = None
+foreign_converter: Optional[ForeignConverter] = None
 doc_parser: Optional[DocumentParser] = None
 boq_processor: Optional[BoQProcessor] = None
 clause_gen: Optional[ClauseGenerator] = None
@@ -37,14 +41,30 @@ clause_gen: Optional[ClauseGenerator] = None
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Initialize engine services on startup
-    global retriever, kg, regulatory_engine, cvc_linter, doc_parser, boq_processor, clause_gen
+    global retriever, kg, regulatory_engine, cvc_linter, foreign_converter, doc_parser, boq_processor, clause_gen
     retriever = HybridRetriever()
     kg = StandardsKnowledgeGraph()
-    regulatory_engine = RegulatoryEngine()
-    cvc_linter = CVCLinter()
-    doc_parser = DocumentParser()
-    boq_processor = BoQProcessor()
-    clause_gen = ClauseGenerator()
+    regulatory_engine = RegulatoryEngine(kg=kg)
+    foreign_converter = ForeignConverter()
+    cvc_linter = CVCLinter(foreign_converter=foreign_converter)
+    clause_gen = ClauseGenerator(
+        regulatory_engine=regulatory_engine,
+        cvc_linter=cvc_linter,
+        foreign_converter=foreign_converter
+    )
+    doc_parser = DocumentParser(
+        regulatory_engine=regulatory_engine,
+        cvc_linter=cvc_linter,
+        foreign_converter=foreign_converter,
+        clause_generator=clause_gen,
+        retriever=retriever
+    )
+    boq_processor = BoQProcessor(
+        regulatory_engine=regulatory_engine,
+        cvc_linter=cvc_linter,
+        foreign_converter=foreign_converter,
+        retriever=retriever
+    )
     print("ManakSetu Engine initialized successfully.")
     yield
     print("ManakSetu Engine shutting down.")
@@ -52,12 +72,20 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title=settings.PROJECT_NAME,
     version=settings.PROJECT_VERSION,
-    description="Intelligent BIS Compliance, Tender Scrutiny, and BoQ Auditing System",
+    description="ManakSetu: Intelligent Standards Harmonization & Procurement Compliance Engine for Indian Public Procurement",
     lifespan=lifespan
 )
 
 # Setup CORS
 setup_cors(app)
+
+# Mount Static Files for BoQ and PDF report downloads
+static_dir = Path("backend/app/static")
+if not static_dir.exists():
+    static_dir = Path("d:/ManakSetu/backend/app/static")
+static_dir.mkdir(parents=True, exist_ok=True)
+(static_dir / "exports").mkdir(parents=True, exist_ok=True)
+app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
 
 @app.get("/")
 def root():
@@ -65,25 +93,37 @@ def root():
         "app": settings.PROJECT_NAME,
         "version": settings.PROJECT_VERSION,
         "status": "OPERATIONAL",
-        "docs_url": "/docs"
+        "docs_url": "/docs",
+        "description": "BIS Regulatory Compliance, QCO Enforcement, GFR 144(vii) & CVC Anti-Tailoring Engine"
     }
 
 @app.get("/health")
 def health_check():
     return {"status": "healthy"}
 
+# =============================================================================
+# 1. TEXT AUDIT & SPECIFICATION HARMONIZER (PHASE 2, 3, 4)
+# =============================================================================
+
+@app.post("/api/v1/audit/text", response_model=TenderAuditResponse, dependencies=[Depends(check_rate_limit)])
 @app.post("/api/audit/tender", response_model=TenderAuditResponse, dependencies=[Depends(check_rate_limit)])
 def audit_tender_text(payload: TenderAuditRequest):
-    standards_extracted = regulatory_engine.extract_standards_from_text(payload.text_content)
-    detected_statuses = [regulatory_engine.validate_standard(s) for s in standards_extracted]
-    violations = cvc_linter.scan(payload.text_content)
+    """
+    Audits a single procurement specification string:
+    - Extracts cited Indian Standards, evaluates lifecycle (CURRENT vs SUPERSEDED vs WITHDRAWN)
+    - Checks gazetted QCO orders under Section 16 of the BIS Act, 2016
+    - Scans for proprietary brand names and CVC anti-tailoring violations
+    - Converts foreign standards under GFR 144(vii)
+    - Synthesizes an audit-proof Notice Inviting Tender (NIT) clause
+    """
+    standards_audit = regulatory_engine.audit_text_standards(payload.text_content)
+    detected_statuses = standards_audit["audits"]
+    cvc_audit = cvc_linter.audit_text(payload.text_content)
+    violations = cvc_audit["violations"]
 
-    critical_count = sum(1 for v in violations if v["severity"] == "CRITICAL")
-    high_count = sum(1 for v in violations if v["severity"] == "HIGH")
-    medium_count = sum(1 for v in violations if v["severity"] == "MEDIUM")
-
-    obsolete_count = sum(1 for s in detected_statuses if s["status"] == "OBSOLETE")
-    high_count += obsolete_count
+    critical_count = cvc_audit["severity_counts"]["CRITICAL"] + standards_audit["withdrawn_count"]
+    high_count = cvc_audit["severity_counts"]["HIGH"] + standards_audit["superseded_count"]
+    medium_count = cvc_audit["severity_counts"]["MEDIUM"] + standards_audit["unspecified_count"]
 
     # Calculate compliance score (0-100)
     score = 100 - (critical_count * 25) - (high_count * 15) - (medium_count * 5)
@@ -98,24 +138,31 @@ def audit_tender_text(payload: TenderAuditRequest):
 
     # Synthesize compliant clause if standards were identified
     sample_clause = None
+    target_std = None
     if detected_statuses:
-        best_std = detected_statuses[0].get("recommended_standard") or detected_statuses[0].get("specified")
-        if best_std:
-            res = clause_gen.generate_clause(
-                item_category=payload.title or "Procurement Item",
-                standard_code=best_std
-            )
-            sample_clause = res["synthesized_clause_text"]
+        target_std = detected_statuses[0].get("recommended_standard") or detected_statuses[0].get("specified")
+    else:
+        # Infer standard using hybrid retriever
+        search_res = retriever.search(payload.text_content, top_k=1)
+        if search_res:
+            target_std = search_res[0]["is_code"]
+
+    if target_std:
+        res = clause_gen.generate_clause(
+            item_category=payload.title or "Procurement Item",
+            standard_code=target_std
+        )
+        sample_clause = res["synthesized_clause_text"]
 
     summary = (
         f"Audited tender: {critical_count} critical defects, {high_count} high-risk violations. "
         f"Overall compliance evaluated at {score}%. "
-        + ("Immediate rectification required before publication." if score < 70 else "Minor revisions suggested.")
+        + ("Immediate rectification required before tender publication." if score < 70 else "Minor revisions suggested.")
     )
 
     return TenderAuditResponse(
         tender_id=payload.tender_id or "TND-AUDIT",
-        compliance_score=score,
+        compliance_score=int(score),
         overall_status=overall_status,
         critical_issues_count=critical_count,
         high_issues_count=high_count,
@@ -126,42 +173,89 @@ def audit_tender_text(payload: TenderAuditRequest):
         summary_advisory=summary
     )
 
-@app.post("/api/audit/upload-pdf", response_model=TenderAuditResponse, dependencies=[Depends(check_rate_limit)])
-async def audit_pdf_upload(file: UploadFile = File(...), tender_id: Optional[str] = Form("PDF-UPLOAD")):
-    contents = await file.read()
-    parse_res = doc_parser.parse_pdf_bytes(contents)
-    text = parse_res.get("text", "")
-
-    req = TenderAuditRequest(
-        tender_id=tender_id,
-        title=file.filename or "Uploaded Tender PDF",
-        text_content=text
+@app.post("/api/v1/harmonize", dependencies=[Depends(check_rate_limit)])
+def harmonize_text(original_text: str = Form(...), target_standard: Optional[str] = Form(None), item_category: Optional[str] = Form(None)):
+    """
+    Generates side-by-side comparison payload (Original vs Harmonized).
+    """
+    return clause_gen.generate_harmonized_diff(
+        original_text=original_text,
+        target_standard=target_standard,
+        item_category=item_category
     )
-    return audit_tender_text(req)
 
+# =============================================================================
+# 2. PDF RFP SCRUTINIZER (PHASE 5)
+# =============================================================================
+
+@app.post("/api/v1/audit/rfp", dependencies=[Depends(check_rate_limit)])
+@app.post("/api/audit/upload-pdf", dependencies=[Depends(check_rate_limit)])
+async def audit_pdf_upload(file: UploadFile = File(...), tender_id: Optional[str] = Form("PDF-TENDER")):
+    """
+    Multi-modal PDF RFP Scrutinizer:
+    - Slices Technical Specifications, Schedule of Requirements, and Scope of Supply
+    - Audits every clause against BIS standards, QCO orders, and CVC rules
+    - Produces a consolidated executive Audit Scorecard
+    """
+    contents = await file.read()
+    filename = file.filename or "uploaded_tender.pdf"
+    scorecard = doc_parser.scrutinize_pdf(contents, filename=filename)
+    scorecard["tender_id"] = tender_id
+    return scorecard
+
+# =============================================================================
+# 3. EXCEL BOQ BATCH AUDITOR (PHASE 5)
+# =============================================================================
+
+@app.post("/api/v1/audit/boq", response_model=BoqAuditResponse, dependencies=[Depends(check_rate_limit)])
 @app.post("/api/boq/upload-excel", response_model=BoqAuditResponse, dependencies=[Depends(check_rate_limit)])
 async def audit_boq_excel(file: UploadFile = File(...), tender_id: Optional[str] = Form("EXCEL-BOQ")):
+    """
+    Multi-Item Excel BoQ Batch Auditor:
+    - Automatically detects item description, quantity, and unit columns
+    - Validates each row against BIS catalog, QCO orders, and CVC anti-tailoring rules
+    - Appends 6 standardized audit columns and provides an instant export download link
+    """
     contents = await file.read()
-    result = boq_processor.process_excel_bytes(contents)
+    filename = file.filename or "uploaded_boq.xlsx"
+    result = boq_processor.process_excel_bytes(contents, filename_prefix="audited_boq")
+    
     return BoqAuditResponse(
-        tender_id=tender_id,
+        tender_id=tender_id or "EXCEL-BOQ",
         total_items_scanned=result["total_items_scanned"],
         compliant_items=result["compliant_items"],
         flagged_items=result["flagged_items"],
         overall_compliance_rate=result["overall_compliance_rate"],
+        export_filename=result["export_filename"],
+        download_url=result["download_url"],
         items=result["items"]
     )
 
+# =============================================================================
+# 4. STANDARDS RETRIEVAL, GRAPH & CLAUSE UTILITIES
+# =============================================================================
+
+@app.get("/api/v1/standards/search")
 @app.get("/api/standards/search")
-def search_standards(query: str = Query(..., description="Standard or keyword to search"), top_k: int = 5):
+def search_standards(query: str = Query(..., description="Standard code or technical keyword to search"), top_k: int = 5):
+    """Hybrid BM25 + Dense BGE + Cross-Encoder retrieval."""
     return {"query": query, "results": retriever.search(query, top_k=top_k)}
 
+@app.get("/api/v1/standards/graph", response_model=KnowledgeGraphResponse)
 @app.get("/api/standards/graph", response_model=KnowledgeGraphResponse)
 def get_standards_graph():
+    """NetworkX standards relationship graph for Cytoscape / React Flow."""
     return kg.get_serialized_graph()
 
+@app.get("/api/v1/standards/subgraph")
+def get_standards_subgraph(is_code: str = Query(..., description="IS standard code to focus subgraph on"), depth: int = 1):
+    """Returns focused local subgraph around a specific standard for UI visualization."""
+    return kg.export_subgraph_for_ui(is_code, depth=depth)
+
+@app.post("/api/v1/clauses/generate", response_model=ClauseSynthesisResponse)
 @app.post("/api/clauses/generate", response_model=ClauseSynthesisResponse)
-def generate_clause(payload: ClauseSynthesisRequest):
+def generate_clause_api(payload: ClauseSynthesisRequest):
+    """Synthesizes an audit-proof Notice Inviting Tender (NIT) technical clause."""
     return clause_gen.generate_clause(
         item_category=payload.item_category,
         standard_code=payload.is_standard_code,

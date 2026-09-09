@@ -42,3 +42,7 @@ yarn-error.log*
 *.swo
 .DS_Store
 Thumbs.db
+
+# Generated Exports
+backend/app/static/exports/*.xlsx
+!backend/app/static/exports/.gitkeep
