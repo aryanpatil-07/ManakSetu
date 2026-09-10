@@ -149,7 +149,7 @@ export default function RootLayout({
                 </div>
                 <ul className="space-y-1.5">
                   <li>
-                    <Link href="/" className="hover:text-accent-sky transition">Interactive Audit Studio</Link>
+                    <Link href="/audit-studio" className="hover:text-accent-sky transition">Interactive Audit Studio</Link>
                   </li>
                   <li>
                     <Link href="/rfp-scanner" className="hover:text-accent-sky transition">RFP Tender PDF Scrutinizer</Link>
@@ -158,7 +158,7 @@ export default function RootLayout({
                     <Link href="/boq-auditor" className="hover:text-accent-sky transition">Excel BoQ Schedule Auditor</Link>
                   </li>
                   <li>
-                    <Link href="/#standards-graph" className="hover:text-accent-sky transition">Normative & Equivalence Graph</Link>
+                    <Link href="/audit-studio#standards-graph" className="hover:text-accent-sky transition">Normative & Equivalence Graph</Link>
                   </li>
                 </ul>
               </div>
