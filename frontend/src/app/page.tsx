@@ -163,46 +163,6 @@ Third-party NABL batch testing certificate mandatory prior to dispatch."`,
   },
 ];
 
-// Capabilities Grid
-const CAPABILITIES = [
-  {
-    icon: <Sparkles className="w-6 h-6 text-accent-cyan" />,
-    title: 'Automated Lifecycle Tracking',
-    description: 'Detects superseded, obsolete, or withdrawn Indian Standards in real time, preventing illegal citations.',
-    badge: 'BIS ACT 2016',
-  },
-  {
-    icon: <Scale className="w-6 h-6 text-emerald-400" />,
-    title: 'Statutory QCO Enforcement',
-    description: 'Strictly mandates Scheme-I BIS Standard Mark (ISI Mark) across 679+ ministerial Quality Control Orders.',
-    badge: 'MANDATORY LAW',
-  },
-  {
-    icon: <AlertTriangle className="w-6 h-6 text-amber-400" />,
-    title: 'CVC Anti-Tailoring Linter',
-    description: 'Flags brand exclusivity (Supreme, ABB, Astral) and restrictive turnover criteria that choke competitive bidding.',
-    badge: 'CVC OM 03-05-1',
-  },
-  {
-    icon: <GitCompare className="w-6 h-6 text-accent-sky" />,
-    title: 'Foreign Code Harmonization',
-    description: 'Maps ASTM, DIN, ISO, and BS codes directly to corresponding Indian Standards in accordance with GFR 144(vii).',
-    badge: 'GFR 144(VII)',
-  },
-  {
-    icon: <FileSpreadsheet className="w-6 h-6 text-amber-300" />,
-    title: 'High-Speed BoQ Batch Audit',
-    description: 'Processes multi-hundred-row Excel schedules (.xlsx) row-by-row, returning instant compliance classifications.',
-    badge: 'EXCEL / CSV',
-  },
-  {
-    icon: <Award className="w-6 h-6 text-indigo-400" />,
-    title: 'CAG Audit Defense Certificate',
-    description: 'Generates formal compliance inspection certificates with cryptographic verification markers for audit scrutiny.',
-    badge: '1-CLICK PDF',
-  },
-];
-
 // Standards Bodies
 const STANDARDS_BODIES = [
   { name: 'Bureau of Indian Standards', code: 'BIS / IS' },
@@ -815,57 +775,7 @@ export default function DashboardPage() {
       </section>
 
       {/* ========================================================= */}
-      {/* 4. FEATURE GRID / CAPABILITY MATRIX (6-PACK)              */}
-      {/* ========================================================= */}
-      <section className="space-y-6 pt-8">
-        
-        <div className="space-y-2">
-          <span className="font-mono text-xs font-bold uppercase tracking-widest text-accent-sky">
-            PRECISION CAPABILITIES
-          </span>
-          <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-            Built for High-Stakes Public Procurement
-          </h2>
-          <p className="text-slate-400 text-sm max-w-2xl">
-            A comprehensive suite of intelligence tools designed specifically for Chief Engineers, Tender Scrutiny Committees, and Vigilance Officers.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {CAPABILITIES.map((cap, idx) => (
-            <div
-              key={idx}
-              className="glass-panel glass-panel-hover rounded-3xl p-6 md:p-8 border border-slate-800 flex flex-col justify-between space-y-4 group"
-            >
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="w-12 h-12 rounded-2xl bg-canvas-950 border border-slate-800 flex items-center justify-center shadow-inner group-hover:border-accent-sky/50 transition">
-                    {cap.icon}
-                  </div>
-                  <span className="font-mono text-[9px] font-bold px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">
-                    {cap.badge}
-                  </span>
-                </div>
-                <h3 className="text-lg font-bold text-white group-hover:text-accent-sky transition">
-                  {cap.title}
-                </h3>
-                <p className="text-slate-400 text-xs sm:text-sm leading-relaxed">
-                  {cap.description}
-                </p>
-              </div>
-
-              <div className="pt-4 border-t border-slate-800/80 flex items-center gap-1.5 text-xs font-semibold text-accent-cyan group-hover:translate-x-1 transition">
-                <span>Explore Workflow</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </div>
-            </div>
-          ))}
-        </div>
-
-      </section>
-
-      {/* ========================================================= */}
-      {/* 5. PROOF & SOCIAL VALIDATION (STANDARDS WALL + MARQUEE)   */}
+      {/* 4. PROOF & SOCIAL VALIDATION (STANDARDS WALL + MARQUEE)   */}
       {/* ========================================================= */}
       <section className="space-y-8 pt-8">
         
@@ -917,7 +827,7 @@ export default function DashboardPage() {
       </section>
 
       {/* ========================================================= */}
-      {/* 6. EXPANDABLE FAQ ACCORDION SECTION                       */}
+      {/* 5. EXPANDABLE FAQ ACCORDION SECTION                       */}
       {/* ========================================================= */}
       <section className="space-y-6 pt-8 max-w-4xl mx-auto">
         
@@ -965,7 +875,7 @@ export default function DashboardPage() {
       </section>
 
       {/* ========================================================= */}
-      {/* 7. REGULATORY INSIGHTS & THOUGHT LEADERSHIP GRID          */}
+      {/* 6. REGULATORY INSIGHTS & THOUGHT LEADERSHIP GRID          */}
       {/* ========================================================= */}
       <section className="space-y-6 pt-8">
         
@@ -1036,7 +946,7 @@ export default function DashboardPage() {
       </section>
 
       {/* ========================================================= */}
-      {/* 8. PRODUCT ECOSYSTEM CROSS-SELL                           */}
+      {/* 7. PRODUCT ECOSYSTEM CROSS-SELL                           */}
       {/* ========================================================= */}
       <section className="pt-8">
         <div className="rounded-3xl bg-gradient-to-r from-canvas-900 via-accent-blue/15 to-emerald-950/30 border border-slate-800 p-8 md:p-12 relative overflow-hidden shadow-2xl">
