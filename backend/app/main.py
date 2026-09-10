@@ -197,6 +197,9 @@ async def audit_pdf_upload(file: UploadFile = File(...), tender_id: Optional[str
     """
     contents = await file.read()
     filename = file.filename or "uploaded_tender.pdf"
+    if not filename.lower().endswith(".pdf"):
+        raise HTTPException(status_code=400, detail="Only PDF files (.pdf) are supported by this endpoint.")
+
     scorecard = doc_parser.scrutinize_pdf(contents, filename=filename)
     scorecard["tender_id"] = tender_id
     return scorecard
@@ -216,7 +219,11 @@ async def audit_boq_excel(file: UploadFile = File(...), tender_id: Optional[str]
     """
     contents = await file.read()
     filename = file.filename or "uploaded_boq.xlsx"
-    result = boq_processor.process_excel_bytes(contents, filename_prefix="audited_boq")
+    if not (filename.lower().endswith(".xlsx") or filename.lower().endswith(".xls")):
+        raise HTTPException(status_code=400, detail="Only Excel spreadsheets (.xlsx, .xls) are supported by this endpoint.")
+
+    prefix = Path(filename).stem
+    result = boq_processor.process_excel_bytes(contents, filename_prefix=f"audited_{prefix}")
     
     return BoqAuditResponse(
         tender_id=tender_id or "EXCEL-BOQ",

@@ -144,8 +144,42 @@ class DocumentParser:
         4. Compiles a consolidated document-level Audit Scorecard.
         """
         parsed = self.parse_pdf_bytes(pdf_bytes, filename=filename)
-        sections = self.extract_sections(parsed["pages_text"])
         full_text = parsed["text"]
+
+        # Defense against empty or non-OCR scanned PDFs
+        if len(full_text.strip()) < 50:
+            return {
+                "tender_id": filename,
+                "filename": filename,
+                "overall_compliance_score": 0.0,
+                "risk_rating": "CRITICAL",
+                "executive_summary": (
+                    "INSUFFICIENT TEXT EXTRACTED: Document appears to be an unreadable scanned image or empty PDF. "
+                    "A searchable digital PDF or OCR preprocessing is required before compliance certification."
+                ),
+                "standards_audit": {
+                    "total_detected": 0,
+                    "current_count": 0,
+                    "superseded_count": 0,
+                    "withdrawn_count": 0,
+                    "unspecified_count": 0,
+                    "audits": []
+                },
+                "cvc_audit": {
+                    "cvc_compliance_score": 0.0,
+                    "total_violations": 1,
+                    "severity_counts": {"CRITICAL": 1, "HIGH": 0, "MEDIUM": 0, "LOW": 0},
+                    "violations": [{
+                        "type": "SCANNED_UNREADABLE_DOCUMENT",
+                        "severity": "CRITICAL",
+                        "rule": "Public Procurement Transparency",
+                        "description": "Tender document contains no extractable text layer for statutory compliance audit."
+                    }]
+                },
+                "synthesized_harmonized_clause": "UNABLE TO SYNTHESIZE: Machine-readable text could not be extracted from document."
+            }
+
+        sections = self.extract_sections(parsed["pages_text"])
 
         # Run audits across text
         standards_audit = self.regulatory_engine.audit_text_standards(full_text)
