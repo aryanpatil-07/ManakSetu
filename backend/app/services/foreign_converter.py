@@ -83,9 +83,11 @@ class ForeignConverter:
                 "title": entry.get("title", "")
             }
 
-        # Fuzzy prefix match (e.g. 'ISO 4427-1' -> 'ISO 4427')
-        for k, entry in self.mappings.items():
-            if norm_code.startswith(k) or k.startswith(norm_code):
+        # Prefix match with delimiter boundary (e.g. 'ISO 4427-1' -> 'ISO 4427')
+        sorted_keys = sorted(self.mappings.keys(), key=len, reverse=True)
+        for k in sorted_keys:
+            entry = self.mappings[k]
+            if norm_code == k or norm_code.startswith(k + "-") or norm_code.startswith(k + " ") or norm_code.startswith(k + "/"):
                 return {
                     "foreign_standard": norm_code,
                     "equivalent_is_code": entry.get("equivalent_is_code", entry.get("equivalent_is")),
@@ -101,6 +103,10 @@ class ForeignConverter:
                 }
 
         return None
+
+    def convert_standard(self, foreign_code: str) -> Optional[Dict[str, Any]]:
+        """Alias for convert_code()."""
+        return self.convert_code(foreign_code)
 
     def scan_and_convert(self, text: str) -> List[Dict[str, Any]]:
         """

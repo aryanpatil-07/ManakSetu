@@ -52,7 +52,7 @@ class BM25SearchEngine:
         boosted_results: List[Tuple[float, int, Dict[str, Any]]] = []
         max_score = max(scores) if len(scores) > 0 and max(scores) > 0 else 1.0
 
-        for idx, (base_score, std) in enumerate(zip(scores, self.standards)):
+        for idx, (base_score, std) in enumerate(zip(scores, self.standards, strict=False)):
             norm_score = base_score / max_score if max_score > 0 else 0.0
             boost = 1.0
 

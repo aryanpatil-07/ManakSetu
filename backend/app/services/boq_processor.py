@@ -6,13 +6,10 @@ Grounding:
 - 6-Column Standardized Export with Instant Download Link
 """
 import io
-import re
 import time
 from pathlib import Path
 from typing import List, Dict, Any, Optional
 import pandas as pd
-
-from app.core.config import settings
 from app.services.regulatory_engine import RegulatoryEngine
 from app.services.cvc_linter import CVCLinter
 from app.services.foreign_converter import ForeignConverter
