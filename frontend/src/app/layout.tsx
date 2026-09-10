@@ -102,25 +102,15 @@ export default function RootLayout({
         <header className="sticky top-0 z-50 backdrop-blur-2xl bg-canvas-950/85 border-b border-slate-800/80 shadow-2xl">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
             
-            {/* Brand Logo & Authority Badge */}
-            <Link href="/" className="flex items-center gap-3 group">
-              <div className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-accent-blue/30 via-canvas-900 to-accent-emerald/30 border border-accent-sky/40 flex items-center justify-center text-accent-cyan shadow-lg shadow-accent-blue/10 group-hover:border-accent-cyan transition duration-300">
-                <Shield className="w-5 h-5 text-accent-cyan" />
-                <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-accent-emerald ring-2 ring-canvas-950 animate-ping" />
-                <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-accent-emerald ring-2 ring-canvas-950" />
-              </div>
-              <div>
-                <div className="flex items-center gap-1.5">
-                  <span className="text-lg font-black tracking-tight text-white group-hover:text-accent-sky transition">
-                    MANAK<span className="text-accent-cyan font-bold">SETU</span>
-                  </span>
-                  <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-300 border border-amber-500/30">
-                    मानकसेतु
-                  </span>
-                </div>
-                <div className="text-[9px] tracking-wider text-slate-400 uppercase font-semibold font-mono hidden sm:block">
-                  National Standards Harmonization & Tender Scrutiny
-                </div>
+            {/* Brand Logo */}
+            <Link href="/" className="flex items-center group">
+              <div className="flex items-center gap-2">
+                <span className="text-xl font-black tracking-tight text-white group-hover:text-accent-sky transition">
+                  MANAK<span className="text-accent-cyan font-bold">SETU</span>
+                </span>
+                <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-300 border border-amber-500/30">
+                  मानकसेतु
+                </span>
               </div>
             </Link>
 
