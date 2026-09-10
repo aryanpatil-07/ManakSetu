@@ -9,7 +9,7 @@ sentence-transformers>=3.0.0
 torch>=2.2.0 --extra-index-url https://download.pytorch.org/whl/cpu
 rank-bm25>=0.2.2
 spacy>=3.7.4
-numpy>=1.26.0,<2.0.0
+numpy>=1.26.0
 scikit-learn>=1.4.0
 # --- Vector Database & Storage ---
 qdrant-client>=1.9.0

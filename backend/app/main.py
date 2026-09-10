@@ -80,9 +80,7 @@ app = FastAPI(
 setup_cors(app)
 
 # Mount Static Files for BoQ and PDF report downloads
-static_dir = Path("backend/app/static")
-if not static_dir.exists():
-    static_dir = Path("d:/ManakSetu/backend/app/static")
+static_dir = Path(__file__).resolve().parent / "static"
 static_dir.mkdir(parents=True, exist_ok=True)
 (static_dir / "exports").mkdir(parents=True, exist_ok=True)
 app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")

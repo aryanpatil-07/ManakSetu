@@ -48,9 +48,7 @@ class BoQProcessor:
         self.retriever = retriever  # Lazy loaded if None
 
         # Ensure static export directory exists
-        self.export_dir = Path("backend/app/static/exports")
-        if not self.export_dir.exists():
-            self.export_dir = Path("d:/ManakSetu/backend/app/static/exports")
+        self.export_dir = Path(__file__).resolve().parent.parent / "static" / "exports"
         self.export_dir.mkdir(parents=True, exist_ok=True)
 
     def _find_column(self, df: pd.DataFrame, aliases: List[str]) -> Optional[str]:
