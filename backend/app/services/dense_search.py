@@ -11,8 +11,8 @@ import torch
 from app.core.config import settings
 from app.services.corpus_builder import CorpusBuilder
 
-CACHE_PATH = Path("d:/ManakSetu/backend/app/data/embeddings_cache.pt")
-METADATA_PATH = Path("d:/ManakSetu/backend/app/data/embeddings_meta.json")
+CACHE_PATH = settings.DATA_DIR / "embeddings_cache.pt"
+METADATA_PATH = settings.DATA_DIR / "embeddings_meta.json"
 
 class DenseSearchEngine:
     """

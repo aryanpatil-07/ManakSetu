@@ -11,7 +11,7 @@ from pathlib import Path
 
 DATA_DIR = Path(__file__).parent / "backend" / "app" / "data"
 if not DATA_DIR.exists():
-    DATA_DIR = Path("d:/ManakSetu/backend/app/data")
+    DATA_DIR = Path(__file__).resolve().parent
 
 STANDARDS = [
     # =========================================================================
