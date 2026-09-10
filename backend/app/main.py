@@ -11,7 +11,9 @@ from app.schemas.request_schemas import (
     TenderAuditRequest,
     StandardSearchRequest,
     BoqAuditRequest,
-    ClauseSynthesisRequest
+    ClauseSynthesisRequest,
+    HarmonizeRequest,
+    StandardDetailRequest
 )
 from app.schemas.response_schemas import (
     TenderAuditResponse,
@@ -105,6 +107,7 @@ def health_check():
 
 @app.post("/api/v1/audit/text", response_model=TenderAuditResponse, dependencies=[Depends(check_rate_limit)])
 @app.post("/api/audit/tender", response_model=TenderAuditResponse, dependencies=[Depends(check_rate_limit)])
+@app.post("/api/audit/full", response_model=TenderAuditResponse, dependencies=[Depends(check_rate_limit)])
 def audit_tender_text(payload: TenderAuditRequest):
     """
     Audits a single procurement specification string:
@@ -114,9 +117,10 @@ def audit_tender_text(payload: TenderAuditRequest):
     - Converts foreign standards under GFR 144(vii)
     - Synthesizes an audit-proof Notice Inviting Tender (NIT) clause
     """
-    standards_audit = regulatory_engine.audit_text_standards(payload.text_content)
+    raw_text = payload.get_text()
+    standards_audit = regulatory_engine.audit_text_standards(raw_text)
     detected_statuses = standards_audit["audits"]
-    cvc_audit = cvc_linter.audit_text(payload.text_content)
+    cvc_audit = cvc_linter.audit_text(raw_text)
     violations = cvc_audit["violations"]
 
     critical_count = cvc_audit["severity_counts"]["CRITICAL"] + standards_audit["withdrawn_count"]
@@ -141,7 +145,7 @@ def audit_tender_text(payload: TenderAuditRequest):
         target_std = detected_statuses[0].get("recommended_standard") or detected_statuses[0].get("specified")
     else:
         # Infer standard using hybrid retriever
-        search_res = retriever.search(payload.text_content, top_k=1)
+        search_res = retriever.search(raw_text, top_k=1)
         if search_res:
             target_std = search_res[0]["is_code"]
 
@@ -172,14 +176,28 @@ def audit_tender_text(payload: TenderAuditRequest):
     )
 
 @app.post("/api/v1/harmonize", dependencies=[Depends(check_rate_limit)])
-def harmonize_text(original_text: str = Form(...), target_standard: Optional[str] = Form(None), item_category: Optional[str] = Form(None)):
+@app.post("/api/clause/generate-harmonized", dependencies=[Depends(check_rate_limit)])
+def harmonize_text(
+    payload: Optional[HarmonizeRequest] = None,
+    original_text: Optional[str] = Form(None),
+    target_standard: Optional[str] = Form(None),
+    item_category: Optional[str] = Form(None)
+):
     """
     Generates side-by-side comparison payload (Original vs Harmonized).
+    Accepts either JSON (HarmonizeRequest) or Form data.
     """
+    text = (payload.original_text or payload.text) if payload else original_text
+    std = (payload.target_standard) if payload else target_standard
+    cat = (payload.item_category or payload.category) if payload else item_category
+
+    if not text:
+        raise HTTPException(status_code=400, detail="Missing required 'original_text' or 'text' parameter.")
+
     return clause_gen.generate_harmonized_diff(
-        original_text=original_text,
-        target_standard=target_standard,
-        item_category=item_category
+        original_text=text,
+        target_standard=std,
+        item_category=cat
     )
 
 # =============================================================================
@@ -188,6 +206,7 @@ def harmonize_text(original_text: str = Form(...), target_standard: Optional[str
 
 @app.post("/api/v1/audit/rfp", dependencies=[Depends(check_rate_limit)])
 @app.post("/api/audit/upload-pdf", dependencies=[Depends(check_rate_limit)])
+@app.post("/api/document/parse", dependencies=[Depends(check_rate_limit)])
 async def audit_pdf_upload(file: UploadFile = File(...), tender_id: Optional[str] = Form("PDF-TENDER")):
     """
     Multi-modal PDF RFP Scrutinizer:
@@ -210,6 +229,7 @@ async def audit_pdf_upload(file: UploadFile = File(...), tender_id: Optional[str
 
 @app.post("/api/v1/audit/boq", response_model=BoqAuditResponse, dependencies=[Depends(check_rate_limit)])
 @app.post("/api/boq/upload-excel", response_model=BoqAuditResponse, dependencies=[Depends(check_rate_limit)])
+@app.post("/api/boq/audit", response_model=BoqAuditResponse, dependencies=[Depends(check_rate_limit)])
 async def audit_boq_excel(file: UploadFile = File(...), tender_id: Optional[str] = Form("EXCEL-BOQ")):
     """
     Multi-Item Excel BoQ Batch Auditor:
@@ -256,6 +276,14 @@ def get_standards_graph():
 def get_standards_subgraph(is_code: str = Query(..., description="IS standard code to focus subgraph on"), depth: int = 1):
     """Returns focused local subgraph around a specific standard for UI visualization."""
     return kg.export_subgraph_for_ui(is_code, depth=depth)
+
+@app.post("/api/standards/details")
+def get_standard_details(payload: StandardDetailRequest):
+    """Provides focused subgraph details for the requested standard."""
+    return {
+        "code": payload.code,
+        "subgraph": kg.export_subgraph_for_ui(payload.code, depth=payload.depth)
+    }
 
 @app.post("/api/v1/clauses/generate", response_model=ClauseSynthesisResponse)
 @app.post("/api/clauses/generate", response_model=ClauseSynthesisResponse)

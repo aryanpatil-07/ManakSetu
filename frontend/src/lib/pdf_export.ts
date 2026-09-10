@@ -10,14 +10,22 @@ export interface AuditCertificateData {
   recommendedStandard?: string;
   standardTitle?: string;
   qcoMandatory?: boolean;
+  qcoOrder?: string;
+  detectedStandards?: any[];
   synthesizedClause?: string;
   violations?: Array<{
     type?: string;
     rule?: string;
+    rule_id?: string;
+    rule_name?: string;
     severity?: string;
     description?: string;
+    message?: string;
     detected_text?: string;
+    matched_text?: string;
     suggestion?: string;
+    recommended_action?: string;
+    line_or_context?: string;
   }>;
 }
 
@@ -125,9 +133,9 @@ export function generateAuditCertificatePDF(data: AuditCertificateData): void {
     const violationRows = data.violations.map((v, i) => [
       `${i + 1}`,
       v.severity || 'HIGH',
-      v.rule || 'CVC / GFR Guidelines',
-      v.description || v.detected_text || 'Non-compliance detected',
-      v.suggestion || 'Harmonize specification to active standard',
+      v.rule || v.rule_name || 'CVC / GFR Guidelines',
+      v.description || v.message || v.detected_text || 'Non-compliance detected',
+      v.suggestion || v.recommended_action || 'Harmonize specification to active standard',
     ]);
 
     autoTable(doc, {

@@ -17,24 +17,36 @@ export const apiClient = axios.create({
 export interface StandardReference {
   specified: string;
   recommended_standard?: string;
-  status: 'CURRENT' | 'SUPERSEDED' | 'WITHDRAWN' | 'AMENDED' | 'UNVERIFIED';
+  status: 'CURRENT' | 'SUPERSEDED' | 'WITHDRAWN' | 'AMENDED' | 'UNVERIFIED' | 'ACTIVE' | 'OBSOLETE' | 'UNKNOWN' | 'FOREIGN';
   title?: string;
   year?: number;
   superseded_by?: string | null;
   amendments_count?: number;
   qco_applicable?: boolean;
+  is_qco_mandatory?: boolean;
+  qco_order?: string;
   qco_order_name?: string;
   qco_date?: string;
   rationale?: string;
+  notes?: string;
 }
 
 export interface ViolationFinding {
-  type: string;
+  type?: string;
+  category?: string;
+  rule_id?: string;
+  rule_name?: string;
   severity: 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
-  rule: string;
-  description: string;
+  rule?: string;
+  message?: string;
+  description?: string;
   detected_text?: string;
+  matched_text?: string;
   suggestion?: string;
+  recommended_action?: string;
+  line_or_context?: string;
+  line_number?: number;
+  context?: string;
 }
 
 export interface TenderAuditResponse {
@@ -50,12 +62,22 @@ export interface TenderAuditResponse {
   summary_advisory?: string;
 }
 
+export interface PdfDocumentSection {
+  title: string;
+  header?: string;
+  preview?: string;
+}
+
 export interface PdfScorecardResponse {
   tender_id: string;
-  filename: string;
+  filename?: string;
+  document_name?: string;
+  total_pages?: number;
+  total_requirements_analyzed?: number;
   overall_compliance_score: number;
   risk_rating: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
   executive_summary: string;
+  sections_identified?: PdfDocumentSection[];
   standards_audit: {
     total_detected: number;
     current_count: number;
@@ -63,8 +85,10 @@ export interface PdfScorecardResponse {
     withdrawn_count: number;
     unspecified_count: number;
     audits: StandardReference[];
+    statutory_clauses?: string[];
   };
   cvc_audit: {
+    cvc_compliance_score?: number;
     total_violations: number;
     severity_counts: {
       CRITICAL: number;
@@ -73,18 +97,31 @@ export interface PdfScorecardResponse {
       LOW: number;
     };
     violations: ViolationFinding[];
+    detected_brands?: string[];
   };
+  foreign_conversions?: any[];
+  statutory_clauses?: string[];
   synthesized_harmonized_clause: string;
 }
 
 export interface HarmonizeDiffResponse {
-  original_clause: string;
-  harmonized_clause: string;
-  target_standard: string;
+  original_text: string;
+  harmonized_text: string;
+  diff_summary: string[];
+  target_standard?: string | null;
   standard_title?: string;
   category?: string;
-  identified_deficiencies: string[];
-  cvc_anti_tailoring_applied: boolean;
+  removed_brands?: string[];
+  converted_foreign_standards?: any[];
+  upgraded_obsolete_standards?: any[];
+  statutory_clauses_injected?: string[];
+  referenced_regulations?: string[];
+  checklist?: string[];
+  is_cvc_compliant?: boolean;
+  original_clause?: string;
+  harmonized_clause?: string;
+  identified_deficiencies?: string[];
+  cvc_anti_tailoring_applied?: boolean;
   qco_statutory_note?: string;
 }
 
@@ -92,18 +129,34 @@ export interface BoqItemAudit {
   item_no: number;
   description: string;
   detected_standards: string[];
-  compliance_status: 'PASS' | 'FAIL' | 'REVIEW';
+  compliance_status: 'PASS' | 'FAIL' | 'REVIEW' | 'WARN';
   findings: string[];
-  suggested_correction: string;
+  suggested_correction?: string;
   qco_compliant: boolean;
+  original_description?: string;
+  quantity?: string;
+  unit?: string;
+  recommended_is_code?: string;
+  standard_title?: string;
+  lifecycle_status?: string;
+  mandatory_qco?: string;
+  cvc_tailoring_alerts?: string;
+  compliance_action?: string;
+  status?: string;
 }
 
 export interface BoqAuditResponse {
-  total_items: number;
+  tender_id: string;
+  total_items_scanned: number;
   compliant_items: number;
-  non_compliant_items: number;
-  audit_score: number;
+  flagged_items: number;
+  overall_compliance_rate: number;
   items: BoqItemAudit[];
+  export_filename?: string;
+  download_url?: string;
+  total_items?: number;
+  non_compliant_items?: number;
+  audit_score?: number;
   exported_excel_url?: string;
 }
 
@@ -141,14 +194,14 @@ export async function auditTender(payload: {
   text_content: string;
 }): Promise<TenderAuditResponse> {
   try {
-    const resp = await apiClient.post('/api/audit/full', {
-      text: payload.text_content,
+    const resp = await apiClient.post('/api/audit/tender', {
+      text_content: payload.text_content,
       tender_id: payload.tender_id,
       title: payload.title,
     });
     return resp.data;
   } catch (err) {
-    console.warn('API /api/audit/full unreachable, using fallback audit response:', err);
+    console.warn('API /api/audit/tender unreachable, using fallback audit response:', err);
     return {
       tender_id: payload.tender_id,
       compliance_score: 54,
@@ -181,19 +234,29 @@ export async function auditTender(payload: {
       violations: [
         {
           type: 'CVC_RESTRICTIVE_BRAND_NAME',
+          rule_id: 'CVC-01-BRAND-BIAS',
+          rule_name: 'Prohibition of Proprietary Brand Names in Tender Specifications',
           severity: 'CRITICAL',
           rule: 'CVC Office Order No. 05/03/17 & GFR Rule 144(i)',
+          message: "Exclusive brand names ('Supreme', 'Astral') specified without generic functional specifications.",
           description: "Exclusive brand names ('Supreme', 'Astral') specified without generic functional specifications.",
           detected_text: 'Only Supreme or Astral make pipes shall be accepted',
           suggestion: 'Replace brand references with generic performance parameters conforming to IS 4984:2016.',
+          recommended_action: 'Replace brand references with generic performance parameters conforming to IS 4984:2016.',
+          line_or_context: 'Only Supreme or Astral make pipes shall be accepted',
         },
         {
           type: 'SUPERSEDED_STANDARD',
+          rule_id: 'BIS-01-OBSOLETE-STD',
+          rule_name: 'Citation of Superseded or Obsolete Standard Specification',
           severity: 'HIGH',
           rule: 'Public Procurement Manual Rule 144(vii)',
+          message: "Tender references obsolete revision 'IS 4984:1995'. Latest revision is IS 4984:2016.",
           description: "Tender references obsolete revision 'IS 4984:1995'. Latest revision is IS 4984:2016.",
           detected_text: 'IS 4984:1995 (Fourth Revision)',
           suggestion: 'Update standard reference to IS 4984:2016.',
+          recommended_action: 'Update standard reference to IS 4984:2016.',
+          line_or_context: 'IS 4984:1995 (Fourth Revision)',
         },
       ],
       generated_compliant_clause: `All HDPE pressure pipes shall strictly conform to IS 4984:2016 (incorporating Amendments 1 to 3) with mandatory BIS Standard Mark (ISI license) under the statutory Pipes and Fittings (Quality Control) Order, 2020. Raw material shall be virgin PE-100 grade conforming to IS 7328. In accordance with CVC Guidelines and GFR 144(i), any brand names mentioned are illustrative; bids with equivalent specifications conforming to IS 4984:2016 shall be accepted.`,
@@ -207,18 +270,31 @@ export async function uploadTenderPdf(file: File, filename?: string): Promise<Pd
   formData.append('file', file, filename || file.name);
 
   try {
-    const resp = await apiClient.post('/api/document/parse', formData, {
+    const resp = await apiClient.post('/api/audit/upload-pdf', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
     return resp.data;
   } catch (err) {
-    console.warn('Backend /api/document/parse failed, generating demo response:', err);
+    console.warn('Backend /api/audit/upload-pdf failed, generating demo response:', err);
     return {
       tender_id: filename || file.name,
       filename: filename || file.name,
+      document_name: filename || file.name,
       overall_compliance_score: 48,
       risk_rating: 'CRITICAL',
       executive_summary: 'Severe statutory procurement non-compliance detected. Obsolete standard and restrictive commercial terms violate CVC guidelines and GFR 144.',
+      sections_identified: [
+        {
+          title: 'Scope of Supply & Technical Requirements',
+          header: 'SECTION IV: TECHNICAL SPECIFICATIONS',
+          preview: 'Supply, inspection and laying of HDPE pressure piping networks for municipal drinking water feeder lines...',
+        },
+        {
+          title: 'Standards & Statutory Compliances',
+          header: 'SECTION V: STATUTORY COMPLIANCES',
+          preview: 'All materials supplied shall adhere to standard codes cited herein, subject to engineer-in-charge approvals...',
+        },
+      ],
       standards_audit: {
         total_detected: 2,
         current_count: 0,
@@ -248,15 +324,25 @@ export async function uploadTenderPdf(file: File, filename?: string): Promise<Pd
         violations: [
           {
             type: 'BRAND_NAME_BIAS',
+            rule_id: 'CVC-01-BRAND-BIAS',
+            rule_name: 'Prohibition of Proprietary Brand Names in Tender Specifications',
             severity: 'CRITICAL',
             rule: 'CVC Office Order No. 05/03/17',
+            message: 'Tender specifies proprietary brands without "or equivalent" clause.',
             description: 'Tender specifies proprietary brands without "or equivalent" clause.',
+            recommended_action: 'Delete brand references and substitute with functional performance parameters conforming to IS 4984:2016.',
+            line_or_context: 'Only Supreme or Astral make pipes will be accepted.',
           },
           {
             type: 'OBSOLETE_STANDARD',
+            rule_id: 'BIS-01-OBSOLETE-STD',
+            rule_name: 'Citation of Superseded or Obsolete Standard Specification',
             severity: 'HIGH',
             rule: 'GFR 2017 Rule 144',
+            message: 'Standard IS 4984:1995 has been superseded by IS 4984:2016.',
             description: 'Standard IS 4984:1995 has been superseded by IS 4984:2016.',
+            recommended_action: 'Upgrade specification reference to IS 4984:2016 (incorporating active amendments).',
+            line_or_context: 'All HDPE pipes must strictly conform to IS 4984:1995.',
           },
         ],
       },
@@ -272,47 +358,60 @@ export async function harmonizeText(
 ): Promise<HarmonizeDiffResponse> {
   try {
     const resp = await apiClient.post('/api/clause/generate-harmonized', {
-      text,
+      original_text: text,
       target_standard: targetStandard,
-      category,
+      item_category: category,
     });
     return resp.data;
   } catch (err) {
     console.warn('API /api/clause/generate-harmonized unreachable, using fallback diff:', err);
-    return {
-      original_clause: text,
-      harmonized_clause: `TECHNICAL SPECIFICATIONS FOR PROCUREMENT (GFR & CVC HARMONIZED):
+    const harmonized = `TECHNICAL SPECIFICATIONS FOR PROCUREMENT (GFR & CVC HARMONIZED):
 1. All items shall strictly conform to ${targetStandard} (latest revision including all active amendments).
 2. Pursuant to the statutory Quality Control Order notified by DPIIT/Line Ministry, valid BIS Certification (ISI Mark / Scheme-I) is mandatory.
-3. In adherence to CVC Office Order No. 05/03/17 and GFR Rule 144(i), all proprietary brand names, restrictive criteria, or foreign standard preferences are hereby revoked. Any vendor meeting technical parameters of ${targetStandard} shall be eligible.`,
+3. In adherence to CVC Office Order No. 05/03/17 and GFR Rule 144(i), all proprietary brand names, restrictive criteria, or foreign standard preferences are hereby revoked. Any vendor meeting technical parameters of ${targetStandard} shall be eligible.`;
+    const diffs = [
+      'Removed proprietary brand names per CVC anti-tailoring directives',
+      `Replaced obsolete/foreign standard references with active standard ${targetStandard}`,
+      'Enforced mandatory BIS ISI Mark compliance under applicable Quality Control Order',
+    ];
+    return {
+      original_text: text,
+      harmonized_text: harmonized,
+      diff_summary: diffs,
+      original_clause: text,
+      harmonized_clause: harmonized,
       target_standard: targetStandard,
       standard_title: 'Bureau of Indian Standards Specification',
       category,
-      identified_deficiencies: [
-        'Removed proprietary brand names per CVC anti-tailoring directives',
-        `Replaced obsolete/foreign standard references with active standard ${targetStandard}`,
-        'Enforced mandatory BIS ISI Mark compliance under applicable Quality Control Order',
-      ],
+      identified_deficiencies: diffs,
       cvc_anti_tailoring_applied: true,
       qco_statutory_note: 'DPIIT statutory mandate requires valid BIS license at time of bidding.',
+      is_cvc_compliant: true,
     };
   }
 }
 
-export async function uploadBoqExcel(file: File): Promise<BoqAuditResponse> {
+export async function uploadBoqExcel(file: File, tenderId?: string): Promise<BoqAuditResponse> {
   const formData = new FormData();
   formData.append('file', file, file.name);
+  if (tenderId) {
+    formData.append('tender_id', tenderId);
+  }
 
   try {
-    const resp = await apiClient.post('/api/boq/audit', formData, {
+    const resp = await apiClient.post('/api/boq/upload-excel', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
     return resp.data;
   } catch (err) {
-    console.warn('Backend /api/boq/audit unreachable, returning demo audit:', err);
+    console.warn('Backend /api/boq/upload-excel unreachable, returning demo audit:', err);
     return {
-      total_items: 2,
+      tender_id: tenderId || file.name,
+      total_items_scanned: 2,
       compliant_items: 0,
+      flagged_items: 2,
+      overall_compliance_rate: 0,
+      total_items: 2,
       non_compliant_items: 2,
       audit_score: 35,
       items: [
@@ -347,26 +446,26 @@ export async function uploadBoqExcel(file: File): Promise<BoqAuditResponse> {
 
 export async function fetchStandardsGraph(): Promise<GraphData> {
   try {
-    const resp = await apiClient.post('/api/standards/details', { code: 'IS 4984:2016', depth: 2 });
-    if (resp.data.subgraph) {
-      return resp.data.subgraph;
+    const resp = await apiClient.get('/api/standards/graph');
+    if (resp.data.nodes && resp.data.nodes.length > 0) {
+      return resp.data;
     }
     return defaultGraphData;
   } catch (err) {
-    console.warn('API /api/standards/details unreachable, using fallback graph:', err);
+    console.warn('API /api/standards/graph unreachable, using fallback graph:', err);
     return defaultGraphData;
   }
 }
 
 export async function fetchStandardsSubgraph(code: string, depth: number = 2): Promise<GraphData> {
   try {
-    const resp = await apiClient.post('/api/standards/details', { code, depth });
-    if (resp.data.subgraph) {
-      return resp.data.subgraph;
+    const resp = await apiClient.get('/api/v1/standards/subgraph', { params: { is_code: code, depth } });
+    if (resp.data.nodes && resp.data.nodes.length > 0) {
+      return resp.data;
     }
     return defaultGraphData;
   } catch (err) {
-    console.warn(`API /api/standards/details for ${code} unreachable:`, err);
+    console.warn(`API /api/v1/standards/subgraph for ${code} unreachable:`, err);
     return defaultGraphData;
   }
 }
