@@ -3,17 +3,9 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import {
   Shield,
-  FileCheck,
-  Table,
-  BarChart3,
-  Network,
   ExternalLink,
-  Scale,
-  Sparkles,
-  ChevronRight,
   Globe,
   Radio,
-  BookOpen,
 } from 'lucide-react';
 
 export const metadata: Metadata = {
@@ -100,9 +92,9 @@ export default function RootLayout({
         {/* 2. ELEVATED STICKY MEGA-NAVIGATION HEADER                 */}
         {/* ========================================================= */}
         <header className="sticky top-0 z-50 backdrop-blur-2xl bg-canvas-950/85 border-b border-slate-800/80 shadow-2xl">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
             
-            {/* Brand Logo */}
+            {/* Brand Logo - Only Name & Hindi Version */}
             <Link href="/" className="flex items-center group">
               <div className="flex items-center gap-2">
                 <span className="text-xl font-black tracking-tight text-white group-hover:text-accent-sky transition">
@@ -113,52 +105,6 @@ export default function RootLayout({
                 </span>
               </div>
             </Link>
-
-            {/* Navigation Links */}
-            <nav className="hidden md:flex items-center gap-1 lg:gap-2">
-              <Link
-                href="/"
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800/80 transition"
-              >
-                <BarChart3 className="w-3.5 h-3.5 text-accent-cyan" />
-                Audit Studio
-              </Link>
-              <Link
-                href="/rfp-scanner"
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800/80 transition"
-              >
-                <FileCheck className="w-3.5 h-3.5 text-accent-sky" />
-                RFP Scrutinizer
-                <span className="text-[9px] font-mono px-1 py-0.2 rounded bg-accent-blue/20 text-accent-sky">PDF</span>
-              </Link>
-              <Link
-                href="/boq-auditor"
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800/80 transition"
-              >
-                <Table className="w-3.5 h-3.5 text-accent-amber" />
-                BoQ Auditor
-                <span className="text-[9px] font-mono px-1 py-0.2 rounded bg-amber-500/20 text-amber-300">XLSX</span>
-              </Link>
-            </nav>
-
-            {/* High-Impact Actions */}
-            <div className="flex items-center gap-2.5">
-              <Link
-                href="/#studio-workspace"
-                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold bg-slate-900 border border-slate-700 hover:border-slate-500 text-slate-200 transition"
-              >
-                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                <span>Presets</span>
-              </Link>
-
-              <Link
-                href="/#studio-workspace"
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-accent-blue via-sky-600 to-teal-600 hover:from-sky-500 hover:to-teal-500 text-white shadow-lg shadow-accent-blue/25 hover:shadow-cyan-glow transition duration-200"
-              >
-                <span>Launch Engine</span>
-                <ChevronRight className="w-3.5 h-3.5" />
-              </Link>
-            </div>
 
           </div>
         </header>
