@@ -65,8 +65,8 @@ manaksetu/
 ├── frontend/
 │   ├── src/
 │   │   ├── app/
-│   │   │   ├── layout.tsx
-│   │   │   ├── page.tsx                # Main audit dashboard
+│   │   │   ├── layout.tsx              # Elevated header & announcement strip
+│   │   │   ├── page.tsx                # Main audit studio & Accuris-style landing
 │   │   │   ├── rfp-scanner/page.tsx    # PDF tender scrutinizer page
 │   │   │   └── boq-auditor/page.tsx    # Excel batch processing page
 │   │   ├── components/
@@ -76,7 +76,8 @@ manaksetu/
 │   │   │   ├── ClausePreview.tsx       # Bid-ready copy-paste clause
 │   │   │   └── FileUploader.tsx        # Drag-and-drop file component
 │   │   └── lib/
-│   │       └── api.ts                  # Axios client for FastAPI backend
+│   │       ├── api.ts                  # Axios client for FastAPI backend
+│   │       └── pdf_export.ts           # CAG Audit Certificate PDF generator
 │   ├── package.json
 │   ├── tailwind.config.ts
 │   └── tsconfig.json
@@ -89,27 +90,46 @@ manaksetu/
 
 ---
 
-## 🛠️ Quick Start Guide
+## 🛠️ Step-by-Step Guide to Run the App
 
-### 1. Backend Setup (FastAPI)
+### Prerequisites
+- **Python:** 3.10 or 3.11+
+- **Node.js:** 18.x or 20.x+
+- **npm:** 9.x or 10.x+
 
-```bash
+---
+
+### Step 1: Start the Backend (FastAPI on Port 8000)
+
+Open a terminal, navigate to the `backend` directory, install dependencies, and start the server:
+
+#### On Windows (PowerShell / Command Prompt):
+```powershell
 cd backend
 python -m venv venv
-# On Windows:
 .\venv\Scripts\activate
-# On Linux/macOS:
-# source venv/bin/activate
+pip install -r requirements.txt
+python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
+```
 
+#### On Linux / macOS:
+```bash
+cd backend
+python3 -m venv venv
+source venv/bin/activate
 pip install -r requirements.txt
 uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
-API documentation will be accessible at:
-- **Interactive Swagger Docs:** `http://localhost:8000/docs`
-- **Health Check:** `http://localhost:8000/health`
+The backend will start and be available at:
+- **Interactive API Swagger UI:** [http://localhost:8000/docs](http://localhost:8000/docs)
+- **Health Check Endpoint:** [http://localhost:8000/health](http://localhost:8000/health)
 
-### 2. Frontend Setup (Next.js 14 App Router)
+---
+
+### Step 2: Start the Frontend (Next.js 14 on Port 3000)
+
+Open a **second terminal**, navigate to the `frontend` directory, install dependencies, and launch the dev server:
 
 ```bash
 cd frontend
@@ -117,12 +137,16 @@ npm install
 npm run dev
 ```
 
-The web dashboard will be available at:
-- **Dashboard:** `http://localhost:3000`
-- **RFP PDF Scrutinizer:** `http://localhost:3000/rfp-scanner`
-- **BoQ Batch Auditor:** `http://localhost:3000/boq-auditor`
+The web application will be accessible in your browser at:
+- **Main Audit Studio & Workbench:** [http://localhost:3000](http://localhost:3000)
+- **RFP Tender PDF Scrutinizer:** [http://localhost:3000/rfp-scanner](http://localhost:3000/rfp-scanner)
+- **BoQ Batch Schedule Auditor:** [http://localhost:3000/boq-auditor](http://localhost:3000/boq-auditor)
 
-### 3. Docker Deployment
+---
+
+### Step 3 (Optional): Run with Docker
+
+To run the entire backend containerized:
 
 ```bash
 cd backend
@@ -132,12 +156,30 @@ docker run -p 8000:8000 manaksetu-backend
 
 ---
 
-## 🧪 Included Test Samples
+## 🧪 Live Demonstration & Testing Walkthrough
 
-In `test_samples/`:
-- **`sample_flawed_water_tender.pdf`**: Real-world municipal pipeline tender citing obsolete `IS 4984:1995`, `ASTM D3035` without Indian Standard equivalence, proprietary brand restrictions (`Supreme/Astral only`), and omitted QCO certification mandates.
-- **`sample_transformer_tender.txt`**: Electrical substation NIT specifying `IS 1180:1989`, brand mandates (`ABB/Siemens only`), excessive turnover thresholds (`Rs 650 Cr`), and omitted BEE star labeling.
-- **`municipal_procurement_boq.xlsx`**: Comprehensive 25-item Bill of Quantities schedule containing a mix of compliant standards, obsolete revisions, foreign standards, and brand bias.
+### 1. Interactive Studio (1-Click Evaluation)
+1. Open [http://localhost:3000](http://localhost:3000) and navigate to the **Live Interactive Workbench**.
+2. Click any of the **1-Click Judge Demonstration Presets**:
+   - **Preset A (Municipal Water Pipeline):** Flags obsolete `IS 4984:1995`, `ASTM D3035`, and `Supreme/Astral` brand monopoly.
+   - **Preset B (Distribution Transformer):** Flags obsolete `IS 1180:1989`, `ABB/Siemens` bushing lock-in, and missing QCO order.
+   - **Preset C (TMT Rebars & Civil Works):** Flags brand bias (`Tata Tiscon/Jindal Panther`) and unmapped `ASTM A615`.
+3. Click **"Audit & Harmonize Specification"** to view:
+   - Compliance score gauge & metric breakdown
+   - Regulatory dossier & mandatory QCO order status
+   - Cytoscape knowledge graph
+   - Bid-ready clause generator with **"Copy for GeM"** and **"Download CAG Audit Certificate (PDF)"**
+   - Side-by-side redline specification diff.
+
+### 2. RFP PDF Scrutinizer
+1. Navigate to [http://localhost:3000/rfp-scanner](http://localhost:3000/rfp-scanner).
+2. Click **"Load Flawed Sample Tender"** or drag-and-drop `test_samples/sample_flawed_water_tender.pdf`.
+3. View parsed document sections, violation rules, and synthesized compliant clauses.
+
+### 3. BoQ Batch Auditor
+1. Navigate to [http://localhost:3000/boq-auditor](http://localhost:3000/boq-auditor).
+2. Click **"Load 25-Item Municipal BoQ Demo"** or upload `test_samples/municipal_procurement_boq.xlsx`.
+3. Filter by `FAIL`, `WARN`, or `PASS`, and export the cleaned schedule as `.csv` or `.xlsx`.
 
 ---
 

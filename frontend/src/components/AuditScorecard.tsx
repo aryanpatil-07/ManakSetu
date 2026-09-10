@@ -1,5 +1,7 @@
+'use client';
+
 import React from 'react';
-import { ShieldCheck, AlertTriangle, XCircle, Award } from 'lucide-react';
+import { ShieldCheck, AlertTriangle, XCircle, Award, CheckCircle2, FileText, ArrowRight } from 'lucide-react';
 
 interface AuditScorecardProps {
   score: number;
@@ -18,74 +20,154 @@ export const AuditScorecard: React.FC<AuditScorecardProps> = ({
   mediumCount,
   tenderId = 'TENDER-SCRUTINY',
 }) => {
-  const getScoreColor = () => {
-    if (score >= 85) return 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10';
-    if (score >= 50) return 'text-amber-400 border-amber-500/30 bg-amber-500/10';
-    return 'text-rose-400 border-rose-500/30 bg-rose-500/10';
+  const getScoreTheme = () => {
+    if (score >= 85) {
+      return {
+        text: 'text-emerald-400',
+        bg: 'bg-emerald-500/10',
+        border: 'border-emerald-500/30',
+        ring: 'ring-emerald-500/30',
+        statusText: 'BIS & CVC Compliant',
+        label: 'Statutory Safe',
+        badgeBg: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30',
+        icon: <ShieldCheck className="w-5 h-5 text-emerald-400" />,
+      };
+    }
+    if (score >= 50) {
+      return {
+        text: 'text-amber-400',
+        bg: 'bg-amber-500/10',
+        border: 'border-amber-500/30',
+        ring: 'ring-amber-500/30',
+        statusText: 'Rectification Required',
+        label: 'Moderate Risk',
+        badgeBg: 'bg-amber-500/15 text-amber-300 border-amber-500/30',
+        icon: <AlertTriangle className="w-5 h-5 text-amber-400" />,
+      };
+    }
+    return {
+      text: 'text-rose-400',
+      bg: 'bg-rose-500/10',
+      border: 'border-rose-500/30',
+      ring: 'ring-rose-500/30',
+      statusText: 'Statutory Non-Compliant',
+      label: 'High CAG Audit Risk',
+      badgeBg: 'bg-rose-500/15 text-rose-300 border-rose-500/30',
+      icon: <XCircle className="w-5 h-5 text-rose-400" />,
+    };
   };
 
-  const getStatusBadge = () => {
-    switch (overallStatus) {
-      case 'COMPLIANT':
-        return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
-            <ShieldCheck className="w-4 h-4" /> BIS & CVC Compliant
-          </span>
-        );
-      case 'ACTION_REQUIRED':
-        return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/40">
-            <AlertTriangle className="w-4 h-4" /> Rectification Required
-          </span>
-        );
-      case 'NON_COMPLIANT':
-      default:
-        return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-rose-500/20 text-rose-300 border border-rose-500/40">
-            <XCircle className="w-4 h-4" /> High Risk / Non-Compliant
-          </span>
-        );
-    }
-  };
+  const theme = getScoreTheme();
 
   return (
-    <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 backdrop-blur-xl shadow-2xl">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-slate-800">
-        <div>
-          <div className="flex items-center gap-3">
-            <h3 className="text-xl font-bold text-white tracking-tight">Audit Scorecard</h3>
-            {getStatusBadge()}
+    <div className="glass-panel rounded-3xl p-6 md:p-8 border border-slate-800 shadow-2xl relative overflow-hidden">
+      
+      {/* Background ambient lighting */}
+      <div className="absolute top-0 right-0 w-96 h-96 bg-accent-blue/5 rounded-full blur-3xl pointer-events-none" />
+      
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-6 border-b border-slate-800/80 relative z-10">
+        
+        {/* Title & Metadata */}
+        <div className="space-y-2">
+          <div className="flex flex-wrap items-center gap-2.5">
+            <span className="font-mono text-[10px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">
+              AUDIT DOSSIER
+            </span>
+            <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border ${theme.badgeBg}`}>
+              {theme.icon}
+              {theme.statusText}
+            </span>
           </div>
-          <p className="text-sm text-slate-400 mt-1">
-            Reference ID: <span className="font-mono text-slate-300">{tenderId}</span>
+
+          <h3 className="text-2xl md:text-3xl font-black text-white tracking-tight">
+            Procurement Integrity Scorecard
+          </h3>
+          
+          <p className="text-xs text-slate-400 flex items-center gap-2">
+            Reference Identifier: <span className="font-mono font-semibold text-slate-200 bg-slate-900 px-2 py-0.5 rounded border border-slate-800">{tenderId}</span>
           </p>
         </div>
 
-        {/* Big Score Gauge */}
-        <div className={`flex items-center gap-3 px-5 py-3 rounded-xl border ${getScoreColor()}`}>
-          <Award className="w-7 h-7" />
+        {/* Big Score Radial Anchor */}
+        <div className={`flex items-center gap-5 px-6 py-4 rounded-2xl border ${theme.border} ${theme.bg} backdrop-blur-xl shadow-lg self-start lg:self-auto`}>
+          <div className="relative flex items-center justify-center">
+            <Award className={`w-10 h-10 ${theme.text}`} />
+          </div>
           <div>
-            <div className="text-xs uppercase tracking-wider text-slate-400 font-medium">Compliance Index</div>
-            <div className="text-2xl font-black">{score}<span className="text-sm font-normal">/100</span></div>
+            <div className="text-[10px] uppercase font-bold tracking-wider text-slate-400 font-mono">
+              Compliance Index
+            </div>
+            <div className="flex items-baseline gap-1">
+              <span className={`text-4xl md:text-5xl font-black tracking-tight ${theme.text}`}>
+                {score}
+              </span>
+              <span className="text-slate-500 font-semibold text-sm">/ 100</span>
+            </div>
+            <span className="text-[10px] font-medium text-slate-400">{theme.label}</span>
           </div>
         </div>
+
       </div>
 
-      {/* Metrics Row */}
-      <div className="grid grid-cols-3 gap-4 mt-6">
-        <div className="bg-rose-950/20 border border-rose-900/30 rounded-xl p-4 text-center">
-          <div className="text-2xl font-bold text-rose-400">{criticalCount}</div>
-          <div className="text-xs uppercase tracking-wider text-slate-400 mt-1 font-medium">Critical Violations</div>
+      {/* KPI 3-Stat Metric Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6 relative z-10">
+        
+        {/* Critical Violations */}
+        <div className="p-4 rounded-2xl bg-rose-950/20 border border-rose-900/40 flex items-center justify-between group hover:border-rose-700/60 transition">
+          <div>
+            <span className="text-[10px] font-mono uppercase font-bold text-rose-300/80 tracking-wider">
+              Critical Defects
+            </span>
+            <div className="text-3xl font-black text-rose-400 mt-0.5">
+              {criticalCount}
+            </div>
+            <p className="text-[11px] text-slate-400 mt-0.5">
+              Obsolete IS codes & missing QCO
+            </p>
+          </div>
+          <div className="w-10 h-10 rounded-xl bg-rose-900/30 flex items-center justify-center text-rose-400">
+            <XCircle className="w-5 h-5" />
+          </div>
         </div>
-        <div className="bg-amber-950/20 border border-amber-900/30 rounded-xl p-4 text-center">
-          <div className="text-2xl font-bold text-amber-400">{highCount}</div>
-          <div className="text-xs uppercase tracking-wider text-slate-400 mt-1 font-medium">High Risk Warnings</div>
+
+        {/* High Risk Warnings */}
+        <div className="p-4 rounded-2xl bg-amber-950/20 border border-amber-900/40 flex items-center justify-between group hover:border-amber-700/60 transition">
+          <div>
+            <span className="text-[10px] font-mono uppercase font-bold text-amber-300/80 tracking-wider">
+              Anti-Tailoring Flags
+            </span>
+            <div className="text-3xl font-black text-amber-400 mt-0.5">
+              {highCount}
+            </div>
+            <p className="text-[11px] text-slate-400 mt-0.5">
+              Brand bias & turnover barriers
+            </p>
+          </div>
+          <div className="w-10 h-10 rounded-xl bg-amber-900/30 flex items-center justify-center text-amber-400">
+            <AlertTriangle className="w-5 h-5" />
+          </div>
         </div>
-        <div className="bg-slate-800/40 border border-slate-700/50 rounded-xl p-4 text-center">
-          <div className="text-2xl font-bold text-blue-400">{mediumCount}</div>
-          <div className="text-xs uppercase tracking-wider text-slate-400 mt-1 font-medium">Procedural Flaws</div>
+
+        {/* Foreign Standards / Procedural */}
+        <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 flex items-center justify-between group hover:border-slate-700 transition">
+          <div>
+            <span className="text-[10px] font-mono uppercase font-bold text-slate-400 tracking-wider">
+              Procedural Flaws
+            </span>
+            <div className="text-3xl font-black text-accent-sky mt-0.5">
+              {mediumCount}
+            </div>
+            <p className="text-[11px] text-slate-400 mt-0.5">
+              Unmapped ASTM/DIN/ISO codes
+            </p>
+          </div>
+          <div className="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center text-accent-sky">
+            <CheckCircle2 className="w-5 h-5" />
+          </div>
         </div>
+
       </div>
+
     </div>
   );
 };

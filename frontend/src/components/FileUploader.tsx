@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
-import { UploadCloud, FileType, CheckCircle2, AlertCircle } from 'lucide-react';
+import { UploadCloud, FileType, CheckCircle2, AlertCircle, FileSpreadsheet, FileText } from 'lucide-react';
 
 interface FileUploaderProps {
   onFileSelected: (file: File) => void;
@@ -37,11 +37,11 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
     setError(null);
     const ext = '.' + file.name.split('.').pop()?.toLowerCase();
     if (!acceptedTypes.includes(ext)) {
-      setError(`Unsupported format (${ext}). Allowed: ${acceptedTypes.join(', ')}`);
+      setError(`Unsupported file extension (${ext}). Supported formats: ${acceptedTypes.join(', ')}`);
       return;
     }
     if (file.size > maxSizeMB * 1024 * 1024) {
-      setError(`File size exceeds ${maxSizeMB} MB limit.`);
+      setError(`File size exceeds maximum allowable limit (${maxSizeMB} MB).`);
       return;
     }
     setSelectedFile(file);
@@ -63,10 +63,10 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         onClick={() => inputRef.current?.click()}
-        className={`relative cursor-pointer rounded-2xl border-2 border-dashed p-8 transition flex flex-col items-center justify-center text-center ${
+        className={`relative cursor-pointer rounded-3xl border-2 border-dashed p-8 md:p-10 transition-all duration-300 flex flex-col items-center justify-center text-center ${
           dragOver
-            ? 'border-emerald-500 bg-emerald-500/10'
-            : 'border-slate-700/80 bg-slate-900/50 hover:bg-slate-900/80 hover:border-slate-600'
+            ? 'border-accent-cyan bg-accent-blue/15 shadow-cyan-glow scale-[1.01]'
+            : 'border-slate-800 bg-canvas-900/60 hover:bg-canvas-900/90 hover:border-slate-700'
         }`}
       >
         <input
@@ -81,26 +81,42 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
           }}
         />
 
-        <div className="w-14 h-14 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center mb-4 text-emerald-400">
-          <UploadCloud className="w-7 h-7" />
+        {/* Central Icon */}
+        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-accent-blue/20 via-canvas-950 to-accent-cyan/20 border border-accent-sky/30 flex items-center justify-center mb-4 text-accent-cyan shadow-lg shadow-accent-blue/10">
+          <UploadCloud className="w-8 h-8" />
         </div>
 
-        <h4 className="text-base font-semibold text-white">{label}</h4>
-        <p className="text-xs text-slate-400 mt-1 max-w-sm">{description}</p>
+        {/* Text Details */}
+        <h4 className="text-lg font-black text-white">{label}</h4>
+        <p className="text-xs text-slate-400 mt-1 max-w-md leading-relaxed">{description}</p>
 
+        {/* Accepted Formats Chips */}
+        <div className="flex flex-wrap items-center justify-center gap-2 mt-4">
+          {acceptedTypes.map((type) => (
+            <span
+              key={type}
+              className="text-[10px] font-mono font-bold uppercase px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700"
+            >
+              {type.replace('.', '')}
+            </span>
+          ))}
+        </div>
+
+        {/* Selected File Badge */}
         {selectedFile && (
-          <div className="mt-4 flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs">
-            <CheckCircle2 className="w-4 h-4" />
-            <span className="font-medium">{selectedFile.name}</span>
-            <span className="text-slate-400 font-mono">
+          <div className="mt-5 flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 text-xs shadow-md">
+            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+            <span className="font-semibold">{selectedFile.name}</span>
+            <span className="text-emerald-400/80 font-mono">
               ({(selectedFile.size / 1024).toFixed(1)} KB)
             </span>
           </div>
         )}
 
+        {/* Error Alert */}
         {error && (
-          <div className="mt-4 flex items-center gap-2 px-3 py-1.5 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs">
-            <AlertCircle className="w-4 h-4" />
+          <div className="mt-5 flex items-center gap-2 px-4 py-2 rounded-xl bg-rose-500/15 border border-rose-500/40 text-rose-300 text-xs">
+            <AlertCircle className="w-4 h-4 text-rose-400" />
             <span>{error}</span>
           </div>
         )}

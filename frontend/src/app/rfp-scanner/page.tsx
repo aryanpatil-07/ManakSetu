@@ -1,12 +1,30 @@
 'use client';
 
 import React, { useState } from 'react';
-import { FileCheck, Upload, AlertCircle, RefreshCw, Sparkles, FileText } from 'lucide-react';
+import {
+  FileCheck,
+  Upload,
+  AlertCircle,
+  RefreshCw,
+  Sparkles,
+  FileText,
+  Shield,
+  Layers,
+  ArrowRight,
+  CheckCircle2,
+  AlertTriangle,
+  XCircle,
+} from 'lucide-react';
 import { FileUploader } from '@/components/FileUploader';
 import { AuditScorecard } from '@/components/AuditScorecard';
 import { DiffViewer } from '@/components/DiffViewer';
 import { ClausePreview } from '@/components/ClausePreview';
-import { uploadTenderPdf, auditTender, TenderAuditResponse, PdfScorecardResponse } from '@/lib/api';
+import {
+  uploadTenderPdf,
+  auditTender,
+  TenderAuditResponse,
+  PdfScorecardResponse,
+} from '@/lib/api';
 
 const SAMPLE_FLAWED_PDF_TEXT = `URBAN WATER SUPPLY & DRAINAGE BOARD - TENDER SPECIFICATION
 Tender Ref: UWSD/WS/2026/HDPE-044
@@ -46,14 +64,25 @@ export default function RfpScannerPage() {
       setPdfScorecard(scorecard);
 
       // Adapt to TenderAuditResponse for UI components
-      const criticalCount = scorecard.cvc_audit.severity_counts.CRITICAL + scorecard.standards_audit.withdrawn_count;
-      const highCount = scorecard.cvc_audit.severity_counts.HIGH + scorecard.standards_audit.superseded_count;
-      const mediumCount = scorecard.cvc_audit.severity_counts.MEDIUM + scorecard.standards_audit.unspecified_count;
+      const criticalCount =
+        scorecard.cvc_audit.severity_counts.CRITICAL +
+        scorecard.standards_audit.withdrawn_count;
+      const highCount =
+        scorecard.cvc_audit.severity_counts.HIGH +
+        scorecard.standards_audit.superseded_count;
+      const mediumCount =
+        scorecard.cvc_audit.severity_counts.MEDIUM +
+        scorecard.standards_audit.unspecified_count;
 
       const adapted: TenderAuditResponse = {
         tender_id: scorecard.tender_id || selectedFile.name,
         compliance_score: Math.round(scorecard.overall_compliance_score),
-        overall_status: scorecard.risk_rating === 'CRITICAL' ? 'NON_COMPLIANT' : scorecard.risk_rating === 'HIGH' ? 'ACTION_REQUIRED' : 'COMPLIANT',
+        overall_status:
+          scorecard.risk_rating === 'CRITICAL'
+            ? 'NON_COMPLIANT'
+            : scorecard.risk_rating === 'HIGH'
+            ? 'ACTION_REQUIRED'
+            : 'COMPLIANT',
         critical_issues_count: criticalCount,
         high_issues_count: highCount,
         medium_issues_count: mediumCount,
@@ -80,7 +109,7 @@ export default function RfpScannerPage() {
     setLoading(true);
     try {
       const res = await auditTender({
-        tender_id: 'SAMPLE_FLAWED_WATER_TENDER',
+        tender_id: 'SAMPLE_FLAWED_WATER_TENDER_PDF',
         title: 'Water Pipeline Augmentation Tender',
         text_content: SAMPLE_FLAWED_PDF_TEXT,
       });
@@ -93,39 +122,48 @@ export default function RfpScannerPage() {
   };
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
+    <div className="space-y-10 pb-16 max-w-7xl mx-auto px-4 sm:px-6 pt-6">
+      
+      {/* Page Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-6">
-        <div>
-          <h1 className="text-2xl md:text-3xl font-black text-white flex items-center gap-3">
-            <FileCheck className="w-8 h-8 text-blue-400" />
+        <div className="space-y-1">
+          <div className="flex items-center gap-2">
+            <span className="font-mono text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded bg-accent-blue/15 text-accent-cyan border border-accent-blue/30">
+              DOCUMENT INTELLIGENCE
+            </span>
+            <span className="text-[10px] font-mono text-slate-400">PDF / TXT ENGINE</span>
+          </div>
+          <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight flex items-center gap-3">
+            <FileCheck className="w-8 h-8 text-accent-sky" />
             RFP & Tender PDF Scrutinizer
           </h1>
-          <p className="text-xs md:text-sm text-slate-400 mt-1">
-            Automated PDF parsing via PyMuPDF, cross-referenced with BIS Master Catalogue and CVC Guidelines.
+          <p className="text-xs sm:text-sm text-slate-400 max-w-2xl leading-relaxed">
+            Autonomous multi-page tender scraper powered by PyMuPDF. Extracts technical clauses, 
+            detects obsolete IS codes, flags brand lock-ins, and enforces mandatory Gazetted QCOs.
           </p>
         </div>
 
         <button
           onClick={handleLoadSample}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-indigo-600/20 text-indigo-300 border border-indigo-500/40 hover:bg-indigo-600/30 transition"
+          className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold bg-accent-blue/20 text-accent-sky border border-accent-blue/40 hover:bg-accent-blue/30 transition shadow-lg self-start md:self-auto"
         >
-          <Sparkles className="w-4 h-4" /> Load Flawed Sample Tender
+          <Sparkles className="w-4 h-4 text-accent-cyan" />
+          Load Flawed Sample Tender
         </button>
       </div>
 
       {/* Upload Zone */}
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-3xl mx-auto space-y-4">
         <FileUploader
           onFileSelected={handleFileSelected}
           acceptedTypes={['.pdf', '.txt']}
           label="Upload RFP / NIT Tender Document"
-          description="Drop PDF tender or text specification document for instantaneous clause-by-clause scrutiny."
+          description="Drag and drop multi-page PDF tender document or plain-text RFP specification for automated clause-by-clause scrutiny."
         />
         {loading && (
-          <div className="flex items-center justify-center gap-2 text-xs text-emerald-400 mt-4 animate-pulse">
+          <div className="flex items-center justify-center gap-2 text-xs text-accent-cyan animate-pulse font-mono py-2">
             <RefreshCw className="w-4 h-4 animate-spin" />
-            Analyzing PDF specification clauses with PyMuPDF & CVC Linter...
+            Parsing document clauses with PyMuPDF & applying CVC anti-tailoring linter...
           </div>
         )}
       </div>
@@ -133,6 +171,8 @@ export default function RfpScannerPage() {
       {/* Scrutiny Results */}
       {auditResult && (
         <div className="space-y-8 pt-4">
+          
+          {/* 1. Scorecard */}
           <AuditScorecard
             score={auditResult.compliance_score}
             overallStatus={auditResult.overall_status}
@@ -142,34 +182,41 @@ export default function RfpScannerPage() {
             tenderId={auditResult.tender_id}
           />
 
-          {/* Discovered Document Sections (PyMuPDF) */}
-          {pdfScorecard && pdfScorecard.sections_identified && pdfScorecard.sections_identified.length > 0 && (
-            <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-xl">
-              <h3 className="font-bold text-white text-sm mb-3 flex items-center gap-2">
-                <FileText className="w-4 h-4 text-indigo-400" />
-                Parsed Document Sections ({pdfScorecard.sections_identified.length})
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {pdfScorecard.sections_identified.map((sec, idx) => (
-                  <div key={idx} className="p-3 rounded-xl bg-slate-950 border border-slate-800">
-                    <div className="text-xs font-semibold text-emerald-400">{sec.title}</div>
-                    <div className="text-[11px] font-mono text-slate-400 mt-1">{sec.header}</div>
-                    <p className="text-[11px] text-slate-500 mt-1 line-clamp-2">{sec.preview}</p>
-                  </div>
-                ))}
+          {/* 2. Parsed Document Sections (PyMuPDF Scraper) */}
+          {pdfScorecard &&
+            pdfScorecard.sections_identified &&
+            pdfScorecard.sections_identified.length > 0 && (
+              <div className="glass-panel rounded-3xl p-6 md:p-8 border border-slate-800 shadow-2xl space-y-4">
+                <h3 className="font-bold text-white text-sm uppercase tracking-wider font-mono flex items-center gap-2">
+                  <FileText className="w-4 h-4 text-accent-cyan" />
+                  Identified Document Sections ({pdfScorecard.sections_identified.length})
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {pdfScorecard.sections_identified.map((sec, idx) => (
+                    <div
+                      key={idx}
+                      className="p-4 rounded-2xl bg-canvas-950 border border-slate-800 space-y-1.5"
+                    >
+                      <div className="text-xs font-bold text-emerald-400 font-mono">{sec.title}</div>
+                      <div className="text-[11px] font-mono text-slate-400">{sec.header}</div>
+                      <p className="text-[11px] text-slate-500 line-clamp-2 leading-relaxed">
+                        {sec.preview}
+                      </p>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {/* Diff Viewer */}
+          {/* 3. Redline Diff Viewer */}
           <DiffViewer
             originalText="All HDPE pipes must strictly conform to IS 4984:1995. Alternatively, ASTM D3035 without Indian Standard equivalence. Only Supreme or Astral make pipes will be accepted."
             recommendedText="All HDPE pipes shall strictly conform to the latest revision of IS 4984:2016 (PE-100 grade). In accordance with Pipes & Fittings QCO 2020, all supplied pipes must bear valid BIS Standard Mark (ISI mark) from licensed manufacturers. Generic specifications apply; make stipulations without 'or equivalent certified to IS 4984' are prohibited."
-            itemTitle="Defective Clause Rectification (Clause 2 vs BIS Act 2016)"
-            reason="Corrects obsolete 1995 edition to 2016 edition, enforces statutory QCO ISI mark, and cleans CVC brand bias."
+            itemTitle="Defective Clause Rectification (Clause 2 vs BIS Act 2016 & GFR 144)"
+            reason="Corrects obsolete 1995 edition to 2016 edition, enforces statutory QCO ISI mark, and removes proprietary brand monopoly."
           />
 
-          {/* Clause Synthesizer Preview */}
+          {/* 4. Clause Synthesizer Preview */}
           {auditResult.generated_compliant_clause && (
             <ClausePreview
               clauseText={auditResult.generated_compliant_clause}
@@ -202,9 +249,9 @@ export default function RfpScannerPage() {
             />
           )}
 
-          {/* Full Violations Breakdown */}
-          <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-xl">
-            <h3 className="font-bold text-white text-base mb-4 flex items-center gap-2">
+          {/* 5. Detailed Violations Breakdown */}
+          <div className="glass-panel rounded-3xl p-6 md:p-8 border border-slate-800 shadow-2xl space-y-4">
+            <h3 className="font-bold text-white text-base flex items-center gap-2">
               <AlertCircle className="w-5 h-5 text-rose-400" />
               Detailed Regulatory Violations Detected
             </h3>
@@ -212,38 +259,45 @@ export default function RfpScannerPage() {
               {auditResult.violations.map((v, idx) => (
                 <div
                   key={idx}
-                  className="p-4 rounded-xl bg-slate-950 border border-slate-800 flex flex-col md:flex-row md:items-start justify-between gap-4"
+                  className="p-5 rounded-2xl bg-canvas-950 border border-slate-800 flex flex-col md:flex-row md:items-start justify-between gap-4"
                 >
-                  <div className="space-y-1">
+                  <div className="space-y-1.5 flex-1">
                     <div className="flex items-center gap-2">
-                      <span className="font-semibold text-white text-sm">{v.rule_name}</span>
-                      <span className="font-mono text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-300">
+                      <span className="font-bold text-white text-sm">{v.rule_name}</span>
+                      <span className="font-mono text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">
                         {v.rule_id}
                       </span>
                     </div>
-                    <p className="text-xs text-slate-400">{v.message}</p>
+                    <p className="text-xs text-slate-400 leading-relaxed">{v.message}</p>
                     {v.line_or_context && (
-                      <div className="text-[11px] font-mono text-slate-500 bg-slate-900/60 px-2.5 py-1 rounded mt-1">
+                      <div className="text-[11px] font-mono text-slate-400 bg-slate-900/80 px-3 py-1.5 rounded-xl border border-slate-800 mt-1">
                         {v.line_or_context}
                       </div>
                     )}
-                    <p className="text-xs text-emerald-400 pt-1">
-                      <span className="font-semibold">Recommended Fix:</span> {v.recommended_action}
+                    <p className="text-xs text-emerald-400 pt-1 font-mono">
+                      <span className="font-bold">Recommended Action:</span> {v.recommended_action}
                     </p>
                   </div>
-                  <span className={`self-start text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md ${
-                    v.severity === 'CRITICAL' ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40' :
-                    v.severity === 'HIGH' ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40' :
-                    'bg-blue-500/20 text-blue-300 border border-blue-500/40'
-                  }`}>
+                  
+                  <span
+                    className={`self-start text-[10px] font-bold font-mono uppercase tracking-wider px-3 py-1 rounded-full ${
+                      v.severity === 'CRITICAL'
+                        ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
+                        : v.severity === 'HIGH'
+                        ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
+                        : 'bg-blue-500/20 text-blue-300 border border-blue-500/40'
+                    }`}
+                  >
                     {v.severity}
                   </span>
                 </div>
               ))}
             </div>
           </div>
+
         </div>
       )}
+
     </div>
   );
 }

@@ -1,11 +1,36 @@
 import './globals.css';
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Shield, FileCheck, Table, BarChart3 } from 'lucide-react';
+import {
+  Shield,
+  FileCheck,
+  Table,
+  BarChart3,
+  Network,
+  ExternalLink,
+  Scale,
+  Sparkles,
+  ChevronRight,
+  Globe,
+  Radio,
+  BookOpen,
+} from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'ManakSetu | AI-Powered BIS Compliance & Tender Scrutiny',
-  description: 'Automated BIS Standard Verification, QCO Compliance Engine & CVC Anti-Tailoring Tender Scrutiny System.',
+  title: 'ManakSetu (मानकसेतु) | AI-Powered BIS Compliance, Tender Scrutiny & BoQ Auditing Workbench',
+  description:
+    'Industrial-grade procurement intelligence platform cross-referencing public tenders against Bureau of Indian Standards (BIS), statutory Quality Control Orders (QCOs), and CVC anti-tailoring directives.',
+  keywords: [
+    'ManakSetu',
+    'BIS Compliance',
+    'Tender Scrutiny',
+    'BoQ Auditor',
+    'Quality Control Orders',
+    'QCO',
+    'CVC Anti-tailoring',
+    'Indian Standards',
+    'GFR 144',
+  ],
 };
 
 export default function RootLayout({
@@ -15,72 +40,241 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="dark">
-      <body className="bg-slate-950 text-slate-100 flex flex-col min-h-screen">
-        {/* Navigation Bar */}
-        <header className="sticky top-0 z-50 backdrop-blur-xl bg-slate-950/90 border-b border-slate-800">
-          <div className="max-w-7xl mx-auto px-6 h-18 py-2 flex flex-col md:flex-row md:items-center justify-between gap-2">
-            <div className="flex items-center gap-3">
-              <Link href="/" className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500/20 via-slate-900 to-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shadow-md">
-                  <Shield className="w-5 h-5" />
+      <body className="bg-canvas-950 text-slate-100 flex flex-col min-h-screen selection:bg-accent-blue selection:text-white font-sans antialiased">
+        
+        {/* ========================================================= */}
+        {/* 1. TOP UTILITY BAR & ANNOUNCEMENT STRIP                   */}
+        {/* ========================================================= */}
+        <div className="bg-canvas-900 border-b border-slate-800/80 text-[11px] text-slate-400 py-1.5 px-4 sm:px-6">
+          <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
+            
+            {/* Live Regulatory Notice */}
+            <div className="flex items-center gap-2">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-accent-blue/20 text-accent-sky border border-accent-blue/40 font-semibold tracking-wide uppercase text-[10px]">
+                <Radio className="w-2.5 h-2.5 animate-pulse text-accent-cyan" />
+                Live Gazette
+              </span>
+              <span className="text-slate-300 font-medium truncate max-w-xs md:max-w-md">
+                S.O. 458(E) — Mandatory ISI Mark QCO Enforcement Active for 2026 Procurement
+              </span>
+            </div>
+
+            {/* Statutory Badges & Utilities */}
+            <div className="hidden sm:flex items-center gap-4">
+              <div className="flex items-center gap-2 font-mono text-[10px] text-slate-400">
+                <span className="px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">GFR 144(vii)</span>
+                <span className="px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">BIS Act 2016</span>
+                <span className="px-1.5 py-0.5 rounded bg-slate-800 text-amber-300/90 border border-amber-500/30">CVC Anti-Tailoring</span>
+              </div>
+
+              <div className="h-3 w-[1px] bg-slate-800" />
+
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-1 text-slate-400 hover:text-white cursor-pointer transition">
+                  <Globe className="w-3 h-3 text-accent-sky" />
+                  <span className="text-[10px] font-medium">EN | हिन्दी</span>
                 </div>
-                <div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-lg font-black tracking-tight text-white">MANAK</span>
-                    <span className="text-lg font-black tracking-tight text-emerald-400">SETU</span>
-                    <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40">मानकसेतु</span>
-                  </div>
-                  <div className="text-[10px] tracking-wider text-slate-400 uppercase font-medium">
-                    National Standards Harmonization & Procurement Compliance Engine
-                  </div>
+                <a
+                  href="https://www.services.bis.gov.in"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1 text-slate-400 hover:text-accent-sky transition text-[10px]"
+                >
+                  BIS Portal <ExternalLink className="w-2.5 h-2.5" />
+                </a>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        {/* ========================================================= */}
+        {/* 2. ELEVATED STICKY MEGA-NAVIGATION HEADER                 */}
+        {/* ========================================================= */}
+        <header className="sticky top-0 z-50 backdrop-blur-2xl bg-canvas-950/85 border-b border-slate-800/80 shadow-2xl">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+            
+            {/* Brand Logo & Authority Badge */}
+            <Link href="/" className="flex items-center gap-3 group">
+              <div className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-accent-blue/30 via-canvas-900 to-accent-emerald/30 border border-accent-sky/40 flex items-center justify-center text-accent-cyan shadow-lg shadow-accent-blue/10 group-hover:border-accent-cyan transition duration-300">
+                <Shield className="w-5 h-5 text-accent-cyan" />
+                <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-accent-emerald ring-2 ring-canvas-950 animate-ping" />
+                <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-accent-emerald ring-2 ring-canvas-950" />
+              </div>
+              <div>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-lg font-black tracking-tight text-white group-hover:text-accent-sky transition">
+                    MANAK<span className="text-accent-cyan font-bold">SETU</span>
+                  </span>
+                  <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-300 border border-amber-500/30">
+                    मानकसेतु
+                  </span>
                 </div>
+                <div className="text-[9px] tracking-wider text-slate-400 uppercase font-semibold font-mono hidden sm:block">
+                  National Standards Harmonization & Tender Scrutiny
+                </div>
+              </div>
+            </Link>
+
+            {/* Navigation Links */}
+            <nav className="hidden md:flex items-center gap-1 lg:gap-2">
+              <Link
+                href="/"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800/80 transition"
+              >
+                <BarChart3 className="w-3.5 h-3.5 text-accent-cyan" />
+                Audit Studio
+              </Link>
+              <Link
+                href="/rfp-scanner"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800/80 transition"
+              >
+                <FileCheck className="w-3.5 h-3.5 text-accent-sky" />
+                RFP Scrutinizer
+                <span className="text-[9px] font-mono px-1 py-0.2 rounded bg-accent-blue/20 text-accent-sky">PDF</span>
+              </Link>
+              <Link
+                href="/boq-auditor"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800/80 transition"
+              >
+                <Table className="w-3.5 h-3.5 text-accent-amber" />
+                BoQ Auditor
+                <span className="text-[9px] font-mono px-1 py-0.2 rounded bg-amber-500/20 text-amber-300">XLSX</span>
+              </Link>
+            </nav>
+
+            {/* High-Impact Actions */}
+            <div className="flex items-center gap-2.5">
+              <Link
+                href="/#studio-workspace"
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold bg-slate-900 border border-slate-700 hover:border-slate-500 text-slate-200 transition"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                <span>Presets</span>
+              </Link>
+
+              <Link
+                href="/#studio-workspace"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-accent-blue via-sky-600 to-teal-600 hover:from-sky-500 hover:to-teal-500 text-white shadow-lg shadow-accent-blue/25 hover:shadow-cyan-glow transition duration-200"
+              >
+                <span>Launch Engine</span>
+                <ChevronRight className="w-3.5 h-3.5" />
               </Link>
             </div>
 
-            <div className="flex items-center gap-3">
-              <div className="hidden lg:flex items-center gap-2 px-2.5 py-1 rounded-full bg-slate-900/80 border border-slate-800 text-[11px] text-slate-300">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span className="font-semibold text-white">GFR 144(vii)</span> & <span className="text-emerald-400">BIS Act 2016</span> Active
-              </div>
-
-              <nav className="flex items-center gap-1 md:gap-2">
-                <Link
-                  href="/"
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800/80 transition"
-                >
-                  <BarChart3 className="w-4 h-4 text-emerald-400" />
-                  Studio
-                </Link>
-                <Link
-                  href="/rfp-scanner"
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800/80 transition"
-                >
-                  <FileCheck className="w-4 h-4 text-blue-400" />
-                  RFP Scrutinizer
-                </Link>
-                <Link
-                  href="/boq-auditor"
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800/80 transition"
-                >
-                  <Table className="w-4 h-4 text-amber-400" />
-                  BoQ Auditor
-                </Link>
-              </nav>
-            </div>
           </div>
         </header>
 
-        {/* Main Content Area */}
-        <main className="flex-1 max-w-7xl w-full mx-auto px-6 py-8">
+        {/* ========================================================= */}
+        {/* 3. MAIN WORKSPACE CONTAINER                               */}
+        {/* ========================================================= */}
+        <main className="flex-1 w-full relative bg-grid-pattern bg-radial-glow">
           {children}
         </main>
 
-        {/* Footer */}
-        <footer className="border-t border-slate-800/80 bg-slate-950/60 py-6 text-center text-xs text-slate-500">
-          <p>
-            ManakSetu Procurement Intelligence Platform &copy; 2026. Built in accordance with BIS Act 2016, GFR 144, & CVC Anti-Tailoring Guidelines.
-          </p>
+        {/* ========================================================= */}
+        {/* 4. GLOBAL ENTERPRISE FOOTER & COMPLIANCE BAR              */}
+        {/* ========================================================= */}
+        <footer className="border-t border-slate-800/90 bg-canvas-900/95 pt-12 pb-8 text-xs text-slate-400">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 space-y-8">
+            
+            {/* Multi-column Directory */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-8 pb-8 border-b border-slate-800/80">
+              
+              {/* Col 1: Platform Overview */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 rounded-lg bg-accent-blue/20 border border-accent-sky/40 flex items-center justify-center text-accent-cyan">
+                    <Shield className="w-4 h-4" />
+                  </div>
+                  <span className="font-bold text-white text-sm">MANAKSETU</span>
+                </div>
+                <p className="text-slate-400 text-xs leading-relaxed">
+                  Industrial-grade tender scrutiny & standards harmonization engine built for Indian Public Procurement Bodies, CPWD, Railways, and Municipal Corporations.
+                </p>
+                <div className="flex items-center gap-2 text-[11px] text-emerald-400 font-mono">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                  Statutory Engine v2.4 Active
+                </div>
+              </div>
+
+              {/* Col 2: Solutions & Tooling */}
+              <div className="space-y-2.5">
+                <div className="text-[11px] font-bold text-slate-200 uppercase tracking-wider font-mono">
+                  Workbench Solutions
+                </div>
+                <ul className="space-y-1.5">
+                  <li>
+                    <Link href="/" className="hover:text-accent-sky transition">Interactive Audit Studio</Link>
+                  </li>
+                  <li>
+                    <Link href="/rfp-scanner" className="hover:text-accent-sky transition">RFP Tender PDF Scrutinizer</Link>
+                  </li>
+                  <li>
+                    <Link href="/boq-auditor" className="hover:text-accent-sky transition">Excel BoQ Schedule Auditor</Link>
+                  </li>
+                  <li>
+                    <Link href="/#standards-graph" className="hover:text-accent-sky transition">Normative & Equivalence Graph</Link>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Col 3: Statutory Precedents */}
+              <div className="space-y-2.5">
+                <div className="text-[11px] font-bold text-slate-200 uppercase tracking-wider font-mono">
+                  Statutory Frameworks
+                </div>
+                <ul className="space-y-1.5 text-slate-400">
+                  <li className="hover:text-slate-200">Bureau of Indian Standards Act, 2016</li>
+                  <li className="hover:text-slate-200">Quality Control Orders (QCO Scheme-I)</li>
+                  <li className="hover:text-slate-200">GFR 2017 Rule 144(vii) Mandates</li>
+                  <li className="hover:text-slate-200">CVC Circular No. 03-05-1-CTE-9</li>
+                </ul>
+              </div>
+
+              {/* Col 4: Institutional Gateways */}
+              <div className="space-y-2.5">
+                <div className="text-[11px] font-bold text-slate-200 uppercase tracking-wider font-mono">
+                  National Portals
+                </div>
+                <ul className="space-y-1.5">
+                  <li>
+                    <a href="https://gem.gov.in" target="_blank" rel="noreferrer" className="hover:text-accent-sky flex items-center gap-1 transition">
+                      Government e-Marketplace (GeM) <ExternalLink className="w-2.5 h-2.5" />
+                    </a>
+                  </li>
+                  <li>
+                    <a href="https://eprocure.gov.in" target="_blank" rel="noreferrer" className="hover:text-accent-sky flex items-center gap-1 transition">
+                      Central Public Procurement Portal <ExternalLink className="w-2.5 h-2.5" />
+                    </a>
+                  </li>
+                  <li>
+                    <a href="https://www.services.bis.gov.in/php/BIS_2.0/bisconnect/knowyourstandards/indian_standards/isdetails" target="_blank" rel="noreferrer" className="hover:text-accent-sky flex items-center gap-1 transition">
+                      BIS Standards Search <ExternalLink className="w-2.5 h-2.5" />
+                    </a>
+                  </li>
+                </ul>
+              </div>
+
+            </div>
+
+            {/* Bottom Compliance Bar */}
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-500">
+              <p>
+                &copy; {new Date().getFullYear()} ManakSetu National Procurement Workbench. Built strictly under BIS Act 2016 & CVC Anti-Tailoring Directives.
+              </p>
+              <div className="flex items-center gap-4 text-slate-400">
+                <span className="hover:text-white cursor-pointer">Security Protocol</span>
+                <span>•</span>
+                <span className="hover:text-white cursor-pointer">CAG Audit Defense</span>
+                <span>•</span>
+                <span className="hover:text-white cursor-pointer">NABL Lab Integrations</span>
+              </div>
+            </div>
+
+          </div>
         </footer>
+
       </body>
     </html>
   );

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { GraphData, fetchStandardsGraph } from '@/lib/api';
-import { Network, ZoomIn, ZoomOut, RefreshCw } from 'lucide-react';
+import { Network, ZoomIn, ZoomOut, RefreshCw, Layers, Info } from 'lucide-react';
 
 interface StandardsGraphProps {
   initialData?: GraphData;
@@ -35,7 +35,7 @@ export const StandardsGraph: React.FC<StandardsGraphProps> = ({ initialData, foc
 
         if (!isMounted || !containerRef.current) return;
 
-        // Dynamic import cytoscape to prevent SSR window issues
+        // Dynamic import cytoscape to prevent SSR issues
         const cytoscape = (await import('cytoscape')).default;
 
         const cyElements = [
@@ -65,73 +65,82 @@ export const StandardsGraph: React.FC<StandardsGraphProps> = ({ initialData, foc
               selector: 'node',
               style: {
                 label: 'data(label)',
-                'color': '#f8fafc',
+                'color': '#F8FAFC',
                 'font-size': '11px',
+                'font-family': 'JetBrains Mono, monospace',
+                'font-weight': 600,
                 'text-valign': 'center',
                 'text-halign': 'center',
-                'background-color': '#334155',
+                'background-color': '#1E293B',
                 'border-width': 2,
-                'border-color': '#64748b',
-                'width': 60,
-                'height': 60,
+                'border-color': '#475569',
+                'width': 64,
+                'height': 64,
                 'text-wrap': 'wrap',
-                'text-max-width': '75px',
+                'text-max-width': '80px',
               },
             },
             {
               selector: 'node[type = "standard"][status = "ACTIVE"]',
               style: {
-                'background-color': '#065f46',
-                'border-color': '#10b981',
+                'background-color': '#064E3B',
+                'border-color': '#10B981',
+                'border-width': 2.5,
               },
             },
             {
               selector: 'node[type = "standard"][status = "OBSOLETE"]',
               style: {
                 'background-color': '#881337',
-                'border-color': '#f43f5e',
+                'border-color': '#F43F5E',
+                'border-width': 2.5,
               },
             },
             {
               selector: 'node[type = "qco"]',
               style: {
-                'background-color': '#78350f',
-                'border-color': '#f59e0b',
+                'background-color': '#78350F',
+                'border-color': '#F59E0B',
+                'border-width': 2.5,
                 'shape': 'diamond',
-                'width': 65,
-                'height': 65,
+                'width': 70,
+                'height': 70,
               },
             },
             {
               selector: 'node[type = "foreign"]',
               style: {
-                'background-color': '#312e81',
-                'border-color': '#6366f1',
+                'background-color': '#1E1B4B',
+                'border-color': '#6366F1',
+                'border-width': 2.5,
                 'shape': 'hexagon',
+                'width': 68,
+                'height': 68,
               },
             },
             {
               selector: 'edge',
               style: {
                 'width': 2,
-                'line-color': '#475569',
-                'target-arrow-color': '#64748b',
+                'line-color': '#334155',
+                'target-arrow-color': '#64748B',
                 'target-arrow-shape': 'triangle',
                 'curve-style': 'bezier',
                 'label': 'data(label)',
                 'font-size': '9px',
-                'color': '#94a3b8',
-                'text-background-opacity': 0.8,
-                'text-background-color': '#0f172a',
-                'text-background-padding': '2px',
+                'font-family': 'JetBrains Mono, monospace',
+                'color': '#94A3B8',
+                'text-background-opacity': 0.9,
+                'text-background-color': '#060B18',
+                'text-background-padding': '3px',
               },
             },
           ],
           layout: {
             name: 'cose',
             animate: false,
-            padding: 30,
-            nodeRepulsion: () => 6000,
+            padding: 24,
+            nodeRepulsion: () => 7000,
           },
         });
 
@@ -161,65 +170,79 @@ export const StandardsGraph: React.FC<StandardsGraphProps> = ({ initialData, foc
   const handleFit = () => cyRef.current?.fit();
 
   return (
-    <div className="relative bg-slate-900/90 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl flex flex-col h-[500px]">
+    <div className="relative glass-panel rounded-3xl overflow-hidden border border-slate-800 shadow-2xl flex flex-col h-[520px]">
+      
       {/* Controls Header */}
-      <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800 bg-slate-950/60 z-10">
+      <div className="flex items-center justify-between px-6 py-3.5 border-b border-slate-800/80 bg-canvas-950/70 z-10">
         <div className="flex items-center gap-2">
-          <Network className="w-5 h-5 text-emerald-400" />
-          <h4 className="font-semibold text-white">BIS Dependency & Equivalence Network</h4>
+          <Network className="w-4 h-4 text-accent-cyan" />
+          <h4 className="font-bold text-white text-xs uppercase tracking-wider font-mono">
+            Standards Equivalence & Dependency Graph
+          </h4>
         </div>
-        <div className="flex items-center gap-2">
+
+        {/* Zoom & Fit Actions */}
+        <div className="flex items-center gap-1.5">
           <button
             onClick={handleZoomIn}
-            className="p-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 transition"
+            className="p-1.5 rounded-lg bg-slate-800/80 text-slate-300 hover:text-white hover:bg-slate-700 transition"
             title="Zoom In"
           >
-            <ZoomIn className="w-4 h-4" />
+            <ZoomIn className="w-3.5 h-3.5" />
           </button>
           <button
             onClick={handleZoomOut}
-            className="p-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 transition"
+            className="p-1.5 rounded-lg bg-slate-800/80 text-slate-300 hover:text-white hover:bg-slate-700 transition"
             title="Zoom Out"
           >
-            <ZoomOut className="w-4 h-4" />
+            <ZoomOut className="w-3.5 h-3.5" />
           </button>
           <button
             onClick={handleFit}
-            className="p-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 transition"
+            className="p-1.5 rounded-lg bg-slate-800/80 text-slate-300 hover:text-white hover:bg-slate-700 transition"
             title="Reset View"
           >
-            <RefreshCw className="w-4 h-4" />
+            <RefreshCw className="w-3.5 h-3.5" />
           </button>
         </div>
       </div>
 
-      {/* Network Canvas */}
-      <div className="relative flex-1 w-full h-full">
+      {/* Graph Visual Canvas */}
+      <div className="relative flex-1 w-full h-full bg-canvas-950/40">
         {loading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-slate-950/80 z-20">
-            <div className="text-slate-400 animate-pulse text-sm">Building standards knowledge graph...</div>
+          <div className="absolute inset-0 flex items-center justify-center bg-canvas-950/90 z-20">
+            <div className="flex items-center gap-2 text-slate-400 animate-pulse text-xs font-mono">
+              <RefreshCw className="w-4 h-4 animate-spin text-accent-cyan" />
+              Synthesizing dependency subgraph...
+            </div>
           </div>
         )}
         <div ref={containerRef} className="w-full h-full" />
 
-        {/* Selected Node Drawer */}
+        {/* Selected Node Details Drawer */}
         {selectedNode && (
-          <div className="absolute bottom-4 left-4 right-4 md:right-auto md:w-80 p-4 rounded-xl bg-slate-950/95 border border-slate-800 shadow-xl backdrop-blur-lg z-20">
+          <div className="absolute bottom-3 left-3 right-3 sm:right-auto sm:w-80 p-4 rounded-2xl bg-canvas-900/95 border border-slate-700 shadow-2xl backdrop-blur-xl z-20 space-y-2 animate-fade-in-up">
             <div className="flex justify-between items-start">
-              <span className="text-xs uppercase tracking-wider font-semibold text-emerald-400">
+              <span className="text-[10px] font-mono uppercase tracking-wider font-bold text-accent-cyan px-2 py-0.5 rounded bg-accent-blue/20">
                 {selectedNode.type}
               </span>
               <button
                 onClick={() => setSelectedNode(null)}
-                className="text-slate-500 hover:text-slate-300 text-sm"
+                className="text-slate-400 hover:text-white text-xs px-1.5 py-0.5 rounded bg-slate-800"
               >
                 ✕
               </button>
             </div>
-            <div className="text-base font-bold text-white mt-1">{selectedNode.label}</div>
-            <div className="text-xs text-slate-400 mt-1">{selectedNode.title}</div>
+            
+            <div className="text-sm font-black text-white font-mono">{selectedNode.label}</div>
+            <div className="text-xs text-slate-300 leading-snug">{selectedNode.title}</div>
+            
             {selectedNode.status && (
-              <div className="mt-2 inline-block px-2 py-0.5 rounded text-[11px] font-mono bg-slate-800 text-slate-300">
+              <div className={`mt-2 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-mono font-bold ${
+                selectedNode.status === 'ACTIVE'
+                  ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                  : 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
+              }`}>
                 Status: {selectedNode.status}
               </div>
             )}
@@ -228,20 +251,21 @@ export const StandardsGraph: React.FC<StandardsGraphProps> = ({ initialData, foc
       </div>
 
       {/* Graph Legend */}
-      <div className="flex items-center gap-4 px-6 py-2.5 border-t border-slate-800/80 bg-slate-950/40 text-xs text-slate-400 overflow-x-auto">
-        <span className="flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Active BIS
+      <div className="flex items-center gap-4 px-6 py-2.5 border-t border-slate-800/80 bg-canvas-950/60 text-[11px] text-slate-400 overflow-x-auto font-mono">
+        <span className="flex items-center gap-1.5 whitespace-nowrap">
+          <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-emerald-500/30"></span> Active BIS Standard
         </span>
-        <span className="flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-full bg-rose-500"></span> Obsolete / Superseded
+        <span className="flex items-center gap-1.5 whitespace-nowrap">
+          <span className="w-2.5 h-2.5 rounded-full bg-rose-500 ring-2 ring-rose-500/30"></span> Obsolete / Superseded
         </span>
-        <span className="flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 bg-amber-500 rotate-45"></span> Mandatory QCO
+        <span className="flex items-center gap-1.5 whitespace-nowrap">
+          <span className="w-2.5 h-2.5 bg-amber-500 rotate-45"></span> Mandatory QCO Order
         </span>
-        <span className="flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 rounded bg-indigo-500"></span> Foreign Standard
+        <span className="flex items-center gap-1.5 whitespace-nowrap">
+          <span className="w-2.5 h-2.5 rounded bg-indigo-500"></span> Foreign Standard (ASTM/DIN)
         </span>
       </div>
+
     </div>
   );
 };
