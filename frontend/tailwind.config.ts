@@ -11,25 +11,25 @@ const config: Config = {
     extend: {
       colors: {
         // Government Official Color Palette
-        "primary": "#0f2e4d",
-        "primary-container": "#1a4a73",
+        "primary": "#d4a868",
+        "primary-container": "#c9935c",
         "on-primary": "#ffffff",
-        "on-primary-container": "#b8d1e8",
-        "primary-fixed": "#d1e4ff",
-        "primary-fixed-dim": "#99b8d9",
-        "on-primary-fixed": "#001a2f",
-        "on-primary-fixed-variant": "#15395c",
-        "inverse-primary": "#99b8d9",
+        "on-primary-container": "#f5e4cc",
+        "primary-fixed": "#f5e4cc",
+        "primary-fixed-dim": "#ddb672",
+        "on-primary-fixed": "#4a3900",
+        "on-primary-fixed-variant": "#8b6914",
+        "inverse-primary": "#ddb672",
 
-        // Government Gold/Brown Secondary
-        "secondary": "#8b6914",
-        "secondary-container": "#d4a868",
+        // Government Blue Secondary
+        "secondary": "#0f2e4d",
+        "secondary-container": "#1a4a73",
         "on-secondary": "#ffffff",
-        "on-secondary-container": "#6b5410",
-        "secondary-fixed": "#fde6ba",
-        "secondary-fixed-dim": "#ddc389",
-        "on-secondary-fixed": "#3a2e00",
-        "on-secondary-fixed-variant": "#6f5f0a",
+        "on-secondary-container": "#b8d1e8",
+        "secondary-fixed": "#d1e4ff",
+        "secondary-fixed-dim": "#99b8d9",
+        "on-secondary-fixed": "#001a2f",
+        "on-secondary-fixed-variant": "#15395c",
 
         // Regulatory Green / Tertiary
         "tertiary": "#1b4d2e",
@@ -79,11 +79,11 @@ const config: Config = {
         },
         accent: {
           cyan: "#00796b",
-          sky: "#0277bd",
+          sky: "#0f2e4d",
           blue: "#0f2e4d",
           cobalt: "#1a4a73",
           emerald: "#1b4d2e",
-          amber: "#8b6914",
+          amber: "#d4a868",
           rose: "#a52747",
         },
       },

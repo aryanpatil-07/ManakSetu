@@ -7,16 +7,14 @@ import { usePathname } from 'next/navigation';
 interface NavItem {
   name: string;
   href: string;
-  icon: string;
-  hasBadge?: boolean;
 }
 
 const PRIMARY_NAV: NavItem[] = [
-  { name: 'Dashboard', href: '/dashboard', icon: 'dashboard' },
-  { name: 'Tender Scrutiny', href: '/new-analysis', icon: 'troubleshoot', hasBadge: true },
-  { name: 'Past Requirements', href: '/past-requirements', icon: 'history' },
-  { name: 'Specification Builder', href: '/specification-builder', icon: 'edit_document' },
-  { name: 'Standards & QCO Library', href: '/standards-library', icon: 'menu_book' },
+  { name: 'Dashboard', href: '/dashboard' },
+  { name: 'Tender Analysis', href: '/new-analysis' },
+  { name: 'Past Requirements', href: '/past-requirements' },
+  { name: 'Specifications', href: '/specification-builder' },
+  { name: 'Standards Library', href: '/standards-library' },
 ];
 
 export const Sidebar: React.FC = () => {
@@ -35,7 +33,7 @@ export const Sidebar: React.FC = () => {
         <div className="h-[76px] px-unit-xl border-b border-outline-variant/50 flex items-center gap-unit-md">
           <Link href="/dashboard" className="flex items-center gap-unit-md">
             <img
-              alt="IS-Assist ManakSetu Logo"
+              alt="ManakSetu Logo"
               className="h-8 w-auto object-contain"
               src="/images/logo.svg"
             />
@@ -44,7 +42,7 @@ export const Sidebar: React.FC = () => {
                 ManakSetu
               </span>
               <span className="font-label-eyebrow text-[10px] tracking-[0.1em] text-primary-container uppercase font-semibold leading-none mt-0.5">
-                Standards Intelligence
+                Standards
               </span>
             </div>
           </Link>
@@ -54,7 +52,7 @@ export const Sidebar: React.FC = () => {
         <div className="p-unit-md flex-1">
           <div className="px-unit-sm mb-unit-xs">
             <span className="font-label-eyebrow text-label-eyebrow uppercase text-on-surface-variant/70 tracking-widest">
-              Core Workbenches
+              Workbenches
             </span>
           </div>
           <nav className="space-y-1">
@@ -64,30 +62,13 @@ export const Sidebar: React.FC = () => {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`flex items-center justify-between px-unit-sm py-2.5 rounded-lg text-body-sm font-body-sm transition-colors ${
+                  className={`flex items-center px-unit-sm py-2.5 rounded-lg text-body-sm font-body-sm transition-colors ${
                     active
                       ? 'bg-primary-container text-on-primary font-semibold shadow-xs'
                       : 'text-on-surface-variant hover:bg-surface-container hover:text-on-surface'
                   }`}
                 >
-                  <div className="flex items-center">
-                    <span
-                      className={`material-symbols-outlined text-[20px] mr-unit-md ${
-                        active ? 'text-on-primary' : 'text-outline'
-                      }`}
-                    >
-                      {item.icon}
-                    </span>
-                    <span>{item.name}</span>
-                  </div>
-                  {item.hasBadge && (
-                    <span
-                      className={`w-2 h-2 rounded-full ${
-                        active ? 'bg-secondary-fixed' : 'bg-secondary-container'
-                      }`}
-                      title="Ready for input"
-                    />
-                  )}
+                  <span>{item.name}</span>
                 </Link>
               );
             })}
@@ -105,10 +86,7 @@ export const Sidebar: React.FC = () => {
               : 'text-on-surface-variant hover:bg-surface-container hover:text-on-surface'
           }`}
         >
-          <span className="material-symbols-outlined text-[20px] mr-unit-md text-outline">
-            settings
-          </span>
-          <span>Settings &amp; Audit Credentials</span>
+          <span>Settings</span>
         </Link>
 
         {/* Profile Card */}
@@ -118,7 +96,7 @@ export const Sidebar: React.FC = () => {
         >
           <div className="flex items-center gap-unit-sm">
             <img
-              alt="Priya Rao"
+              alt="Profile"
               className="w-8 h-8 rounded-full object-cover border border-outline-variant/60"
               src="/images/priya-rao.jpg"
               onError={(e) => {
@@ -130,13 +108,10 @@ export const Sidebar: React.FC = () => {
                 Priya Rao
               </span>
               <span className="font-label-sm text-label-sm text-on-surface-variant leading-none mt-0.5">
-                Procurement Officer (DES-8842)
+                Officer
               </span>
             </div>
           </div>
-          <button className="p-1 text-outline hover:text-on-surface" type="button" aria-label="Profile actions">
-            <span className="material-symbols-outlined text-[18px]">more_horiz</span>
-          </button>
         </div>
 
         {/* Profile Popover */}
@@ -144,24 +119,14 @@ export const Sidebar: React.FC = () => {
           <div className="absolute bottom-16 left-3 right-3 bg-surface-container-lowest border border-outline-variant/60 rounded-lg shadow-lg p-3 z-50 animate-fade-in-up">
             <div className="pb-2 border-b border-outline-variant/40">
               <div className="font-headline-md text-body-sm font-semibold text-primary">Priya Rao</div>
-              <div className="text-[11px] font-mono text-outline">Ministry of Consumer Affairs / BIS</div>
-            </div>
-            <div className="py-2 space-y-1">
-              <div className="text-[11px] text-on-surface-variant flex items-center justify-between">
-                <span>DSC Token:</span>
-                <span className="text-tertiary-container font-semibold">Active (Class 3)</span>
-              </div>
-              <div className="text-[11px] text-on-surface-variant flex items-center justify-between">
-                <span>GeM Portal Auth:</span>
-                <span className="text-tertiary-container font-semibold">Synchronized</span>
-              </div>
+              <div className="text-[11px] font-mono text-outline">Officer</div>
             </div>
             <Link
               href="/settings"
               onClick={() => setProfileOpen(false)}
               className="mt-2 block w-full text-center py-1 bg-surface-container hover:bg-surface-container-high text-primary rounded text-label-sm font-semibold transition"
             >
-              Manage Credentials
+              Settings
             </Link>
           </div>
         )}

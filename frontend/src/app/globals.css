@@ -7,10 +7,10 @@
     /* Government Website Color Palette */
     --background: #f5f3f0;
     --foreground: #1a1410;
-    --primary: #0f2e4d;
-    --primary-container: #1a4a73;
-    --secondary: #8b6914;
-    --secondary-container: #d4a868;
+    --primary: #d4a868;
+    --primary-container: #c9935c;
+    --secondary: #0f2e4d;
+    --secondary-container: #1a4a73;
     --tertiary: #1b4d2e;
     --tertiary-container: #2d7a47;
     --surface: #fffbf8;
@@ -41,7 +41,7 @@
     font-weight: 700;
     letter-spacing: 0.3px;
     margin-bottom: 1.5rem;
-    color: #0f2e4d;
+    color: #d4a868;
   }
 
   h2 {
@@ -50,7 +50,7 @@
     font-weight: 700;
     letter-spacing: 0.2px;
     margin-bottom: 1.25rem;
-    color: #0f2e4d;
+    color: #d4a868;
   }
 
   h3 {
@@ -100,7 +100,7 @@
     line-height: 1.4;
     font-weight: 600;
     letter-spacing: 0.3px;
-    color: #0f2e4d;
+    color: #d4a868;
   }
 
   /* Material Symbols styling */
