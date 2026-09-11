@@ -335,7 +335,7 @@ class StandardsKnowledgeGraph:
                 }
         return None
 
-    def export_subgraph_for_ui(self, is_code: str) -> Dict[str, Any]:
+    def export_subgraph_for_ui(self, is_code: str, depth: int = 1) -> Dict[str, Any]:
         """
         Generates nodes and edges for React Flow / Cytoscape visualizer for a given standard.
         """

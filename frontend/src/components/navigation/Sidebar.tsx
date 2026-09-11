@@ -11,17 +11,12 @@ interface NavItem {
   hasBadge?: boolean;
 }
 
-const WORKSPACE_NAV: NavItem[] = [
+const PRIMARY_NAV: NavItem[] = [
   { name: 'Dashboard', href: '/dashboard', icon: 'dashboard' },
-  { name: 'New analysis', href: '/new-analysis', icon: 'add_circle', hasBadge: true },
-  { name: 'Documents', href: '/documents', icon: 'description' },
-  { name: 'Specification builder', href: '/specification-builder', icon: 'edit_document' },
-];
-
-const INTELLIGENCE_NAV: NavItem[] = [
-  { name: 'Standards library', href: '/standards-library', icon: 'menu_book' },
-  { name: 'Certifications', href: '/certifications', icon: 'verified_user' },
-  { name: 'Latest recommendations', href: '/recommendations', icon: 'explore' },
+  { name: 'Tender Scrutiny', href: '/new-analysis', icon: 'troubleshoot', hasBadge: true },
+  { name: 'Past Requirements', href: '/past-requirements', icon: 'history' },
+  { name: 'Specification Builder', href: '/specification-builder', icon: 'edit_document' },
+  { name: 'Standards & QCO Library', href: '/standards-library', icon: 'menu_book' },
 ];
 
 export const Sidebar: React.FC = () => {
@@ -55,22 +50,21 @@ export const Sidebar: React.FC = () => {
           </Link>
         </div>
 
-        {/* Navigation Sections */}
+        {/* Navigation Section */}
         <div className="p-unit-md flex-1">
-          {/* Workspace Group */}
           <div className="px-unit-sm mb-unit-xs">
             <span className="font-label-eyebrow text-label-eyebrow uppercase text-on-surface-variant/70 tracking-widest">
-              Workspace
+              Core Workbenches
             </span>
           </div>
-          <nav className="space-y-unit-2xs mb-unit-xl">
-            {WORKSPACE_NAV.map((item) => {
+          <nav className="space-y-1">
+            {PRIMARY_NAV.map((item) => {
               const active = isActive(item.href);
               return (
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`flex items-center justify-between px-unit-sm py-2 rounded-lg text-body-sm font-body-sm transition-colors ${
+                  className={`flex items-center justify-between px-unit-sm py-2.5 rounded-lg text-body-sm font-body-sm transition-colors ${
                     active
                       ? 'bg-primary-container text-on-primary font-semibold shadow-xs'
                       : 'text-on-surface-variant hover:bg-surface-container hover:text-on-surface'
@@ -98,38 +92,6 @@ export const Sidebar: React.FC = () => {
               );
             })}
           </nav>
-
-          {/* Intelligence Group */}
-          <div className="px-unit-sm mb-unit-xs">
-            <span className="font-label-eyebrow text-label-eyebrow uppercase text-on-surface-variant/70 tracking-widest">
-              Intelligence
-            </span>
-          </div>
-          <nav className="space-y-unit-2xs">
-            {INTELLIGENCE_NAV.map((item) => {
-              const active = isActive(item.href);
-              return (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className={`flex items-center px-unit-sm py-2 rounded-lg text-body-sm font-body-sm transition-colors ${
-                    active
-                      ? 'bg-primary-container text-on-primary font-semibold shadow-xs'
-                      : 'text-on-surface-variant hover:bg-surface-container hover:text-on-surface'
-                  }`}
-                >
-                  <span
-                    className={`material-symbols-outlined text-[20px] mr-unit-md ${
-                      active ? 'text-on-primary' : 'text-outline'
-                    }`}
-                  >
-                    {item.icon}
-                  </span>
-                  <span>{item.name}</span>
-                </Link>
-              );
-            })}
-          </nav>
         </div>
       </div>
 
@@ -146,7 +108,7 @@ export const Sidebar: React.FC = () => {
           <span className="material-symbols-outlined text-[20px] mr-unit-md text-outline">
             settings
           </span>
-          <span>Settings</span>
+          <span>Settings &amp; Audit Credentials</span>
         </Link>
 
         {/* Profile Card */}
@@ -160,7 +122,6 @@ export const Sidebar: React.FC = () => {
               className="w-8 h-8 rounded-full object-cover border border-outline-variant/60"
               src="/images/priya-rao.jpg"
               onError={(e) => {
-                // Fallback if local image fails
                 (e.target as HTMLElement).style.display = 'none';
               }}
             />
@@ -169,7 +130,7 @@ export const Sidebar: React.FC = () => {
                 Priya Rao
               </span>
               <span className="font-label-sm text-label-sm text-on-surface-variant leading-none mt-0.5">
-                Procurement Officer
+                Procurement Officer (DES-8842)
               </span>
             </div>
           </div>
@@ -178,12 +139,12 @@ export const Sidebar: React.FC = () => {
           </button>
         </div>
 
-        {/* Profile Dropdown popover */}
+        {/* Profile Popover */}
         {profileOpen && (
           <div className="absolute bottom-16 left-3 right-3 bg-surface-container-lowest border border-outline-variant/60 rounded-lg shadow-lg p-3 z-50 animate-fade-in-up">
             <div className="pb-2 border-b border-outline-variant/40">
-              <div className="font-headline-md text-body-sm font-semibold text-primary">Priya Rao (DES-8842)</div>
-              <div className="text-[11px] font-mono text-outline">Dept. of Power & Energy</div>
+              <div className="font-headline-md text-body-sm font-semibold text-primary">Priya Rao</div>
+              <div className="text-[11px] font-mono text-outline">Ministry of Consumer Affairs / BIS</div>
             </div>
             <div className="py-2 space-y-1">
               <div className="text-[11px] text-on-surface-variant flex items-center justify-between">

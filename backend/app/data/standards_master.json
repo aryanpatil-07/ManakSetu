@@ -2901,5 +2901,52 @@
     "foreign_equivalents": [
       "BS 4360"
     ]
+  },
+  {
+    "is_code": "IS 12701:1996",
+    "standard_number": "IS 12701",
+    "year": 1996,
+    "edition": "First Revision (Reaffirmed 2020)",
+    "title": "Rotational Moulded Polyethylene Water Storage Tanks — Specification",
+    "division": "Civil Engineering",
+    "sectional_committee": "CED 50",
+    "category": "Civil & Water Infrastructure",
+    "status": "CURRENT",
+    "supersedes": [],
+    "active_amendments": [
+      "Amendment No. 1",
+      "Amendment No. 2"
+    ],
+    "scope": "This standard lays down requirements for materials, dimensions, construction, shape and finish, capacity, performance and inspection testing for rotational moulded polyethylene water storage tanks used for potable water storage.",
+    "keywords": [
+      "water tank",
+      "water storage",
+      "polyethylene tank",
+      "rotational moulded",
+      "rotomoulded",
+      "plastic tank",
+      "plasto",
+      "sintex",
+      "vectus",
+      "is 12701",
+      "water tanks",
+      "overhead tank",
+      "loft tank"
+    ],
+    "material_grades": [
+      "LLDPE",
+      "HDPE"
+    ],
+    "pressure_ratings": [],
+    "normative_references": {
+      "raw_materials": ["IS 10146:1982 Polyethylene for food contact application"],
+      "testing_methods": ["IS 12701 Overall migration test", "Drop test", "Hydrostatic test"],
+      "allied_standards": ["IS 4984:2016 HDPE Pipes"]
+    },
+    "conformity_scheme": "Scheme-I (ISI Mark)",
+    "qco_id": null,
+    "foreign_equivalents": [
+      "ASTM D1998"
+    ]
   }
 ]

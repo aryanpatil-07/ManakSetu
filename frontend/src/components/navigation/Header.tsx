@@ -9,37 +9,26 @@ export const Header: React.FC = () => {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
   const [searchModalOpen, setSearchModalOpen] = useState(false);
-  const [langMenuOpen, setLangMenuOpen] = useState(false);
-  const [selectedLang, setSelectedLang] = useState('English');
   const [notifOpen, setNotifOpen] = useState(false);
 
   // Dynamic Breadcrumb Label
   const getBreadcrumb = () => {
     if (pathname.startsWith('/dashboard') || pathname === '/') {
-      return { section: 'Workspace', title: 'Procurement intelligence' };
+      return { section: 'Workspace', title: 'Executive Dashboard' };
     }
     if (pathname.startsWith('/new-analysis')) {
-      return { section: 'Workspace', title: 'New standards analysis' };
-    }
-    if (pathname.startsWith('/documents')) {
-      return { section: 'Workspace', title: 'Analyzed documents' };
+      return { section: 'Scrutiny', title: 'Tender Scrutiny & Ingestion' };
     }
     if (pathname.startsWith('/specification-builder')) {
-      return { section: 'Workspace', title: 'Specification builder' };
+      return { section: 'Authoring', title: 'Specification Builder' };
     }
     if (pathname.startsWith('/standards-library')) {
-      return { section: 'Intelligence', title: 'Standards library' };
-    }
-    if (pathname.startsWith('/certifications')) {
-      return { section: 'Intelligence', title: 'Mandatory certifications & QCOs' };
-    }
-    if (pathname.startsWith('/recommendations')) {
-      return { section: 'Intelligence', title: 'Latest recommendations' };
+      return { section: 'Registry', title: 'Standards & QCO Library' };
     }
     if (pathname.startsWith('/settings')) {
-      return { section: 'Workspace', title: 'Platform settings' };
+      return { section: 'System', title: 'Platform Settings' };
     }
-    return { section: 'Workspace', title: 'Procurement intelligence' };
+    return { section: 'Workspace', title: 'ManakSetu Workspace' };
   };
 
   const breadcrumb = getBreadcrumb();
@@ -54,7 +43,6 @@ export const Header: React.FC = () => {
       if (e.key === 'Escape') {
         setSearchModalOpen(false);
         setNotifOpen(false);
-        setLangMenuOpen(false);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
@@ -105,34 +93,6 @@ export const Header: React.FC = () => {
             </kbd>
           </div>
 
-          {/* Language Selector Dropdown */}
-          <div className="relative">
-            <button
-              onClick={() => setLangMenuOpen(!langMenuOpen)}
-              className="flex items-center gap-unit-xs px-unit-sm py-1.5 rounded-lg border border-outline-variant text-body-sm font-label-md text-on-surface-variant hover:bg-surface-container transition-colors"
-              type="button"
-            >
-              <span className="font-label-md text-label-md">{selectedLang}</span>
-              <span className="material-symbols-outlined text-[14px]">arrow_drop_down</span>
-            </button>
-            {langMenuOpen && (
-              <div className="absolute right-0 mt-1 w-36 bg-surface-container-lowest border border-outline-variant/60 rounded-lg shadow-md py-1 z-50 animate-fade-in-up">
-                {['English', 'हिन्दी (Hindi)', 'मराठी (Marathi)', 'தமிழ் (Tamil)'].map((lang) => (
-                  <button
-                    key={lang}
-                    onClick={() => {
-                      setSelectedLang(lang.split(' ')[0]);
-                      setLangMenuOpen(false);
-                    }}
-                    className="w-full text-left px-3 py-1.5 text-body-sm text-on-surface hover:bg-surface-container font-medium"
-                  >
-                    {lang}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-
           {/* Notifications Trigger */}
           <div className="relative">
             <button
@@ -163,11 +123,11 @@ export const Header: React.FC = () => {
                   </div>
                 </div>
                 <Link
-                  href="/recommendations"
+                  href="/new-analysis"
                   onClick={() => setNotifOpen(false)}
                   className="mt-2 block text-center py-1 text-label-sm font-semibold text-primary hover:underline"
                 >
-                  View All Recommendations →
+                  Launch Tender Scrutiny →
                 </Link>
               </div>
             )}
@@ -219,16 +179,14 @@ export const Header: React.FC = () => {
             {/* Quick Links / Filtered Results */}
             <div className="p-3 max-h-96 overflow-y-auto space-y-1">
               <div className="px-2 py-1 text-[11px] font-bold text-outline uppercase tracking-wider">
-                Quick Navigation
+                Core Workbenches
               </div>
               {[
-                { title: 'Dashboard', path: '/dashboard', icon: 'dashboard', desc: 'Overview & telemetry' },
-                { title: 'New Standards Analysis', path: '/new-analysis', icon: 'add_circle', desc: 'Scan product SOR or RFP' },
-                { title: 'Analyzed Documents', path: '/documents', icon: 'description', desc: '28 prior records & audit telemetry' },
-                { title: 'Specification Builder', path: '/specification-builder', icon: 'edit_document', desc: '9-part tender drafting workbench' },
-                { title: 'Standards Library', path: '/standards-library', icon: 'menu_book', desc: 'Search 1,500+ Indian Standards' },
-                { title: 'Mandatory Certifications & QCOs', path: '/certifications', icon: 'verified_user', desc: 'BIS Schemes & CML license check' },
-                { title: 'Latest Recommendations', path: '/recommendations', icon: 'explore', desc: 'Superseded standards & anti-tailoring flags' },
+                { title: 'Executive Dashboard', path: '/dashboard', icon: 'dashboard', desc: 'Compliance index, metrics & recent audits' },
+                { title: 'Tender Scrutiny', path: '/new-analysis', icon: 'troubleshoot', desc: 'Tender clause, PDF RFP & Excel BoQ audit' },
+                { title: 'Specification Builder', path: '/specification-builder', icon: 'edit_document', desc: 'Harmonized clauses, redline diff & PDF cert' },
+                { title: 'Standards & QCO Library', path: '/standards-library', icon: 'menu_book', desc: '52+ IS standards, 15+ QCOs & CM/L license check' },
+                { title: 'Platform Settings', path: '/settings', icon: 'settings', desc: 'Officer credentials & BIS synchronization feeds' },
               ]
                 .filter((item) =>
                   !searchQuery ||

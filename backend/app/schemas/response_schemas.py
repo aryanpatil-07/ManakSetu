@@ -19,8 +19,25 @@ class StandardStatus(BaseModel):
     qco_order: Optional[str] = None
     notes: Optional[str] = None
 
+class VisualGapItem(BaseModel):
+    feature_name: str
+    image_value: str
+    status_in_text: str  # MATCHED, MISSING_FROM_TEXT, DISCREPANCY
+    statutory_requirement: str
+    remediation_action: str
+
+class IsiVerificationResult(BaseModel):
+    is_isi_present: bool
+    license_number: Optional[str] = None
+    status: str  # VERIFIED_LICENSE, UNCERTIFIED_RISK, NO_LICENSE_FOUND
+    verification_message: str
+    statutory_alert: Optional[str] = None
+    is_qco_mandatory: bool = False
+    applicable_standard: Optional[str] = None
+
 class TenderAuditResponse(BaseModel):
     tender_id: str
+    audit_id: Optional[str] = None
     compliance_score: int  # 0 - 100
     overall_status: str  # COMPLIANT, ACTION_REQUIRED, NON_COMPLIANT
     critical_issues_count: int
@@ -29,7 +46,11 @@ class TenderAuditResponse(BaseModel):
     detected_standards: List[StandardStatus]
     violations: List[DetectedViolation]
     generated_compliant_clause: Optional[str] = None
+    related_clauses: Optional[List[Dict[str, Any]]] = None
     summary_advisory: str
+    image_extracted_text: Optional[str] = None
+    isi_verification: Optional[IsiVerificationResult] = None
+    visual_gap_matrix: Optional[List[VisualGapItem]] = None
 
 class BoqItemAuditResult(BaseModel):
     item_no: Any
@@ -78,3 +99,58 @@ class ClauseSynthesisResponse(BaseModel):
     synthesized_clause_text: str
     referenced_regulations: List[str]
     checklist: List[str]
+
+class RequirementRecordSchema(BaseModel):
+    id: str
+    created_at: Optional[str] = None
+    tender_title: str
+    department: str
+    input_text: str
+    compliance_score: int
+    overall_status: str
+    critical_issues_count: int
+    high_issues_count: int
+    medium_issues_count: int
+    detected_standards: List[Dict[str, Any]] = []
+    violations: List[Dict[str, Any]] = []
+    generated_compliant_clause: Optional[str] = None
+    related_clauses: List[Dict[str, Any]] = []
+    summary_advisory: Optional[str] = None
+    audit_type: str = "TEXT"
+    has_image: bool = False
+    image_filename: Optional[str] = None
+    image_extracted_text: Optional[str] = None
+    isi_verification: Optional[Dict[str, Any]] = None
+    visual_gap_matrix: Optional[List[Dict[str, Any]]] = None
+
+class RequirementHistoryResponse(BaseModel):
+    total: int
+    records: List[RequirementRecordSchema]
+
+class AuditStatsResponse(BaseModel):
+    total_audits: int
+    average_compliance_score: float
+    compliant_count: int
+    action_required_count: int
+    non_compliant_count: int
+    critical_violations_total: int
+    top_standards: List[Dict[str, Any]]
+
+class SpecificationDraftCreate(BaseModel):
+    tender_title: str
+    target_standard: str
+    compliance_score: int = 100
+    sections: List[Dict[str, Any]] = []
+    compiled_text: str
+    audit_id: Optional[str] = None
+
+class SpecificationDraftResponse(BaseModel):
+    id: str
+    audit_id: Optional[str] = None
+    tender_title: str
+    target_standard: str
+    compliance_score: int
+    sections: List[Dict[str, Any]]
+    compiled_text: str
+    created_at: Optional[str] = None
+    updated_at: Optional[str] = None

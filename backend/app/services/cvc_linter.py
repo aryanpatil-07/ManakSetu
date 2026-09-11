@@ -61,8 +61,30 @@ class CVCLinter:
 
             compiled = re.compile(pattern, re.IGNORECASE)
             for idx, line in enumerate(lines):
-                if not line.strip():
+                line_str = line.strip()
+                if not line_str:
                     continue
+                
+                line_lower = line_str.lower()
+                # Skip false positives on brand rule when the clause explicitly declares brand neutrality
+                if rule.get("rule_id") == "CVC-01-BRAND-SPEC":
+                    neutrality_cues = [
+                        "brand-neutral", "brand neutral", "no specific trade names", 
+                        "no proprietary", "not mandated", "strictly generic",
+                        "or equivalent", "prohibits citing proprietary", "illustrative and shall be read",
+                        "without generic technical", "without proprietary"
+                    ]
+                    if any(cue in line_lower for cue in neutrality_cues):
+                        continue
+
+                # Skip false positives on obsolete standard rule when cited in context of supersession / prohibition
+                if rule.get("rule_id") == "CVC-02-OBSOLETE-STD":
+                    supersession_cues = [
+                        "supersede", "superseded", "supersedes", "prohibited under gfr", 
+                        "replaced by", "upgraded to", "obsolete standard citation"
+                    ]
+                    if any(cue in line_lower for cue in supersession_cues):
+                        continue
                 
                 matches = compiled.finditer(line)
                 for match in matches:
@@ -77,7 +99,7 @@ class CVCLinter:
                         "message": rule["message"],
                         "recommended_action": rule["recommended_action"],
                         "line_number": idx + 1,
-                        "context": line.strip()[:140]
+                        "context": line_str[:140]
                     })
 
         # 2. Check for foreign standard citations via ForeignConverter

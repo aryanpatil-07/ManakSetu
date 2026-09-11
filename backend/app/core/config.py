@@ -31,6 +31,12 @@ class Settings(BaseSettings):
     SIMILARITY_THRESHOLD: float = 0.65
     RATE_LIMIT_PER_MINUTE: int = 60
 
+    # Database Settings (Neon PostgreSQL)
+    DATABASE_URL: str = os.getenv(
+        "DATABASE_URL",
+        "postgresql://neondb_owner:npg_OFS9yfko1ZEb@ep-polished-brook-b3ew6lbn-pooler.c-4.ap-southeast-1.aws.neon.tech/neondb?sslmode=require"
+    )
+
     class Config:
         case_sensitive = True
         env_file = ".env"

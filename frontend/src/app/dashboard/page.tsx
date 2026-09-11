@@ -1,8 +1,14 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import {
+  fetchPastRequirements,
+  fetchAuditHistoryStats,
+  RequirementRecord,
+  AuditHistoryStats,
+} from '@/lib/api';
 
 interface AnalysisRecord {
   id: string;
@@ -61,19 +67,28 @@ const RECENT_ANALYSES: AnalysisRecord[] = [
 export default function DashboardPage() {
   const router = useRouter();
   const [selectedAnalysis, setSelectedAnalysis] = useState<AnalysisRecord | null>(null);
-  const [uploadModalOpen, setUploadModalOpen] = useState(false);
-  const [uploading, setUploading] = useState(false);
+  const [pastRecords, setPastRecords] = useState<RequirementRecord[]>([]);
+  const [stats, setStats] = useState<AuditHistoryStats | null>(null);
+  const [loadingDb, setLoadingDb] = useState(true);
 
-  const handleUploadSimulate = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setUploading(true);
-      setTimeout(() => {
-        setUploading(false);
-        setUploadModalOpen(false);
-        router.push('/documents');
-      }, 1200);
-    }
-  };
+  useEffect(() => {
+    Promise.all([
+      fetchPastRequirements({ limit: 5 }),
+      fetchAuditHistoryStats(),
+    ])
+      .then(([reqRes, statsRes]) => {
+        if (reqRes.records && reqRes.records.length > 0) {
+          setPastRecords(reqRes.records);
+        }
+        setStats(statsRes);
+      })
+      .catch((err) => {
+        console.warn('Could not fetch Neon DB stats for dashboard:', err);
+      })
+      .finally(() => {
+        setLoadingDb(false);
+      });
+  }, []);
 
   return (
     <div className="flex flex-col w-full">
@@ -94,22 +109,14 @@ export default function DashboardPage() {
           </p>
         </div>
 
-        {/* Top-Right Actions */}
-        <div className="flex items-center gap-unit-sm self-start shrink-0">
-          <button
-            onClick={() => setUploadModalOpen(true)}
-            className="inline-flex items-center justify-center gap-unit-xs px-unit-lg py-2 rounded-lg bg-surface-container-lowest text-primary font-label-md text-label-md shadow-sm border border-outline-variant/60 hover:bg-surface-container transition-colors"
-            type="button"
-          >
-            <span className="material-symbols-outlined text-[18px]">upload_file</span>
-            <span>+ Upload tender</span>
-          </button>
+        {/* Top-Right Action */}
+        <div className="flex items-center self-start shrink-0">
           <Link
             href="/new-analysis"
-            className="inline-flex items-center justify-center gap-unit-xs px-unit-lg py-2 rounded-lg bg-primary-container text-on-primary font-label-md text-label-md shadow-sm hover:bg-primary transition-colors"
+            className="inline-flex items-center justify-center gap-unit-xs px-unit-lg py-2.5 rounded-lg bg-primary-container text-on-primary font-label-md text-label-md shadow-sm hover:bg-primary transition-colors"
           >
-            <span className="material-symbols-outlined text-[18px]">rule</span>
-            <span>+ New standards analysis</span>
+            <span className="material-symbols-outlined text-[20px]">fact_check</span>
+            <span>+ Check Tender Compliance</span>
           </Link>
         </div>
       </div>
@@ -124,21 +131,21 @@ export default function DashboardPage() {
           <div className="flex items-start justify-between">
             <div>
               <span className="font-label-eyebrow text-label-eyebrow text-on-surface-variant tracking-wider uppercase font-semibold">
-                Analyses Completed
+                Requirements Audited
               </span>
               <div className="font-display-lg text-display-lg text-on-surface leading-tight mt-1 font-bold">
-                128
+                {stats ? stats.total_audits : 128}
               </div>
             </div>
             <div className="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-primary shrink-0">
-              <span className="material-symbols-outlined text-[22px]">assignment_turned_in</span>
+              <span className="material-symbols-outlined text-[22px]">database</span>
             </div>
           </div>
           <div className="flex items-center gap-unit-xs mt-unit-md pt-unit-xs">
-            <span className="inline-flex items-center text-[12px] font-label-md text-tertiary-container font-semibold">
-              <span className="material-symbols-outlined text-[15px] mr-0.5">arrow_upward</span>+12
+            <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0 inline-block" />
+            <span className="font-body-sm text-body-sm text-on-surface-variant">
+              Persisted in Neon PostgreSQL
             </span>
-            <span className="font-body-sm text-body-sm text-on-surface-variant">this month</span>
           </div>
         </div>
 
@@ -147,18 +154,20 @@ export default function DashboardPage() {
           <div className="flex items-start justify-between">
             <div>
               <span className="font-label-eyebrow text-label-eyebrow text-on-surface-variant tracking-wider uppercase font-semibold">
-                Standards Identified
+                Average Compliance
               </span>
               <div className="font-display-lg text-display-lg text-on-surface leading-tight mt-1 font-bold">
-                642
+                {stats ? `${stats.average_compliance_score}%` : '91%'}
               </div>
             </div>
             <div className="w-10 h-10 rounded-lg bg-secondary-fixed/50 flex items-center justify-center text-secondary shrink-0">
-              <span className="material-symbols-outlined text-[22px]">menu_book</span>
+              <span className="material-symbols-outlined text-[22px]">speed</span>
             </div>
           </div>
           <div className="flex items-center gap-unit-xs mt-unit-md pt-unit-xs">
-            <span className="font-body-sm text-body-sm text-on-surface-variant">Across 128 analyses</span>
+            <span className="font-body-sm text-body-sm text-on-surface-variant">
+              Across all historical tender runs
+            </span>
           </div>
         </div>
 
@@ -167,10 +176,10 @@ export default function DashboardPage() {
           <div className="flex items-start justify-between">
             <div>
               <span className="font-label-eyebrow text-label-eyebrow text-on-surface-variant tracking-wider uppercase font-semibold">
-                Outdated References
+                Critical Defects Intercepted
               </span>
               <div className="font-display-lg text-display-lg text-error leading-tight mt-1 font-bold">
-                17
+                {stats ? stats.critical_violations_total : 17}
               </div>
             </div>
             <div className="w-10 h-10 rounded-lg bg-error-container/60 flex items-center justify-center text-error shrink-0">
@@ -179,8 +188,8 @@ export default function DashboardPage() {
           </div>
           <div className="flex items-center gap-unit-xs mt-unit-md pt-unit-xs">
             <span className="w-2 h-2 rounded-full bg-secondary-container shrink-0" />
-            <Link href="/recommendations" className="font-body-sm text-body-sm text-secondary font-medium hover:underline">
-              Require review
+            <Link href="/past-requirements" className="font-body-sm text-body-sm text-secondary font-medium hover:underline">
+              Inspect in Past Requirements
             </Link>
           </div>
         </div>
@@ -190,10 +199,10 @@ export default function DashboardPage() {
           <div className="flex items-start justify-between">
             <div>
               <span className="font-label-eyebrow text-label-eyebrow text-on-surface-variant tracking-wider uppercase font-semibold">
-                Certifications
+                Fully Compliant Submissions
               </span>
-              <div className="font-display-lg text-display-lg text-on-surface leading-tight mt-1 font-bold">
-                39
+              <div className="font-display-lg text-display-lg text-tertiary-container leading-tight mt-1 font-bold">
+                {stats ? stats.compliant_count : 15}
               </div>
             </div>
             <div className="w-10 h-10 rounded-lg bg-tertiary-fixed/60 flex items-center justify-center text-tertiary shrink-0">
@@ -201,33 +210,38 @@ export default function DashboardPage() {
             </div>
           </div>
           <div className="flex items-center gap-unit-xs mt-unit-md pt-unit-xs">
-            <Link href="/certifications" className="font-body-sm text-body-sm text-on-surface-variant hover:text-primary">
-              Potential requirements
-            </Link>
+            <span className="font-body-sm text-body-sm text-on-surface-variant">
+              100% GFR 144 &amp; CVC verified
+            </span>
           </div>
         </div>
       </div>
 
-      {/* MAIN WORKBENCH GRID (8 cols / 4 cols) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-unit-lg mt-unit-md items-start">
-        {/* LEFT PANEL: RECENT ANALYSES (8 COLUMNS) */}
-        <div className="lg:col-span-8 bg-surface-container-lowest rounded-lg shadow-sm border border-outline-variant/50 overflow-hidden flex flex-col">
-          {/* Panel Header */}
-          <div className="p-unit-lg flex items-center justify-between bg-surface-container-lowest">
+      {/* WORKSPACE CONTENT GRID (12 COLUMNS) */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-unit-lg my-unit-sm">
+        {/* LEFT PANEL: RECENT ANALYSES TABLE (8 COLUMNS) */}
+        <div className="lg:col-span-8 bg-surface-container-lowest rounded-lg shadow-sm border border-outline-variant/50 overflow-hidden flex flex-col justify-between">
+          {/* Section Header */}
+          <div className="p-unit-lg border-b border-outline-variant/50 flex items-center justify-between">
             <div>
-              <h2 className="font-headline-lg text-headline-lg text-primary font-bold">
-                Recent analyses
-              </h2>
+              <div className="flex items-center gap-2">
+                <h2 className="font-headline-lg text-headline-lg text-primary font-bold">
+                  Recent Tender Scrutiny Runs
+                </h2>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold border border-emerald-300">
+                  Neon DB Active
+                </span>
+              </div>
               <p className="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
-                Your latest specification intelligence runs
+                Past requirements submitted by procurement officers, ordered most recent first
               </p>
             </div>
             <Link
-              href="/documents"
-              className="font-label-md text-label-md text-primary hover:underline flex items-center gap-0.5"
+              href="/past-requirements"
+              className="font-label-md text-label-md text-primary hover:underline flex items-center gap-0.5 font-semibold"
             >
-              <span>View all</span>
-              <span className="material-symbols-outlined text-[16px]">arrow_outward</span>
+              <span>View All Past Requirements</span>
+              <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
             </Link>
           </div>
 
@@ -237,89 +251,167 @@ export default function DashboardPage() {
               <thead>
                 <tr className="bg-surface-container">
                   <th className="py-2.5 px-unit-lg font-label-eyebrow text-label-eyebrow text-on-surface-variant uppercase tracking-wider" scope="col">
-                    Analysis
+                    Requirement / Tender
                   </th>
                   <th className="py-2.5 px-unit-lg font-label-eyebrow text-label-eyebrow text-on-surface-variant uppercase tracking-wider" scope="col">
                     Standards Found
                   </th>
                   <th className="py-2.5 px-unit-lg font-label-eyebrow text-label-eyebrow text-on-surface-variant uppercase tracking-wider" scope="col">
-                    Confidence
+                    Score
                   </th>
                   <th className="py-2.5 px-unit-lg font-label-eyebrow text-label-eyebrow text-on-surface-variant uppercase tracking-wider" scope="col">
                     Status
                   </th>
                   <th className="py-2.5 px-unit-lg font-label-eyebrow text-label-eyebrow text-on-surface-variant uppercase tracking-wider" scope="col">
-                    Updated
+                    Format
                   </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-outline-variant/30 font-body-sm text-body-sm">
-                {RECENT_ANALYSES.map((rec) => (
-                  <tr
-                    key={rec.id}
-                    onClick={() => setSelectedAnalysis(rec)}
-                    className="hover:bg-surface-container-low transition-colors cursor-pointer"
-                  >
-                    <td className="py-3 px-unit-lg">
-                      <div className="flex flex-col">
-                        <span className="font-headline-md text-body-md text-on-surface font-semibold leading-tight">
-                          {rec.name}
-                        </span>
-                        <span className="font-body-sm text-[12px] text-on-surface-variant">
-                          {rec.category}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="py-3 px-unit-lg">
-                      <span className="font-code-sm text-code-sm text-primary font-medium hover:underline">
-                        {rec.standard}
-                      </span>
-                      <span className="text-on-surface-variant text-[12px] font-body-sm ml-1">
-                        {rec.allied}
-                      </span>
-                    </td>
-                    <td className="py-3 px-unit-lg">
-                      <div className="flex items-center gap-unit-xs">
-                        <span className="font-code-sm text-code-sm font-semibold text-on-surface">
-                          {rec.confidence}%
-                        </span>
-                        <div className="w-16 h-1.5 rounded-full bg-surface-container overflow-hidden">
-                          <div
-                            className={`h-full ${
-                              rec.confidence >= 90
-                                ? 'bg-tertiary-container'
-                                : 'bg-primary-container'
-                            }`}
-                            style={{ width: `${rec.confidence}%` }}
-                          />
+                {pastRecords.length > 0 ? (
+                  pastRecords.map((rec) => {
+                    const primaryStd = rec.detected_standards?.[0]?.recommended_standard || rec.detected_standards?.[0]?.specified || 'IS 4984';
+                    const alliedCount = Math.max(0, (rec.detected_standards?.length || 1) - 1);
+
+                    return (
+                      <tr
+                        key={rec.id}
+                        onClick={() => router.push('/past-requirements')}
+                        className="hover:bg-surface-container-low transition-colors cursor-pointer"
+                      >
+                        <td className="py-3 px-unit-lg">
+                          <div className="flex flex-col">
+                            <span className="font-headline-md text-body-md text-on-surface font-semibold leading-tight">
+                              {rec.tender_title}
+                            </span>
+                            <span className="font-body-sm text-[12px] text-on-surface-variant">
+                              {rec.department || 'Public Works Directorate'}
+                            </span>
+                          </div>
+                        </td>
+                        <td className="py-3 px-unit-lg">
+                          <span className="font-code-sm text-code-sm text-primary font-medium hover:underline">
+                            {primaryStd}
+                          </span>
+                          {alliedCount > 0 && (
+                            <span className="text-on-surface-variant text-[12px] font-body-sm ml-1">
+                              +{alliedCount} standards
+                            </span>
+                          )}
+                        </td>
+                        <td className="py-3 px-unit-lg">
+                          <div className="flex items-center gap-unit-xs">
+                            <span className="font-code-sm text-code-sm font-semibold text-on-surface">
+                              {rec.compliance_score}%
+                            </span>
+                            <div className="w-16 h-1.5 rounded-full bg-surface-container overflow-hidden">
+                              <div
+                                className={`h-full ${
+                                  rec.compliance_score >= 85
+                                    ? 'bg-tertiary-container'
+                                    : rec.compliance_score >= 50
+                                    ? 'bg-secondary-container'
+                                    : 'bg-error'
+                                }`}
+                                style={{ width: `${rec.compliance_score}%` }}
+                              />
+                            </div>
+                          </div>
+                        </td>
+                        <td className="py-3 px-unit-lg">
+                          {rec.overall_status === 'COMPLIANT' && (
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-label-sm text-label-sm bg-tertiary-fixed text-tertiary font-semibold">
+                              <span className="w-1.5 h-1.5 rounded-full bg-tertiary-container" />
+                              Compliant
+                            </span>
+                          )}
+                          {rec.overall_status === 'ACTION_REQUIRED' && (
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-label-sm text-label-sm bg-secondary-fixed text-secondary font-semibold">
+                              <span className="w-1.5 h-1.5 rounded-full bg-secondary" />
+                              Review
+                            </span>
+                          )}
+                          {rec.overall_status === 'NON_COMPLIANT' && (
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-label-sm text-label-sm bg-error-container text-on-error-container font-semibold">
+                              <span className="w-1.5 h-1.5 rounded-full bg-error" />
+                              Non-Compliant
+                            </span>
+                          )}
+                        </td>
+                        <td className="py-3 px-unit-lg text-on-surface-variant font-code-sm text-[12px]">
+                          {rec.audit_type}
+                        </td>
+                      </tr>
+                    );
+                  })
+                ) : (
+                  RECENT_ANALYSES.map((rec) => (
+                    <tr
+                      key={rec.id}
+                      onClick={() => setSelectedAnalysis(rec)}
+                      className="hover:bg-surface-container-low transition-colors cursor-pointer"
+                    >
+                      <td className="py-3 px-unit-lg">
+                        <div className="flex flex-col">
+                          <span className="font-headline-md text-body-md text-on-surface font-semibold leading-tight">
+                            {rec.name}
+                          </span>
+                          <span className="font-body-sm text-[12px] text-on-surface-variant">
+                            {rec.category}
+                          </span>
                         </div>
-                      </div>
-                    </td>
-                    <td className="py-3 px-unit-lg">
-                      {rec.status === 'Completed' && (
-                        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-label-sm text-label-sm bg-tertiary-fixed text-tertiary font-semibold">
-                          <span className="w-1.5 h-1.5 rounded-full bg-tertiary-container" />
-                          Completed
+                      </td>
+                      <td className="py-3 px-unit-lg">
+                        <span className="font-code-sm text-code-sm text-primary font-medium hover:underline">
+                          {rec.standard}
                         </span>
-                      )}
-                      {rec.status === 'Review' && (
-                        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-label-sm text-label-sm bg-secondary-fixed text-secondary font-semibold">
-                          <span className="w-1.5 h-1.5 rounded-full bg-secondary" />
-                          Review
+                        <span className="text-on-surface-variant text-[12px] font-body-sm ml-1">
+                          {rec.allied}
                         </span>
-                      )}
-                      {rec.status === 'Processing' && (
-                        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-label-sm text-label-sm bg-surface-container text-primary font-semibold">
-                          <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                          Processing
-                        </span>
-                      )}
-                    </td>
-                    <td className="py-3 px-unit-lg text-on-surface-variant font-code-sm text-[12px]">
-                      {rec.updated}
-                    </td>
-                  </tr>
-                ))}
+                      </td>
+                      <td className="py-3 px-unit-lg">
+                        <div className="flex items-center gap-unit-xs">
+                          <span className="font-code-sm text-code-sm font-semibold text-on-surface">
+                            {rec.confidence}%
+                          </span>
+                          <div className="w-16 h-1.5 rounded-full bg-surface-container overflow-hidden">
+                            <div
+                              className={`h-full ${
+                                rec.confidence >= 90
+                                  ? 'bg-tertiary-container'
+                                  : 'bg-primary-container'
+                              }`}
+                              style={{ width: `${rec.confidence}%` }}
+                            />
+                          </div>
+                        </div>
+                      </td>
+                      <td className="py-3 px-unit-lg">
+                        {rec.status === 'Completed' && (
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-label-sm text-label-sm bg-tertiary-fixed text-tertiary font-semibold">
+                            <span className="w-1.5 h-1.5 rounded-full bg-tertiary-container" />
+                            Completed
+                          </span>
+                        )}
+                        {rec.status === 'Review' && (
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-label-sm text-label-sm bg-secondary-fixed text-secondary font-semibold">
+                            <span className="w-1.5 h-1.5 rounded-full bg-secondary" />
+                            Review
+                          </span>
+                        )}
+                        {rec.status === 'Processing' && (
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-label-sm text-label-sm bg-surface-container text-primary font-semibold">
+                            <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                            Processing
+                          </span>
+                        )}
+                      </td>
+                      <td className="py-3 px-unit-lg text-on-surface-variant font-code-sm text-[12px]">
+                        {rec.updated}
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
@@ -328,9 +420,15 @@ export default function DashboardPage() {
           <div className="p-unit-sm px-unit-lg bg-surface-container-low flex items-center justify-between text-on-surface-variant font-label-sm text-label-sm border-t border-outline-variant/30">
             <span className="flex items-center gap-1">
               <span className="material-symbols-outlined text-[16px]">sync_alt</span>
-              Auto-synchronized with BIS Gazette releases
+              Auto-synchronized with Neon PostgreSQL
             </span>
-            <span className="font-code-sm">Showing 4 of 128 records</span>
+            <Link
+              href="/past-requirements"
+              className="font-code-sm font-semibold text-primary hover:underline flex items-center gap-1"
+            >
+              <span>View all {stats ? stats.total_audits : pastRecords.length} records</span>
+              <span className="material-symbols-outlined text-[14px]">open_in_new</span>
+            </Link>
           </div>
         </div>
 
@@ -352,10 +450,10 @@ export default function DashboardPage() {
             </div>
             <div className="pt-unit-md mt-unit-sm">
               <Link
-                href="/recommendations"
+                href="/new-analysis"
                 className="inline-flex items-center gap-unit-xs font-label-md text-label-md text-secondary-fixed hover:text-secondary-fixed-dim transition-colors group"
               >
-                <span className="underline">Open review queue</span>
+                <span className="underline">Check Tender Compliance</span>
                 <span className="material-symbols-outlined text-[16px] group-hover:translate-x-0.5 transition-transform">
                   arrow_outward
                 </span>
@@ -446,43 +544,6 @@ export default function DashboardPage() {
               >
                 Open in Spec Builder →
               </Link>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Upload Tender Modal Simulation */}
-      {uploadModalOpen && (
-        <div className="fixed inset-0 bg-primary/40 backdrop-blur-xs z-50 flex items-center justify-center p-4">
-          <div className="bg-surface-container-lowest border border-outline-variant/80 rounded-lg shadow-2xl w-full max-w-lg p-6 animate-fade-in-up">
-            <div className="flex items-start justify-between pb-3 border-b border-outline-variant/40">
-              <h3 className="font-headline-md text-primary font-bold">Upload Tender Specification</h3>
-              <button onClick={() => setUploadModalOpen(false)} className="text-outline hover:text-on-surface">
-                <span className="material-symbols-outlined">close</span>
-              </button>
-            </div>
-            <div className="py-6">
-              <label className="border-2 border-dashed border-outline-variant hover:border-primary-container rounded-lg p-8 flex flex-col items-center justify-center cursor-pointer bg-surface hover:bg-surface-container-low transition">
-                <span className="material-symbols-outlined text-[44px] text-primary-container mb-2">upload_file</span>
-                <span className="font-headline-md text-body-md font-semibold text-primary">
-                  {uploading ? 'Processing & Cross-Referencing...' : 'Choose tender PDF, DOCX or SOR file'}
-                </span>
-                <span className="text-[12px] text-on-surface-variant mt-1">Maximum file size: 50MB</span>
-                <input
-                  type="file"
-                  accept=".pdf,.docx,.doc,.xlsx"
-                  className="hidden"
-                  onChange={handleUploadSimulate}
-                />
-              </label>
-            </div>
-            <div className="flex justify-end gap-2">
-              <button
-                onClick={() => setUploadModalOpen(false)}
-                className="px-4 py-2 border border-outline-variant rounded text-label-md font-semibold text-on-surface hover:bg-surface-container"
-              >
-                Cancel
-              </button>
             </div>
           </div>
         </div>

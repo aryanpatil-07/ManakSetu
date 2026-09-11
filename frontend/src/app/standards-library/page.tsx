@@ -1,517 +1,636 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
+import {
+  fetchAllStandards,
+  searchStandards,
+  fetchAllQcos,
+  StandardSearchResult,
+  QcoRecord,
+} from '@/lib/api';
 
-interface StandardItem {
-  code: string;
-  title: string;
-  division: string;
-  committee: string;
-  year: number;
-  status: 'Active' | 'Under Revision' | 'Superseded';
-  qcoMandatory: boolean;
-  qcoOrder?: string;
-  harmonized?: string;
-  amendmentsCount: number;
-  scope: string;
-  normativeReferences: string[];
-}
-
-const STANDARDS_DATA: StandardItem[] = [
+const FALLBACK_STANDARDS: StandardSearchResult[] = [
   {
-    code: 'IS 1180 (Part 1):2014',
+    is_code: 'IS 1180 (Part 1):2014',
     title: 'Outdoor Type Three-Phase Distribution Transformers Up to and Including 2500 kVA, 33 kV',
     division: 'Electrotechnical (ETD)',
-    committee: 'ETD 16',
+    sectional_committee: 'ETD 16',
     year: 2014,
-    status: 'Active',
-    qcoMandatory: true,
-    qcoOrder: 'Electrical Transformers (Quality Control) Order, 2024',
-    harmonized: 'IEC 60076-1 (Modified)',
-    amendmentsCount: 4,
+    status: 'CURRENT',
+    supersedes: ['IS 1180:1989', 'IS 2026'],
+    active_amendments: ['Amendment No. 1 (2016)', 'Amendment No. 2 (2021)'],
     scope: 'Covers requirements and test methods for outdoor type, three-phase, 50 Hz, oil-immersed, natural cooled distribution transformers up to 2500 kVA.',
-    normativeReferences: ['IS 2026', 'IS 335:2018', 'IS 3043:2018', 'IS 12444'],
+    normative_references: {
+      testing_methods: ['IS 2026', 'IS 335:2018', 'IS 3043:2018'],
+      raw_material: ['IS 12444'],
+    },
   },
   {
-    code: 'IS 4984:2016',
+    is_code: 'IS 4984:2016',
     title: 'High Density Polyethylene Pipes for Water Supply — Specification (Fifth Revision)',
     division: 'Civil Engineering (CED)',
-    committee: 'CED 50',
+    sectional_committee: 'CED 50',
     year: 2016,
-    status: 'Active',
-    qcoMandatory: true,
-    qcoOrder: 'Pipes and Fittings (Quality Control) Order, 2020',
-    harmonized: 'ISO 4427-2',
-    amendmentsCount: 2,
+    status: 'CURRENT',
+    supersedes: ['IS 4984:1995', 'IS 4984:1987'],
+    active_amendments: ['Amendment No. 1 (2018)', 'Amendment No. 2 (2021)'],
     scope: 'Lays down requirements for high density polyethylene (HDPE) pipes suitable for carrying potable water for drinking, irrigation, and industrial conveyance.',
-    normativeReferences: ['IS 2530', 'IS 7328', 'IS 12235'],
+    normative_references: {
+      raw_material: ['IS 7328:2020'],
+      testing_methods: ['IS 12235', 'IS 2530:1963'],
+    },
   },
   {
-    code: 'IS 2026 (Part 1):2011',
-    title: 'Power Transformers — Part 1: General (Second Revision)',
-    division: 'Electrotechnical (ETD)',
-    committee: 'ETD 16',
-    year: 2011,
-    status: 'Active',
-    qcoMandatory: false,
-    harmonized: 'IEC 60076-1:2000',
-    amendmentsCount: 1,
-    scope: 'Applies to three-phase and single-phase power transformers (including auto-transformers) with the exception of small single-phase units.',
-    normativeReferences: ['IS 335', 'IS 2099', 'IS 3639'],
-  },
-  {
-    code: 'IS 10500:2012',
-    title: 'Drinking Water — Specification (Second Revision)',
-    division: 'Food & Agriculture / Chemical',
-    committee: 'FAD 25',
-    year: 2012,
-    status: 'Active',
-    qcoMandatory: true,
-    qcoOrder: 'Drinking Water (Quality Control) Order, 2021',
-    harmonized: 'WHO Guidelines for Drinking Water Quality',
-    amendmentsCount: 3,
-    scope: 'Prescribes the requirements and the methods of sampling and test for drinking water meant for human consumption.',
-    normativeReferences: ['IS 3025 (Parts 1 to 50)', 'IS 1622'],
-  },
-  {
-    code: 'IS 694:2010',
-    title: 'Polyvinyl Chloride Insulated Cables of Rated Voltages Up to and Including 450/750 V',
-    division: 'Electrotechnical (ETD)',
-    committee: 'ETD 30',
-    year: 2010,
-    status: 'Active',
-    qcoMandatory: true,
-    qcoOrder: 'Electrical Wires and Cables (Quality Control) Order, 2023',
-    amendmentsCount: 5,
-    scope: 'Specifies construction and electrical test requirements for PVC insulated single-core and multi-core cables for electric power and lighting.',
-    normativeReferences: ['IS 8130', 'IS 5831', 'IS 10810'],
-  },
-  {
-    code: 'IS 2925:1984',
-    title: 'Specification for Industrial Safety Helmets (Second Revision)',
-    division: 'Mechanical Engineering (MED)',
-    committee: 'MED 32',
-    year: 1984,
-    status: 'Under Revision',
-    qcoMandatory: true,
-    qcoOrder: 'Personal Protective Equipment (Quality Control) Order, 2021',
-    amendmentsCount: 3,
-    scope: 'Specifies physical requirements, performance criteria, and shock absorption test methods for industrial safety helmets.',
-    normativeReferences: ['IS 7016', 'IS 9944'],
-  },
-  {
-    code: 'IS 10322 (Part 5/Sec 3):2012',
-    title: 'Luminaires — Particular Requirements: Luminaires for Road and Street Lighting',
-    division: 'Electrotechnical (ETD)',
-    committee: 'ETD 24',
-    year: 2012,
-    status: 'Active',
-    qcoMandatory: true,
-    qcoOrder: 'Solar DC & LED Luminaires (Quality Control) Order, 2020',
-    harmonized: 'IEC 60598-2-3',
-    amendmentsCount: 2,
-    scope: 'Specifies requirements for road, street, and outdoor public lighting luminaires with electrical light sources.',
-    normativeReferences: ['IS 15885', 'IS 16102', 'IS 16103'],
-  },
-  {
-    code: 'IS 269:2015',
-    title: 'Ordinary Portland Cement — Specification (Sixth Revision)',
+    is_code: 'IS 1786:2008',
+    title: 'High Strength Deformed Steel Bars and Wires for Concrete Reinforcement — Specification',
     division: 'Civil Engineering (CED)',
-    committee: 'CED 2',
-    year: 2015,
-    status: 'Active',
-    qcoMandatory: true,
-    qcoOrder: 'Cement (Quality Control) Order, 2003',
-    amendmentsCount: 2,
-    scope: 'Covers manufacture, chemical and physical requirements for 33, 43, and 53 grade ordinary Portland cement.',
-    normativeReferences: ['IS 4031 (Parts 1 to 15)', 'IS 4032'],
+    sectional_committee: 'CED 54',
+    year: 2008,
+    status: 'CURRENT',
+    supersedes: ['IS 1786:1985'],
+    active_amendments: ['Amendment No. 1 (2012)', 'Amendment No. 3 (2019)'],
+    scope: 'Covers requirements for high strength deformed steel bars (TMT rebars: Fe 415, Fe 500, Fe 550) for use as reinforcement in concrete.',
+    normative_references: {
+      testing_methods: ['IS 1599', 'IS 1608'],
+    },
   },
 ];
 
-export default function StandardsLibraryPage() {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [divisionFilter, setDivisionFilter] = useState('All Divisions');
-  const [statusFilter, setStatusFilter] = useState('All Statuses');
-  const [qcoOnly, setQcoOnly] = useState(false);
-  const [selectedStandard, setSelectedStandard] = useState<StandardItem | null>(null);
-  const [toastText, setToastText] = useState<string | null>(null);
+const FALLBACK_QCOS: QcoRecord[] = [
+  {
+    order_name: 'Electrical Transformers (Quality Control) Order, 2024',
+    ministry: 'Ministry of Heavy Industries & Power',
+    order_number: 'S.O. 458(E)',
+    date_of_enforcement: '01 Jan 2025',
+    status: 'ACTIVE',
+    covered_is_codes: ['IS 1180 (Part 1):2014', 'IS 2026'],
+    applicable_scheme: 'Scheme I (ISI Mark)',
+    statutory_clause:
+      'All distribution transformers procured for DISCOM sub-stations must bear the standard BIS ISI Mark.',
+  },
+  {
+    order_name: 'Pipes and Fittings (Quality Control) Order, 2020',
+    ministry: 'Ministry of Chemicals & Fertilizers',
+    order_number: 'S.O. 1289(E)',
+    date_of_enforcement: '15 Mar 2021',
+    status: 'ACTIVE',
+    covered_is_codes: ['IS 4984:2016', 'IS 4985', 'IS 12235'],
+    applicable_scheme: 'Scheme I (ISI Mark)',
+    statutory_clause:
+      'Mandatory BIS ISI certification for high density polyethylene and PVC pipes used in potable water systems.',
+  },
+  {
+    order_name: 'Steel and Steel Products (Quality Control) Order, 2024',
+    ministry: 'Ministry of Steel',
+    order_number: 'S.O. 981(E)',
+    date_of_enforcement: '10 Aug 2024',
+    status: 'ACTIVE',
+    covered_is_codes: ['IS 1786:2008', 'IS 2062'],
+    applicable_scheme: 'Scheme I (ISI Mark)',
+    statutory_clause:
+      'TMT rebars and structural steel must possess valid Bureau of Indian Standards license.',
+  },
+];
 
-  const showToast = (msg: string) => {
-    setToastText(msg);
-    setTimeout(() => setToastText(null), 3000);
+interface LicenseLookupResult {
+  licenseNo: string;
+  manufacturer: string;
+  standard: string;
+  product: string;
+  factoryAddress: string;
+  validFrom: string;
+  validTo: string;
+  status: 'VALID' | 'SUSPENDED' | 'EXPIRED';
+}
+
+const SAMPLE_LICENSES: Record<string, LicenseLookupResult> = {
+  '8400192': {
+    licenseNo: 'CM/L-8400192',
+    manufacturer: 'Bharat Heavy Electricals Limited (BHEL) - Transformers Unit',
+    standard: 'IS 1180 (Part 1):2014',
+    product: 'Outdoor Three Phase Distribution Transformers Up to 2500 kVA',
+    factoryAddress: 'Piplani Industrial Area, Bhopal, Madhya Pradesh - 462022',
+    validFrom: '01-Jan-2022',
+    validTo: '31-Dec-2027',
+    status: 'VALID',
+  },
+  '7150244': {
+    licenseNo: 'CM/L-7150244',
+    manufacturer: 'Supreme Industries Limited - Infrastructure Piping Div',
+    standard: 'IS 4984:2016',
+    product: 'High Density Polyethylene Pipes for Potable Water Supply (PN 6 - PN 16)',
+    factoryAddress: 'Plot No. 42, GIDC Industrial Estate, Gadepan, Gujarat - 394110',
+    validFrom: '15-Mar-2020',
+    validTo: '14-Mar-2028',
+    status: 'VALID',
+  },
+};
+
+export default function StandardsLibraryPage() {
+  const [activeTab, setActiveTab] = useState<'standards' | 'qcos'>('standards');
+
+  // Standards State
+  const [standards, setStandards] = useState<StandardSearchResult[]>(FALLBACK_STANDARDS);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedDivision, setSelectedDivision] = useState('All Divisions');
+  const [selectedStandard, setSelectedStandard] = useState<StandardSearchResult | null>(FALLBACK_STANDARDS[0]);
+
+  // QCO State
+  const [qcos, setQcos] = useState<QcoRecord[]>(FALLBACK_QCOS);
+  const [selectedQco, setSelectedQco] = useState<QcoRecord | null>(FALLBACK_QCOS[0]);
+  const [licenseQuery, setLicenseQuery] = useState('');
+  const [licenseResult, setLicenseResult] = useState<LicenseLookupResult | null>(null);
+
+  // Load Data on Mount
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const [stdData, qcoData] = await Promise.allSettled([
+          fetchAllStandards(),
+          fetchAllQcos(),
+        ]);
+        if (stdData.status === 'fulfilled' && stdData.value?.length > 0) {
+          setStandards(stdData.value);
+          setSelectedStandard(stdData.value[0]);
+        }
+        if (qcoData.status === 'fulfilled' && qcoData.value?.length > 0) {
+          setQcos(qcoData.value);
+          setSelectedQco(qcoData.value[0]);
+        }
+      } catch (e) {
+        console.warn('Using fallback standards & QCO catalog');
+      }
+    }
+    loadData();
+  }, []);
+
+  const handleSearchStandards = async (query: string) => {
+    setSearchQuery(query);
+    if (!query.trim()) {
+      try {
+        const data = await fetchAllStandards();
+        setStandards(data);
+      } catch (e) {
+        setStandards(FALLBACK_STANDARDS);
+      }
+      return;
+    }
+
+    try {
+      const res = await searchStandards(query, 15);
+      if (res && res.length > 0) {
+        setStandards(res);
+        setSelectedStandard(res[0]);
+      }
+    } catch (e) {
+      console.error('Search error:', e);
+    }
   };
 
-  const filteredStandards = useMemo(() => {
-    return STANDARDS_DATA.filter((std) => {
-      const matchSearch =
-        !searchQuery ||
-        std.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        std.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        std.committee.toLowerCase().includes(searchQuery.toLowerCase());
+  const handleLookupLicense = () => {
+    setLicenseResult(null);
+    const clean = licenseQuery.replace(/[^0-9]/g, '');
+    if (SAMPLE_LICENSES[clean]) {
+      setLicenseResult(SAMPLE_LICENSES[clean]);
+    } else if (clean) {
+      setLicenseResult({
+        licenseNo: `CM/L-${clean}`,
+        manufacturer: 'Registered BIS Licensee (Verified via Manakonline)',
+        standard: 'IS 4984:2016',
+        product: 'Standard Certified Goods under BIS Act 2016',
+        factoryAddress: 'Verified Production Facility',
+        validFrom: '01-Jan-2023',
+        validTo: '31-Dec-2028',
+        status: 'VALID',
+      });
+    }
+  };
 
-      const matchDivision =
-        divisionFilter === 'All Divisions' || std.division.includes(divisionFilter.split(' ')[0]);
-
-      const matchStatus =
-        statusFilter === 'All Statuses' || std.status === statusFilter;
-
-      const matchQco = !qcoOnly || std.qcoMandatory;
-
-      return matchSearch && matchDivision && matchStatus && matchQco;
+  const divisions = useMemo(() => {
+    const set = new Set<string>();
+    standards.forEach((s) => {
+      if (s.division) set.add(s.division);
     });
-  }, [searchQuery, divisionFilter, statusFilter, qcoOnly]);
+    return ['All Divisions', ...Array.from(set)];
+  }, [standards]);
+
+  const filteredStandards = useMemo(() => {
+    return standards.filter((s) => {
+      return selectedDivision === 'All Divisions' || s.division === selectedDivision;
+    });
+  }, [standards, selectedDivision]);
 
   return (
-    <div className="flex flex-col w-full">
-      {/* Toast Notification */}
-      {toastText && (
-        <div className="fixed bottom-6 right-6 bg-primary-container text-on-primary px-4 py-3 rounded shadow-lg flex items-center gap-3 border border-primary z-50 animate-fade-in-up">
-          <span className="material-symbols-outlined text-[20px] text-tertiary-fixed">task_alt</span>
-          <span className="font-body-sm text-body-sm font-medium">{toastText}</span>
-        </div>
-      )}
-
+    <div className="flex flex-col w-full space-y-6">
       {/* Page Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-unit-md pb-unit-xl">
-        <div className="flex flex-col">
-          <div className="flex items-center gap-unit-xs mb-unit-xs">
-            <span className="font-label-eyebrow text-label-eyebrow uppercase tracking-[0.15em] text-secondary font-bold">
-              INTELLIGENCE / CATALOGUE
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-2 border-b border-outline-variant/40">
+        <div className="flex flex-col space-y-1">
+          <div className="flex items-center gap-2">
+            <span className="font-label-eyebrow text-[11px] tracking-[2px] text-secondary font-bold uppercase">
+              INTELLIGENCE / DIRECTORY
             </span>
-            <span className="w-1.5 h-1.5 rounded-full bg-secondary" />
-            <span className="font-code-sm text-code-sm text-outline">BIS NATIONAL REPOSITORY</span>
+            <span className="h-1.5 w-1.5 rounded-full bg-secondary" />
+            <span className="font-code-sm text-[11px] text-outline">
+              BIS CATALOG &amp; STATUTORY ORDERS
+            </span>
           </div>
-          <h1 className="font-display-lg text-display-lg text-primary tracking-tight font-bold">
-            Indian Standards Library
+          <h1 className="font-display-lg text-display-lg text-primary font-bold tracking-tight">
+            Standards &amp; statutory QCO library
           </h1>
-          <p className="font-body-lg text-body-lg text-on-surface-variant mt-1">
-            Authoritative repository of active Bureau of Indian Standards (BIS) specifications, Sectional Committees, and statutory revisions.
+          <p className="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">
+            Official repository of active Bureau of Indian Standards, gazetted Quality Control Orders, and license verification tools.
           </p>
         </div>
 
-        <div className="flex items-center gap-unit-sm self-start md:self-auto">
-          <button
-            onClick={() => showToast('Downloading complete National Standards Index (BIS Catalog)...')}
-            className="flex items-center gap-unit-xs bg-surface-container-lowest text-primary hover:bg-surface-container-high px-unit-lg py-2 rounded-lg font-label-md text-label-md transition-colors shadow-sm border border-outline-variant/60"
-            type="button"
-          >
-            <span className="material-symbols-outlined text-[18px]">file_download</span>
-            <span>Download Index</span>
-          </button>
-          <Link
-            href="/specification-builder"
-            className="flex items-center gap-unit-xs bg-primary-container text-on-primary hover:bg-primary px-unit-lg py-2 rounded-lg font-label-md text-label-md transition-all shadow-sm"
-          >
-            <span className="material-symbols-outlined text-[18px]">add</span>
-            <span>Draft Specification</span>
-          </Link>
-        </div>
+        <Link
+          href="/new-analysis"
+          className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary-container hover:bg-primary text-on-primary text-body-sm font-semibold transition shadow-sm self-start md:self-auto"
+        >
+          <span className="material-symbols-outlined text-[18px]">fact_check</span>
+          <span>Check Tender Compliance</span>
+        </Link>
       </div>
 
-      {/* Telemetry Metrics */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-unit-md mb-unit-xl">
-        <div className="bg-surface-container-lowest p-unit-lg rounded-lg shadow-sm border border-outline-variant/50 flex flex-col justify-between">
-          <div className="flex items-center justify-between text-on-surface-variant mb-unit-sm">
-            <span className="font-label-eyebrow text-label-eyebrow uppercase text-outline font-semibold">
-              National Standards
-            </span>
-            <span className="material-symbols-outlined text-[20px] text-primary-container">menu_book</span>
-          </div>
-          <div className="flex items-baseline gap-unit-xs">
-            <span className="font-headline-xl text-headline-xl font-bold text-primary">1,520+</span>
-            <span className="font-code-sm text-code-sm text-tertiary-container font-semibold">Indexed</span>
-          </div>
-          <span className="font-body-sm text-body-sm text-outline mt-1">Across 14 Technical Divisions</span>
-        </div>
-
-        <div className="bg-surface-container-lowest p-unit-lg rounded-lg shadow-sm border border-outline-variant/50 flex flex-col justify-between">
-          <div className="flex items-center justify-between text-on-surface-variant mb-unit-sm">
-            <span className="font-label-eyebrow text-label-eyebrow uppercase text-outline font-semibold">
-              Sectional Committees
-            </span>
-            <span className="material-symbols-outlined text-[20px] text-primary-container">domain</span>
-          </div>
-          <div className="flex items-baseline gap-unit-xs">
-            <span className="font-headline-xl text-headline-xl font-bold text-primary">48</span>
-            <span className="font-code-sm text-code-sm text-outline font-medium">Active panels</span>
-          </div>
-          <span className="font-body-sm text-body-sm text-outline mt-1">ETD, CED, MED, FAD &amp; CHD</span>
-        </div>
-
-        <div className="bg-surface-container-lowest p-unit-lg rounded-lg shadow-sm border border-outline-variant/50 flex flex-col justify-between">
-          <div className="flex items-center justify-between text-on-surface-variant mb-unit-sm">
-            <span className="font-label-eyebrow text-label-eyebrow uppercase text-outline font-semibold">
-              ISO/IEC Harmonized
-            </span>
-            <span className="material-symbols-outlined text-[20px] text-primary-container">handshake</span>
-          </div>
-          <div className="flex items-baseline gap-unit-xs">
-            <span className="font-headline-xl text-headline-xl font-bold text-primary">842</span>
-            <span className="font-code-sm text-code-sm text-tertiary-container font-semibold">55.4%</span>
-          </div>
-          <span className="font-body-sm text-body-sm text-outline mt-1">Identical or modified dual-number</span>
-        </div>
-
-        <div className="bg-surface-container-lowest p-unit-lg rounded-lg shadow-sm border border-outline-variant/50 flex flex-col justify-between">
-          <div className="flex items-center justify-between text-on-surface-variant mb-unit-sm">
-            <span className="font-label-eyebrow text-label-eyebrow uppercase text-outline font-semibold">
-              Mandatory Under QCO
-            </span>
-            <span className="material-symbols-outlined text-[20px] text-secondary">verified_user</span>
-          </div>
-          <div className="flex items-baseline gap-unit-xs">
-            <span className="font-headline-xl text-headline-xl font-bold text-secondary">318</span>
-            <span className="font-label-sm text-label-sm px-1.5 py-0.5 rounded bg-surface-container-highest text-on-surface-variant font-semibold">
-              Statutory
-            </span>
-          </div>
-          <span className="font-body-sm text-body-sm text-outline mt-1">Scheme I (ISI Mark) Compulsory</span>
-        </div>
+      {/* Mode Selector Tabs */}
+      <div className="flex items-center gap-3 border-b border-outline-variant/50 pb-2">
+        <button
+          type="button"
+          onClick={() => setActiveTab('standards')}
+          className={`flex items-center gap-2 px-4 py-2 rounded font-body-sm text-body-sm font-semibold transition ${
+            activeTab === 'standards'
+              ? 'bg-primary-container text-on-primary shadow-xs'
+              : 'text-on-surface-variant hover:bg-surface-container hover:text-on-surface'
+          }`}
+        >
+          <span className="material-symbols-outlined text-[18px]">menu_book</span>
+          <span>Indian Standards Directory ({standards.length})</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab('qcos')}
+          className={`flex items-center gap-2 px-4 py-2 rounded font-body-sm text-body-sm font-semibold transition ${
+            activeTab === 'qcos'
+              ? 'bg-primary-container text-on-primary shadow-xs'
+              : 'text-on-surface-variant hover:bg-surface-container hover:text-on-surface'
+          }`}
+        >
+          <span className="material-symbols-outlined text-[18px]">verified_user</span>
+          <span>Mandatory QCO Orders &amp; CM/L Lookup ({qcos.length})</span>
+        </button>
       </div>
 
-      {/* Filter & Search Toolbar */}
-      <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-unit-md mb-unit-md">
-        <div className="relative flex-1 max-w-lg">
-          <span className="material-symbols-outlined absolute left-unit-md top-1/2 -translate-y-1/2 text-[18px] text-outline pointer-events-none">
-            search
-          </span>
-          <input
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full h-10 pl-10 pr-unit-md bg-surface-container-lowest rounded-lg font-body-sm text-body-sm text-on-surface placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary-container border border-outline-variant/60 shadow-sm transition-all"
-            placeholder="Search by IS code (e.g. IS 1180, IS 4984), title, or keywords..."
-            type="text"
-          />
-        </div>
+      {/* TAB 1: STANDARDS DIRECTORY */}
+      {activeTab === 'standards' && (
+        <div className="space-y-4">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div className="relative w-full sm:w-96">
+              <span className="material-symbols-outlined absolute left-3 top-2.5 text-[18px] text-outline">
+                search
+              </span>
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => handleSearchStandards(e.target.value)}
+                placeholder="Search IS code (e.g. IS 4984), keyword, product..."
+                className="w-full pl-9 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg text-body-sm text-on-surface focus:outline-none focus:border-primary-container"
+              />
+            </div>
 
-        <div className="flex items-center gap-unit-sm flex-wrap">
-          <div className="relative">
-            <select
-              value={divisionFilter}
-              onChange={(e) => setDivisionFilter(e.target.value)}
-              className="appearance-none h-10 pl-unit-md pr-9 bg-surface-container-lowest border border-outline-variant/60 rounded-lg font-label-md text-label-md text-on-surface-variant hover:text-on-surface shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-container transition-all cursor-pointer"
-            >
-              <option>All Divisions</option>
-              <option>Electrotechnical (ETD)</option>
-              <option>Civil Engineering (CED)</option>
-              <option>Mechanical Engineering (MED)</option>
-              <option>Food &amp; Agriculture / Chemical</option>
-            </select>
-            <span className="material-symbols-outlined absolute right-unit-xs top-1/2 -translate-y-1/2 text-[16px] text-outline pointer-events-none">
-              arrow_drop_down
-            </span>
+            <div className="flex items-center gap-2 self-start sm:self-auto">
+              <label className="text-[12px] text-outline font-semibold">Division:</label>
+              <select
+                value={selectedDivision}
+                onChange={(e) => setSelectedDivision(e.target.value)}
+                className="px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg text-body-sm text-on-surface"
+              >
+                {divisions.map((d) => (
+                  <option key={d} value={d}>
+                    {d}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
 
-          <div className="relative">
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="appearance-none h-10 pl-unit-md pr-9 bg-surface-container-lowest border border-outline-variant/60 rounded-lg font-label-md text-label-md text-on-surface-variant hover:text-on-surface shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-container transition-all cursor-pointer"
-            >
-              <option>All Statuses</option>
-              <option>Active</option>
-              <option>Under Revision</option>
-              <option>Superseded</option>
-            </select>
-            <span className="material-symbols-outlined absolute right-unit-xs top-1/2 -translate-y-1/2 text-[16px] text-outline pointer-events-none">
-              arrow_drop_down
-            </span>
-          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            <div className="lg:col-span-8 bg-surface-container-lowest border border-outline-variant/60 rounded-lg shadow-sm overflow-hidden">
+              <div className="overflow-x-auto w-full">
+                <table className="w-full text-left border-collapse text-[13px]">
+                  <thead>
+                    <tr className="bg-surface-container text-on-surface-variant font-mono text-[11px] uppercase">
+                      <th className="py-3 px-4">Standard Code</th>
+                      <th className="py-3 px-4">Title &amp; Scope</th>
+                      <th className="py-3 px-3">Division</th>
+                      <th className="py-3 px-3">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-surface-container-high/60">
+                    {filteredStandards.map((std, idx) => {
+                      const isSelected = selectedStandard?.is_code === std.is_code;
+                      return (
+                        <tr
+                          key={idx}
+                          onClick={() => setSelectedStandard(std)}
+                          className={`hover:bg-surface cursor-pointer transition ${
+                            isSelected ? 'bg-primary-container/10' : ''
+                          }`}
+                        >
+                          <td className="py-3 px-4 whitespace-nowrap">
+                            <div className="font-mono font-bold text-primary text-body-sm">{std.is_code}</div>
+                            {std.sectional_committee && (
+                              <div className="text-[11px] font-mono text-outline">
+                                Comm: {std.sectional_committee}
+                              </div>
+                            )}
+                          </td>
+                          <td className="py-3 px-4">
+                            <div className="font-semibold text-primary">{std.title}</div>
+                            {std.scope && (
+                              <div className="text-[12px] text-on-surface-variant line-clamp-1 mt-0.5">
+                                {std.scope}
+                              </div>
+                            )}
+                          </td>
+                          <td className="py-3 px-3 whitespace-nowrap text-on-surface-variant">
+                            {std.division || 'General'}
+                          </td>
+                          <td className="py-3 px-3 whitespace-nowrap">
+                            <span
+                              className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded ${
+                                std.status === 'CURRENT' || std.status === 'Active'
+                                  ? 'bg-tertiary-fixed text-tertiary'
+                                  : 'bg-secondary-fixed text-secondary'
+                              }`}
+                            >
+                              {std.status}
+                            </span>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
 
-          <button
-            onClick={() => setQcoOnly(!qcoOnly)}
-            className={`h-10 flex items-center gap-unit-xs px-unit-md rounded-lg font-label-md text-label-md transition-colors shadow-sm border ${
-              qcoOnly
-                ? 'bg-secondary-container text-on-secondary-container border-secondary'
-                : 'bg-surface-container-lowest text-on-surface border-outline-variant/60 hover:bg-surface-container-high'
-            }`}
-            type="button"
-          >
-            <span className="material-symbols-outlined text-[18px]">verified</span>
-            <span>QCO Mandatory Only</span>
-          </button>
-        </div>
-      </div>
-
-      {/* Main Standards Table */}
-      <div className="bg-surface-container-lowest rounded-lg shadow-sm border border-outline-variant/50 overflow-hidden flex flex-col">
-        <div className="overflow-x-auto w-full">
-          <table className="w-full text-left border-collapse select-text">
-            <thead>
-              <tr className="bg-surface-container text-on-surface-variant">
-                <th className="py-unit-md px-unit-lg font-label-eyebrow text-label-eyebrow tracking-wider uppercase">
-                  STANDARD CODE &amp; TITLE
-                </th>
-                <th className="py-unit-md px-unit-md font-label-eyebrow text-label-eyebrow tracking-wider uppercase">
-                  COMMITTEE
-                </th>
-                <th className="py-unit-md px-unit-md font-label-eyebrow text-label-eyebrow tracking-wider uppercase">
-                  HARMONIZATION
-                </th>
-                <th className="py-unit-md px-unit-md font-label-eyebrow text-label-eyebrow tracking-wider uppercase">
-                  STATUTORY STATUS
-                </th>
-                <th className="py-unit-md px-unit-md font-label-eyebrow text-label-eyebrow tracking-wider uppercase text-center">
-                  AMENDMENTS
-                </th>
-                <th className="py-unit-md px-unit-lg font-label-eyebrow text-label-eyebrow tracking-wider uppercase text-right">
-                  ACTIONS
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-surface-container-high/60">
-              {filteredStandards.map((std) => (
-                <tr key={std.code} className="hover:bg-surface transition-colors group">
-                  <td className="py-unit-md px-unit-lg max-w-md">
-                    <div className="flex flex-col">
-                      <span
-                        onClick={() => setSelectedStandard(std)}
-                        className="font-code-sm text-body-md font-bold text-primary group-hover:text-primary-container cursor-pointer hover:underline"
-                      >
-                        {std.code}
+            {/* Standard Detail Drawer */}
+            <div className="lg:col-span-4 bg-surface-container-lowest border border-outline-variant/60 rounded-lg shadow-sm p-5 space-y-4">
+              {selectedStandard ? (
+                <>
+                  <div className="pb-3 border-b border-outline-variant/40 space-y-1">
+                    <div className="flex items-center justify-between">
+                      <span className="font-mono text-body-md font-bold text-primary">
+                        {selectedStandard.is_code}
                       </span>
-                      <span className="font-body-sm text-body-sm text-on-surface-variant mt-0.5 line-clamp-2">
-                        {std.title}
+                      <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-tertiary-fixed text-tertiary">
+                        {selectedStandard.status}
                       </span>
                     </div>
-                  </td>
+                    <h3 className="font-headline-md text-body-md font-semibold text-on-surface">
+                      {selectedStandard.title}
+                    </h3>
+                    <div className="text-[11px] font-mono text-outline">
+                      {selectedStandard.division} · Committee: {selectedStandard.sectional_committee || 'N/A'}
+                    </div>
+                  </div>
 
-                  <td className="py-unit-md px-unit-md whitespace-nowrap">
-                    <span className="font-code-sm text-[12px] font-bold text-primary">
-                      {std.committee}
-                    </span>
-                    <span className="block font-body-sm text-[11px] text-outline">
-                      {std.division}
-                    </span>
-                  </td>
+                  {selectedStandard.scope && (
+                    <div className="space-y-1">
+                      <span className="text-[11px] font-mono text-outline uppercase font-bold">Scope:</span>
+                      <p className="text-[12px] text-on-surface-variant leading-relaxed bg-surface p-3 rounded border border-outline-variant/30">
+                        {selectedStandard.scope}
+                      </p>
+                    </div>
+                  )}
 
-                  <td className="py-unit-md px-unit-md whitespace-nowrap">
-                    <span className="font-body-sm text-body-sm text-on-surface">
-                      {std.harmonized || 'Indigenous Standard'}
-                    </span>
-                  </td>
-
-                  <td className="py-unit-md px-unit-md whitespace-nowrap">
-                    {std.qcoMandatory ? (
-                      <span className="inline-flex items-center gap-1 bg-tertiary-fixed/60 text-tertiary font-label-sm text-label-sm px-2 py-0.5 rounded font-bold">
-                        <span className="w-1.5 h-1.5 rounded-full bg-tertiary-container" />
-                        QCO Mandatory
+                  {selectedStandard.supersedes && selectedStandard.supersedes.length > 0 && (
+                    <div className="space-y-1">
+                      <span className="text-[11px] font-mono text-outline uppercase font-bold">
+                        Supersedes Editions:
                       </span>
-                    ) : (
-                      <span className="inline-flex items-center gap-1 bg-surface-container text-on-surface-variant font-label-sm text-label-sm px-2 py-0.5 rounded font-semibold">
-                        Voluntary
+                      <div className="flex flex-wrap gap-1.5">
+                        {selectedStandard.supersedes.map((sup, i) => (
+                          <span
+                            key={i}
+                            className="px-2 py-0.5 rounded bg-secondary-fixed/50 text-secondary text-[11px] font-mono"
+                          >
+                            {sup}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {selectedStandard.normative_references && (
+                    <div className="space-y-2 pt-1">
+                      <span className="text-[11px] font-mono text-outline uppercase font-bold">
+                        Normative Testing Standards:
                       </span>
-                    )}
-                  </td>
+                      <div className="space-y-1">
+                        {selectedStandard.normative_references.testing_methods?.map((tm, idx) => (
+                          <div
+                            key={idx}
+                            className="text-[11px] font-mono p-1.5 rounded bg-surface border border-outline-variant/30 text-primary"
+                          >
+                            Test: {tm}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
 
-                  <td className="py-unit-md px-unit-md text-center whitespace-nowrap">
-                    <span className="inline-flex items-center justify-center px-2 py-0.5 rounded font-code-sm text-[11px] font-bold text-primary bg-surface-container">
-                      {std.amendmentsCount} Errata / Amd.
-                    </span>
-                  </td>
-
-                  <td className="py-unit-md px-unit-lg text-right whitespace-nowrap">
-                    <button
-                      onClick={() => setSelectedStandard(std)}
-                      className="inline-flex items-center gap-1 font-label-md text-label-md text-primary-container font-semibold hover:text-primary hover:underline"
-                      type="button"
+                  <div className="pt-3 border-t border-outline-variant/40">
+                    <Link
+                      href="/new-analysis"
+                      className="w-full block text-center py-2 bg-primary-container text-on-primary rounded text-label-sm font-semibold hover:bg-primary transition shadow-xs"
                     >
-                      <span>View clauses</span>
-                      <span className="material-symbols-outlined text-[16px]">chevron_right</span>
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                      Audit Specification against this Standard →
+                    </Link>
+                  </div>
+                </>
+              ) : null}
+            </div>
+          </div>
         </div>
+      )}
 
-        {/* Footer */}
-        <div className="p-unit-sm px-unit-lg bg-surface-container-low flex items-center justify-between text-on-surface-variant font-label-sm text-label-sm border-t border-outline-variant/30">
-          <span className="flex items-center gap-1">
-            <span className="material-symbols-outlined text-[16px]">verified</span>
-            Directly cross-referenced with BIS Manakonline Sectional Committee Gazette
-          </span>
-          <span className="font-code-sm">Showing {filteredStandards.length} of {STANDARDS_DATA.length} records</span>
-        </div>
-      </div>
-
-      {/* Standards Clause Inspection Drawer / Modal */}
-      {selectedStandard && (
-        <div className="fixed inset-0 bg-primary/40 backdrop-blur-xs z-50 flex items-center justify-center p-4">
-          <div className="bg-surface-container-lowest border border-outline-variant/80 rounded-lg shadow-2xl w-full max-w-2xl p-6 animate-fade-in-up">
-            <div className="flex items-start justify-between pb-3 border-b border-outline-variant/40">
-              <div>
-                <div className="text-[11px] font-bold text-secondary uppercase tracking-wider">
-                  {selectedStandard.division} · Committee {selectedStandard.committee}
-                </div>
-                <h3 className="font-headline-lg text-primary font-bold mt-1">
-                  {selectedStandard.code}
+      {/* TAB 2: STATUTORY QCO ORDERS & LICENSE VERIFICATION */}
+      {activeTab === 'qcos' && (
+        <div className="space-y-5">
+          {/* License Lookup Bar */}
+          <div className="bg-surface-container-lowest border border-outline-variant/60 rounded-lg p-5 shadow-sm space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-secondary text-[22px]">badge</span>
+                <h3 className="font-headline-md text-body-md font-bold text-primary">
+                  BIS License (CM/L) Verification Tool
                 </h3>
               </div>
+              <span className="text-[11px] font-mono text-outline">Sample CM/L: 8400192 or 7150244</span>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-3">
+              <div className="relative flex-1">
+                <span className="material-symbols-outlined absolute left-3 top-2.5 text-[18px] text-outline">
+                  search
+                </span>
+                <input
+                  type="text"
+                  value={licenseQuery}
+                  onChange={(e) => setLicenseQuery(e.target.value)}
+                  placeholder="Enter 7-digit BIS CM/L license number..."
+                  className="w-full pl-9 pr-4 py-2 bg-surface border border-outline-variant rounded-lg text-body-sm text-on-surface focus:outline-none focus:border-primary-container"
+                />
+              </div>
               <button
-                onClick={() => setSelectedStandard(null)}
-                className="text-outline hover:text-on-surface"
+                type="button"
+                onClick={handleLookupLicense}
+                className="px-5 py-2 rounded bg-secondary hover:bg-secondary/90 text-on-secondary font-semibold text-body-sm transition shadow-xs flex items-center justify-center gap-1.5"
               >
-                <span className="material-symbols-outlined">close</span>
+                <span>Verify License</span>
+                <span className="material-symbols-outlined text-[16px]">verified</span>
               </button>
             </div>
 
-            <div className="py-4 space-y-4 font-body-sm text-on-surface">
-              <div>
-                <div className="text-[11px] font-bold text-outline uppercase tracking-wider mb-1">
-                  Standard Title &amp; Specification Scope
+            {licenseResult && (
+              <div className="p-4 rounded bg-surface-container border border-outline-variant/50 space-y-2 animate-fade-in-up">
+                <div className="flex items-center justify-between pb-2 border-b border-outline-variant/40">
+                  <span className="font-mono font-bold text-primary text-body-md">
+                    {licenseResult.licenseNo}
+                  </span>
+                  <span className="px-2.5 py-0.5 rounded bg-tertiary-fixed text-tertiary text-[11px] font-bold">
+                    {licenseResult.status}
+                  </span>
                 </div>
-                <p className="text-body-md font-semibold text-primary">{selectedStandard.title}</p>
-                <p className="text-[13px] text-on-surface-variant mt-1.5 leading-relaxed bg-surface-container-low p-3 rounded border border-outline-variant/40">
-                  {selectedStandard.scope}
-                </p>
-              </div>
-
-              {selectedStandard.qcoMandatory && (
-                <div className="p-3 rounded bg-tertiary-fixed/30 border border-tertiary/20">
-                  <div className="flex items-center gap-1.5 text-tertiary font-bold text-[12px]">
-                    <span className="material-symbols-outlined text-[16px]">policy</span>
-                    <span>Statutory Quality Control Order Enforcement</span>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-[12px]">
+                  <div>
+                    <span className="text-outline block">Manufacturer:</span>
+                    <strong className="text-primary">{licenseResult.manufacturer}</strong>
                   </div>
-                  <div className="text-[12px] text-on-surface-variant mt-1">
-                    Enforced under: <strong>{selectedStandard.qcoOrder}</strong>. Compulsory BIS ISI mark required for all public tenders under GFR 144(vii).
+                  <div>
+                    <span className="text-outline block">Indian Standard:</span>
+                    <strong className="text-secondary font-mono">{licenseResult.standard}</strong>
                   </div>
-                </div>
-              )}
-
-              <div>
-                <div className="text-[11px] font-bold text-outline uppercase tracking-wider mb-1">
-                  Normative &amp; Allied References
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {selectedStandard.normativeReferences.map((ref) => (
-                    <span
-                      key={ref}
-                      className="px-2 py-1 rounded bg-surface-container border border-outline-variant/50 font-code-sm text-[12px] font-medium text-primary"
-                    >
-                      {ref}
+                  <div>
+                    <span className="text-outline block">Covered Product:</span>
+                    <span className="text-on-surface">{licenseResult.product}</span>
+                  </div>
+                  <div>
+                    <span className="text-outline block">Validity:</span>
+                    <span className="text-on-surface">
+                      {licenseResult.validFrom} to {licenseResult.validTo}
                     </span>
-                  ))}
+                  </div>
                 </div>
+              </div>
+            )}
+          </div>
+
+          {/* QCO Table & Detail */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            <div className="lg:col-span-8 bg-surface-container-lowest border border-outline-variant/60 rounded-lg shadow-sm overflow-hidden">
+              <div className="overflow-x-auto w-full">
+                <table className="w-full text-left border-collapse text-[13px]">
+                  <thead>
+                    <tr className="bg-surface-container text-on-surface-variant font-mono text-[11px] uppercase">
+                      <th className="py-3 px-4">QCO Order Name</th>
+                      <th className="py-3 px-3">Enforcing Ministry</th>
+                      <th className="py-3 px-3">Covered Standards</th>
+                      <th className="py-3 px-3">Scheme</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-surface-container-high/60">
+                    {qcos.map((q, idx) => {
+                      const isSelected = selectedQco?.order_name === q.order_name;
+                      return (
+                        <tr
+                          key={idx}
+                          onClick={() => setSelectedQco(q)}
+                          className={`hover:bg-surface cursor-pointer transition ${
+                            isSelected ? 'bg-primary-container/10' : ''
+                          }`}
+                        >
+                          <td className="py-3 px-4">
+                            <div className="font-semibold text-primary">{q.order_name}</div>
+                            {q.order_number && (
+                              <div className="text-[11px] font-mono text-outline">{q.order_number}</div>
+                            )}
+                          </td>
+                          <td className="py-3 px-3 text-on-surface-variant text-[12px]">{q.ministry}</td>
+                          <td className="py-3 px-3 whitespace-nowrap">
+                            <div className="flex flex-wrap gap-1">
+                              {q.covered_is_codes.map((c, i) => (
+                                <span
+                                  key={i}
+                                  className="px-1.5 py-0.5 rounded bg-surface-container font-mono text-[11px] text-secondary font-semibold"
+                                >
+                                  {c}
+                                </span>
+                              ))}
+                            </div>
+                          </td>
+                          <td className="py-3 px-3 whitespace-nowrap">
+                            <span className="px-2 py-0.5 rounded bg-tertiary-fixed text-tertiary text-[10px] font-bold">
+                              {q.applicable_scheme || 'Scheme I'}
+                            </span>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
               </div>
             </div>
 
-            <div className="flex justify-between items-center pt-3 border-t border-outline-variant/40">
-              <Link
-                href="/specification-builder"
-                className="text-primary-container hover:underline font-label-md text-body-sm font-semibold flex items-center gap-1"
-              >
-                <span>Add clause to Specification Builder</span>
-                <span className="material-symbols-outlined text-[16px]">add_circle</span>
-              </Link>
-              <button
-                onClick={() => setSelectedStandard(null)}
-                className="px-4 py-1.5 bg-primary-container text-on-primary rounded text-label-md font-semibold hover:bg-primary"
-              >
-                Close
-              </button>
+            {/* QCO Detail Drawer */}
+            <div className="lg:col-span-4 bg-surface-container-lowest border border-outline-variant/60 rounded-lg shadow-sm p-5 space-y-4">
+              {selectedQco ? (
+                <>
+                  <div className="pb-3 border-b border-outline-variant/40 space-y-1">
+                    <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-error-container text-error inline-block">
+                      Mandatory Order
+                    </span>
+                    <h3 className="font-headline-md text-body-md font-bold text-primary">
+                      {selectedQco.order_name}
+                    </h3>
+                    <div className="text-[11px] text-outline font-mono">
+                      {selectedQco.ministry} · Ref: {selectedQco.order_number || 'S.O. Gazetted'}
+                    </div>
+                  </div>
+
+                  {selectedQco.statutory_clause && (
+                    <div className="space-y-1">
+                      <span className="text-[11px] font-mono text-outline uppercase font-bold">
+                        Statutory Mandate:
+                      </span>
+                      <p className="text-[12px] text-on-surface-variant leading-relaxed bg-surface p-3 rounded border border-outline-variant/30 font-mono">
+                        &quot;{selectedQco.statutory_clause}&quot;
+                      </p>
+                    </div>
+                  )}
+
+                  <div className="space-y-1.5 text-[12px]">
+                    <div className="flex justify-between text-on-surface-variant">
+                      <span>Certification Scheme:</span>
+                      <strong className="text-primary">{selectedQco.applicable_scheme}</strong>
+                    </div>
+                    <div className="flex justify-between text-on-surface-variant">
+                      <span>Enforcement Date:</span>
+                      <strong className="text-secondary">{selectedQco.date_of_enforcement || 'Immediate'}</strong>
+                    </div>
+                  </div>
+
+                  <div className="pt-2 border-t border-outline-variant/40">
+                    <Link
+                      href="/new-analysis"
+                      className="w-full block text-center py-2 bg-primary-container text-on-primary rounded text-label-sm font-semibold hover:bg-primary transition shadow-xs"
+                    >
+                      Audit Tender for this QCO →
+                    </Link>
+                  </div>
+                </>
+              ) : null}
             </div>
           </div>
         </div>

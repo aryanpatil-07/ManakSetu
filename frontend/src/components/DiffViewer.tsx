@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { ArrowRight, CheckCircle2, AlertOctagon, GitCompare } from 'lucide-react';
+import { CheckCircle2, AlertOctagon, GitCompare, ShieldCheck, AlertTriangle } from 'lucide-react';
 
 interface DiffViewerProps {
   originalText: string;
@@ -13,86 +13,88 @@ interface DiffViewerProps {
 export const DiffViewer: React.FC<DiffViewerProps> = ({
   originalText,
   recommendedText,
-  itemTitle = 'Specification Diff & Redline Rectification',
-  reason = 'CVC & BIS compliance modification',
+  itemTitle = 'Statutory Tender Rectification & Redline Audit',
+  reason = 'Upgraded to active Indian Standard revision, mandatory QCO citation inserted, and proprietary brand bias removed pursuant to GFR 2017 Rule 144(vii) & CVC Directives.',
 }) => {
   return (
-    <div className="glass-panel rounded-3xl p-6 md:p-8 border border-slate-800 shadow-2xl space-y-6">
-      
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-800/80 gap-3">
+    <div className="bg-white rounded-md p-5 md:p-6 border border-slate-300 shadow-xs space-y-5">
+      {/* Diff Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3.5 border-b border-slate-200 gap-3">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <span className="font-mono text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-accent-blue/15 text-accent-sky border border-accent-blue/30">
-              REDLINE DIFF
+            <span className="font-mono text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-[#0A2540] text-white">
+              STATUTORY REDLINE
             </span>
-            <span className="text-[10px] font-mono text-slate-400">BEFORE VS. AFTER AUDIT</span>
+            <span className="text-xs font-mono text-slate-500 font-medium">
+              DEFECTIVE DRAFT VS. STATUTORY COMPLIANT NIT
+            </span>
           </div>
-          <h4 className="text-lg font-black text-white flex items-center gap-2">
-            <GitCompare className="w-4 h-4 text-accent-cyan" />
-            {itemTitle}
+          <h4 className="text-base md:text-lg font-bold text-slate-900 flex items-center gap-2">
+            <GitCompare className="w-4 h-4 text-slate-600" />
+            <span>{itemTitle}</span>
           </h4>
         </div>
 
         {reason && (
-          <div className="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-[11px] text-slate-300 max-w-md">
-            <span className="text-slate-500 font-semibold uppercase text-[9px] block">Audit Rationale:</span>
-            {reason}
+          <div className="px-3 py-2 rounded bg-slate-50 border border-slate-200 text-xs text-slate-700 max-w-lg">
+            <span className="text-slate-900 font-bold uppercase text-[10px] font-mono block tracking-wider">
+              Statutory Rectification Scope:
+            </span>
+            <span className="leading-snug block mt-0.5 font-normal">{reason}</span>
           </div>
         )}
       </div>
 
       {/* Side-by-Side Split View */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        
-        {/* Left Column: Flagged / Defective */}
-        <div className="rounded-2xl border border-rose-900/40 bg-rose-950/20 p-5 space-y-3 flex flex-col justify-between">
-          <div className="flex items-center justify-between pb-3 border-b border-rose-900/30">
-            <div className="flex items-center gap-2">
-              <AlertOctagon className="w-4 h-4 text-rose-400" />
-              <span className="text-xs font-bold uppercase tracking-wider text-rose-300 font-mono">
-                Flagged Clause (Defective)
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        {/* Left Column: Flagged / Defective Clause */}
+        <div className="rounded border border-red-300 bg-red-50/40 p-4 space-y-3 flex flex-col justify-between">
+          <div className="flex items-center justify-between pb-2.5 border-b border-red-200">
+            <div className="flex items-center gap-1.5">
+              <AlertOctagon className="w-4 h-4 text-red-700" />
+              <span className="text-xs font-bold uppercase tracking-wider text-red-950 font-mono">
+                Original Draft Clause (Defective)
               </span>
             </div>
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30">
-              NON-COMPLIANT
+            <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-red-100 border border-red-300 text-red-900">
+              NON-CONFORMANT
             </span>
           </div>
-          
-          <div className="text-xs font-mono text-rose-200/90 whitespace-pre-wrap leading-relaxed bg-rose-950/40 p-4 rounded-xl border border-rose-900/30 flex-1">
+
+          <div className="text-xs font-mono text-slate-900 whitespace-pre-wrap leading-relaxed bg-white p-3.5 rounded border border-slate-300 flex-1 select-text">
             {originalText}
           </div>
-          
-          <div className="text-[10px] text-rose-400/80 font-mono">
-            ⚠️ Contains obsolete edition numbers, proprietary brand bias, or missing ISI marks.
+
+          <div className="text-[11px] text-red-950 font-medium flex items-center gap-1.5 pt-1">
+            <AlertTriangle className="w-3.5 h-3.5 text-red-700 shrink-0" />
+            <span>Violates CVC brand-neutrality, cites superseded edition, or omits mandatory ISI marks.</span>
           </div>
         </div>
 
-        {/* Right Column: Compliant / Harmonized */}
-        <div className="rounded-2xl border border-emerald-900/40 bg-emerald-950/20 p-5 space-y-3 flex flex-col justify-between">
-          <div className="flex items-center justify-between pb-3 border-b border-emerald-900/30">
-            <div className="flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-              <span className="text-xs font-bold uppercase tracking-wider text-emerald-300 font-mono">
-                Compliant Rectification (Safe)
+        {/* Right Column: Compliant / Harmonized Clause */}
+        <div className="rounded border border-emerald-300 bg-emerald-50/40 p-4 space-y-3 flex flex-col justify-between">
+          <div className="flex items-center justify-between pb-2.5 border-b border-emerald-200">
+            <div className="flex items-center gap-1.5">
+              <CheckCircle2 className="w-4 h-4 text-emerald-700" />
+              <span className="text-xs font-bold uppercase tracking-wider text-emerald-950 font-mono">
+                Harmonized Clause (Statutory Compliant)
               </span>
             </div>
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-              BIS & CVC READY
+            <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-emerald-100 border border-emerald-300 text-emerald-900">
+              GFR-144 &amp; BIS READY
             </span>
           </div>
 
-          <div className="text-xs font-mono text-emerald-200/90 whitespace-pre-wrap leading-relaxed bg-emerald-950/40 p-4 rounded-xl border border-emerald-900/30 flex-1">
+          <div className="text-xs font-mono text-slate-900 whitespace-pre-wrap leading-relaxed bg-white p-3.5 rounded border border-slate-300 flex-1 select-text">
             {recommendedText}
           </div>
 
-          <div className="text-[10px] text-emerald-400/90 font-mono">
-            ✓ Upgraded to latest gazetted revision, statutory ISI mark mandated, brand-neutral.
+          <div className="text-[11px] text-emerald-950 font-medium flex items-center gap-1.5 pt-1">
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
+            <span>Harmonized with active national standards, mandatory QCO ISI mark, and brand-neutral terms.</span>
           </div>
         </div>
-
       </div>
-
     </div>
   );
 };

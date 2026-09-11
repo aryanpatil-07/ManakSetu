@@ -135,12 +135,13 @@ class RegulatoryEngine:
         if not text:
             return []
         
-        pattern = r'\b(?:IS|BIS)\s*(?::\s*)?[0-9]+(?:\s*\([^\)]+\))?(?:\s*[:\-]\s*[0-9]{4})?\b'
-        matches = re.findall(pattern, text, re.IGNORECASE)
+        # Prioritize matching 4-digit revision year when present, while also capturing multipart standard citations
+        pattern = r'\b(?:IS|BIS)\s*(?::\s*)?[0-9]+(?:\s*\([^\)]+\))?(?:\s*[:\-]\s*[0-9]{4}|(?!\s*[:\-]\s*[0-9]{4}))'
+        matches = re.finditer(pattern, text, re.IGNORECASE)
         
         extracted = []
         for m in matches:
-            norm = self.normalize_standard_code(m)
+            norm = self.normalize_standard_code(m.group())
             if norm and norm not in extracted:
                 extracted.append(norm)
         return extracted
