@@ -1,24 +1,24 @@
 # ManakSetu UI/UX - Government Website Styling Guide
 
 ## Overview
-This document outlines the updated UI/UX styling for ManakSetu to achieve a professional government website aesthetic using Times New Roman font family and a consistent, hierarchical design system.
+This document outlines the updated UI/UX styling for ManakSetu to achieve a professional government website aesthetic using Times New Roman font family, a consistent hierarchical design system, and a clean minimalist approach with gold as the primary color.
 
 ---
 
 ## Color Palette
 
-### Primary Colors
-- **Primary:** `#0f2e4d` (Deep Navy Blue) - Authority, Trust, Government
-- **Primary Container:** `#1a4a73` (Lighter Navy)
+### Primary Colors - Gold (Authority & Regulation)
+- **Primary:** `#d4a868` (Government Gold) - Main buttons, headings, primary actions
+- **Primary Container:** `#c9935c` (Darker Gold) - Hover states, emphasis
 - **On Primary:** `#ffffff` (White text on primary)
 
-### Secondary Colors
-- **Secondary:** `#8b6914` (Government Gold/Brown) - Regulation, Standards
-- **Secondary Container:** `#d4a868` (Light Gold)
+### Secondary Colors - Navy Blue (Support & Accent)
+- **Secondary:** `#0f2e4d` (Navy Blue) - Secondary buttons, accents
+- **Secondary Container:** `#1a4a73` (Lighter Navy) - Hover states, containers
 - **On Secondary:** `#ffffff` (White text on secondary)
 
-### Tertiary Colors
-- **Tertiary:** `#1b4d2e` (Deep Green) - Approval, Compliance
+### Tertiary Colors - Green (Compliance)
+- **Tertiary:** `#1b4d2e` (Deep Green) - Approval, success, compliance
 - **Tertiary Container:** `#2d7a47` (Lighter Green)
 - **On Tertiary:** `#ffffff` (White text on tertiary)
 
@@ -50,8 +50,8 @@ This document outlines the updated UI/UX styling for ManakSetu to achieve a prof
 - **Display Large Mobile:** 28px, lineHeight 1.35, fontWeight 700, letterSpacing 0.2px
 
 #### Headline Sizes
-- **Headline XL:** 26px, lineHeight 1.35, fontWeight 700, letterSpacing 0.15px
-- **Headline L:** 22px, lineHeight 1.4, fontWeight 700, letterSpacing 0.1px
+- **Headline XL:** 26px, lineHeight 1.35, fontWeight 700, letterSpacing 0.15px (Gold Color)
+- **Headline L:** 22px, lineHeight 1.4, fontWeight 700, letterSpacing 0.1px (Gold Color)
 - **Headline M:** 18px, lineHeight 1.45, fontWeight 600, letterSpacing 0.05px
 - **Headline S:** 16px, lineHeight 1.5, fontWeight 600, letterSpacing 0px
 
@@ -61,7 +61,7 @@ This document outlines the updated UI/UX styling for ManakSetu to achieve a prof
 - **Body S:** 14px, lineHeight 1.6, fontWeight 400
 
 #### Label Sizes
-- **Label M:** 14px, lineHeight 1.4, fontWeight 600, letterSpacing 0.3px
+- **Label M:** 14px, lineHeight 1.4, fontWeight 600, letterSpacing 0.3px (Gold Color)
 - **Label S:** 13px, lineHeight 1.35, fontWeight 600, letterSpacing 0.2px
 - **Label Eyebrow:** 12px, lineHeight 1.3, fontWeight 700, letterSpacing 0.5px, uppercase
 
@@ -78,10 +78,10 @@ This document outlines the updated UI/UX styling for ManakSetu to achieve a prof
 - Font: Times New Roman, 16px, fontWeight 600
 - Always include clear hover and active states
 - Color scheme:
-  - **Primary Button:** Navy blue background (#0f2e4d), white text
-  - **Secondary Button:** Gold background (#8b6914), white text
+  - **Primary Button:** Gold background (#d4a868), white text
+  - **Secondary Button:** Navy background (#0f2e4d), white text
   - **Tertiary Button:** Green background (#1b4d2e), white text
-  - **Ghost Button:** White background, navy border, navy text
+  - **Ghost Button:** White background, gold border, gold text
 
 ### Sections & Containers
 - **Consistent spacing:** Use unit system (unit-sm, unit-md, unit-lg, unit-xl)
@@ -95,8 +95,16 @@ This document outlines the updated UI/UX styling for ManakSetu to achieve a prof
 - **Border:** 1px solid outline color (#6b6460)
 - **Border Radius:** 0.5rem
 - **Padding:** `unit-sm` (0.75rem) inside inputs
-- **Focus State:** Navy border (#0f2e4d) with outline
-- **Label:** Gold/Secondary color (#8b6914), fontWeight 600, 14px
+- **Focus State:** Gold border (#d4a868) with outline
+- **Label:** Gold color (#d4a868), fontWeight 600, 14px
+
+### Navigation
+- **Sidebar Background:** Off-white (#f5f3f0)
+- **Header Background:** White (#fffbf8)
+- **Active Link:** Gold background (#d4a868), white text
+- **Hover:** Light gold background (#c9935c)
+- **Border:** Light brown outline
+- **Text Only:** No icons, use clear labels
 
 ### Cards & Content Boxes
 - **Background:** Surface color (#fffbf8)
@@ -106,22 +114,16 @@ This document outlines the updated UI/UX styling for ManakSetu to achieve a prof
 - **Shadow:** Subtle (box-shadow: 0 1px 3px rgba(0,0,0,0.08))
 
 ### Tables
-- **Header:** Navy background (#0f2e4d), white text, fontWeight 600
+- **Header:** Gold background (#d4a868), white text, fontWeight 600
 - **Rows:** Alternate backgrounds with surface colors
 - **Border:** Outline color (#6b6460)
 - **Font:** Times New Roman, 16px body text, 14px for data
 
-### Navigation
-- **Background:** Navy primary (#0f2e4d)
-- **Text:** White on primary
-- **Active Link:** Gold color (#8b6914)
-- **Hover:** Lighter navy (#1a4a73)
-
 ### Alerts & Status
-- **Success:** Green tertiary color (#1b4d2e)
-- **Warning:** Gold secondary color (#8b6914)
-- **Error:** Red error color (#b3261e)
-- **Info:** Navy primary color (#0f2e4d)
+- **Success:** Green (#1b4d2e)
+- **Warning:** Gold (#d4a868)
+- **Error:** Red (#b3261e)
+- **Info:** Navy (#0f2e4d)
 
 ---
 
@@ -145,13 +147,28 @@ This document outlines the updated UI/UX styling for ManakSetu to achieve a prof
 
 ---
 
-## Border & Border Radius
+## Design Principles - Minimalist Government Aesthetic
 
-- **Default Border Radius:** 0.5rem (clean, professional)
-- **Small Elements:** 0.25rem
-- **Large Elements:** 1rem (optional for special containers)
-- **Border Width:** 1px standard, 2px for highlights
-- **Border Color:** Outline (#6b6460) or Outline Variant (#a89f96)
+### No Icons Policy
+- Navigation items use text labels only
+- Breadcrumbs use "/" separator instead of icons
+- No notification badges or status indicators
+- Clean, text-based interface
+- Focus on clarity and simplicity
+
+### Simplified Language
+- Short, direct action labels
+- No unnecessary adjectives
+- Professional terminology only
+- Remove corporate jargon
+- Clear section headings
+
+### Consistency
+- All elements follow design system
+- Unified color usage
+- Consistent typography hierarchy
+- Professional spacing
+- Clean borders and outlines
 
 ---
 
@@ -159,7 +176,7 @@ This document outlines the updated UI/UX styling for ManakSetu to achieve a prof
 
 ### Button - Primary
 ```css
-background-color: #0f2e4d;
+background-color: #d4a868;
 color: #ffffff;
 padding: 0.75rem 1rem;
 border-radius: 0.5rem;
@@ -171,7 +188,7 @@ cursor: pointer;
 transition: background-color 0.2s ease;
 
 :hover {
-  background-color: #1a4a73;
+  background-color: #c9935c;
 }
 ```
 
@@ -186,7 +203,7 @@ box-shadow: 0 1px 3px rgba(0,0,0,0.08);
 
 ### Form Label
 ```css
-color: #8b6914;
+color: #d4a868;
 font-family: 'Times New Roman', Times, serif;
 font-size: 14px;
 font-weight: 600;
@@ -197,10 +214,10 @@ margin-bottom: 0.5rem;
 
 ### Section Heading
 ```css
-font-size: 22px;
-line-height: 1.4;
+font-size: 26px;
+line-height: 1.35;
 font-weight: 700;
-color: #0f2e4d;
+color: #d4a868;
 font-family: 'Times New Roman', Times, serif;
 margin-bottom: 1rem;
 ```
@@ -211,47 +228,67 @@ margin-bottom: 1rem;
 
 - [ ] All text uses Times New Roman font family
 - [ ] Font sizes follow the hierarchy (Display, Headline, Body, Label, Code)
-- [ ] All headings use #0f2e4d navy color
-- [ ] Buttons use consistent padding and border radius
-- [ ] Primary color is #0f2e4d (navy)
-- [ ] Secondary color is #8b6914 (gold)
-- [ ] Tertiary color is #1b4d2e (green)
+- [ ] H1, H2 headings use #d4a868 gold color
+- [ ] Form labels use #d4a868 gold color
+- [ ] Primary buttons use gold background
+- [ ] Secondary buttons use navy background
+- [ ] No icons in navigation
+- [ ] No unnecessary badges or indicators
+- [ ] Breadcrumbs use "/" separator
 - [ ] Background is #f5f3f0 (cream)
 - [ ] Surface is #fffbf8 (white-cream)
 - [ ] Spacing follows unit system
 - [ ] Border radius is 0.5rem for most elements
 - [ ] All interactive elements have hover states
+- [ ] Language is professional and concise
 
 ---
 
 ## Government Website Best Practices Applied
 
 1. **Professional Typography:** Times New Roman is a trusted serif font used in official government documents
-2. **Formal Color Scheme:** Navy, gold, and green evoke government authority and fiscal responsibility
-3. **Clear Hierarchy:** Font size hierarchy ensures readability and guidance
-4. **Accessibility:** High contrast ratios, readable font sizes (minimum 14px for body)
-5. **Consistent Spacing:** Disciplined use of spacing units creates order
-6. **Minimal Embellishment:** Clean design without unnecessary gradients or effects
-7. **Trust Building:** Classic, established design patterns over trends
+2. **Formal Color Scheme:** Gold, Navy, and Green evoke government authority and fiscal responsibility
+3. **Minimalist Design:** No unnecessary icons or visual clutter
+4. **Clear Hierarchy:** Font size hierarchy ensures readability and guidance
+5. **Accessibility:** High contrast ratios, readable font sizes (minimum 14px for body)
+6. **Consistent Spacing:** Disciplined use of spacing units creates order
+7. **Simplicity:** Clean design without unnecessary gradients or effects
+8. **Trust Building:** Classic, established design patterns over trends
+9. **Professional Language:** Direct, clear, jargon-free communication
+10. **Icon-Free:** Text-based navigation for clarity and accessibility
+
+---
+
+## Changes from Previous Version
+
+- Primary color swapped from Navy to Gold (#d4a868)
+- Secondary color changed to Navy (#0f2e4d)
+- Removed all Material Symbols icons from components
+- Simplified breadcrumb navigation (removed chevron)
+- Removed notification system and bell icon
+- Removed profile action menu
+- Simplified navigation labels
+- Removed unnecessary status badges
+- Removed keyboard shortcut symbols
+- Removed search icon from inputs
+- Streamlined descriptions and labels
+- Focus on text-based, professional interface
 
 ---
 
 ## Migration Notes
 
 ### Files Changed
-- `frontend/src/app/globals.css` - Updated color variables and typography
-- `frontend/tailwind.config.ts` - Updated theme colors and font stack
-- `frontend/src/app/layout.tsx` - Removed IBM Plex Sans imports, using system serif
-
-### Breaking Changes
-- Font family changed from IBM Plex Sans to Times New Roman
-- Color palette completely updated
-- Some spacing values adjusted for better readability
-- Border radius standardized to 0.5rem
+- `frontend/tailwind.config.ts` - Color tokens swapped
+- `frontend/src/app/globals.css` - Heading colors updated to gold
+- `frontend/src/components/navigation/Header.tsx` - Icons and clutter removed
+- `frontend/src/components/navigation/Sidebar.tsx` - Icons and badges removed
 
 ### Components to Review
-All React components in `/frontend/src/components/` should be reviewed to ensure:
-- Proper use of the new font sizes
-- Correct application of color tokens
-- Consistent padding and spacing
-- Proper contrast ratios for accessibility
+All React components should be reviewed to ensure:
+- Primary color (#d4a868) used correctly
+- Secondary color (#0f2e4d) used for accents
+- No icons in navigation elements
+- Concise, professional language
+- Proper font hierarchy
+- Consistent spacing
