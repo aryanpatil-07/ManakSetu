@@ -45,11 +45,15 @@ class DenseSearchEngine:
         # Check for valid on-disk cache
         if CACHE_PATH.exists():
             try:
-                cached_data = torch.load(CACHE_PATH, map_location="cpu", weights_only=False)
+                cached_data = torch.load(CACHE_PATH, map_location="cpu", weights_only=True)
                 if (isinstance(cached_data, dict) and
                     cached_data.get("hash") == corpus_hash and
                     len(cached_data.get("embeddings", [])) == len(self.documents)):
-                    self.embeddings = cached_data["embeddings"]
+                    raw_emb = cached_data["embeddings"]
+                    if isinstance(raw_emb, torch.Tensor):
+                        self.embeddings = raw_emb.detach().cpu().numpy()
+                    else:
+                        self.embeddings = np.array(raw_emb, dtype=np.float32)
                     return
             except Exception:
                 pass
@@ -58,19 +62,13 @@ class DenseSearchEngine:
         self._compute_and_cache(corpus_hash)
 
     def _get_model(self):
-        """Lazy loader for SentenceTransformer."""
         if self.model is None:
             from sentence_transformers import SentenceTransformer
-            # Use local cache or download
-            try:
-                self.model = SentenceTransformer(self.model_name)
-            except Exception:
-                # Fallback to ultra-reliable lightweight model
-                self.model = SentenceTransformer("all-MiniLM-L6-v2")
+            self.model = SentenceTransformer(self.model_name)
         return self.model
 
     def _compute_and_cache(self, corpus_hash: str):
-        """Encodes corpus and persists to disk."""
+        """Computes embeddings for all standards documents and saves to disk."""
         model = self._get_model()
         embs = model.encode(
             self.documents,
@@ -80,12 +78,13 @@ class DenseSearchEngine:
         )
         self.embeddings = embs
 
-        # Save to disk
+        # Save to disk as pure torch tensor to support weights_only=True loading
         try:
             CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
+            save_embs = torch.from_numpy(self.embeddings) if isinstance(self.embeddings, np.ndarray) else self.embeddings
             torch.save({
                 "hash": corpus_hash,
-                "embeddings": self.embeddings,
+                "embeddings": save_embs,
                 "model": self.model_name
             }, CACHE_PATH)
         except Exception:

@@ -335,9 +335,10 @@ class StandardsKnowledgeGraph:
                 }
         return None
 
-    def export_subgraph_for_ui(self, is_code: str) -> Dict[str, Any]:
+    def export_subgraph_for_ui(self, is_code: str, depth: int = 1) -> Dict[str, Any]:
         """
         Generates nodes and edges for React Flow / Cytoscape visualizer for a given standard.
+        Supports depth-limited BFS exploration (depth=1, 2, or 3).
         """
         std = self.get_standard(is_code)
         if not std:
@@ -347,6 +348,7 @@ class StandardsKnowledgeGraph:
         nodes = []
         edges = []
         visited = set()
+        edge_ids = set()
 
         # Add central node
         nodes.append({
@@ -361,51 +363,73 @@ class StandardsKnowledgeGraph:
         })
         visited.add(root_id)
 
-        # Collect outgoing connections (testing, materials, QCO, supersedes)
-        if self.graph.has_node(root_id):
-            for _, target, edge_data in self.graph.out_edges(root_id, data=True):
-                target_node = self.graph.nodes.get(target, {})
-                rel = edge_data.get("relationship", "RELATES_TO")
-                if target not in visited:
-                    visited.add(target)
-                    nodes.append({
-                        "id": target,
-                        "label": target_node.get("label", target),
-                        "title": target_node.get("title", ""),
-                        "type": target_node.get("type", "Node"),
-                        "status": target_node.get("status", ""),
-                        "color": target_node.get("color", "#64748b")
-                    })
-                edges.append({
-                    "id": f"{root_id}->{target}",
-                    "source": root_id,
-                    "target": target,
-                    "label": rel.replace("_", " "),
-                    "relationship": rel
-                })
+        # BFS expansion up to bounded depth (1 to 3)
+        current_frontier = {root_id}
+        max_depth = max(1, min(int(depth), 3))
 
-        # Collect incoming foreign connections
-        if self.graph.has_node(root_id):
-            for source, _, edge_data in self.graph.in_edges(root_id, data=True):
-                source_node = self.graph.nodes.get(source, {})
-                rel = edge_data.get("relationship", "EQUIVALENT_TO")
-                if source not in visited:
-                    visited.add(source)
-                    nodes.append({
-                        "id": source,
-                        "label": source_node.get("label", source),
-                        "title": source_node.get("title", ""),
-                        "type": source_node.get("type", "Foreign_Standard"),
-                        "status": "FOREIGN_CODE",
-                        "color": source_node.get("color", "#ea580c")
-                    })
-                edges.append({
-                    "id": f"{source}->{root_id}",
-                    "source": source,
-                    "target": root_id,
-                    "label": rel.replace("_", " "),
-                    "relationship": rel
-                })
+        for _ in range(max_depth):
+            next_frontier = set()
+            for current_node in current_frontier:
+                if not self.graph.has_node(current_node):
+                    continue
+
+                # Collect outgoing connections (testing, materials, QCO, supersedes)
+                for _, target, edge_data in self.graph.out_edges(current_node, data=True):
+                    target_node = self.graph.nodes.get(target, {})
+                    rel = edge_data.get("relationship", "RELATES_TO")
+                    e_id = f"{current_node}->{target}"
+                    if e_id not in edge_ids:
+                        edge_ids.add(e_id)
+                        edges.append({
+                            "id": e_id,
+                            "source": current_node,
+                            "target": target,
+                            "label": rel.replace("_", " "),
+                            "relationship": rel
+                        })
+
+                    if target not in visited:
+                        visited.add(target)
+                        next_frontier.add(target)
+                        nodes.append({
+                            "id": target,
+                            "label": target_node.get("label", target),
+                            "title": target_node.get("title", ""),
+                            "type": target_node.get("type", "Node"),
+                            "status": target_node.get("status", ""),
+                            "color": target_node.get("color", "#64748b")
+                        })
+
+                # Collect incoming foreign connections
+                for source, _, edge_data in self.graph.in_edges(current_node, data=True):
+                    source_node = self.graph.nodes.get(source, {})
+                    rel = edge_data.get("relationship", "EQUIVALENT_TO")
+                    e_id = f"{source}->{current_node}"
+                    if e_id not in edge_ids:
+                        edge_ids.add(e_id)
+                        edges.append({
+                            "id": e_id,
+                            "source": source,
+                            "target": current_node,
+                            "label": rel.replace("_", " "),
+                            "relationship": rel
+                        })
+
+                    if source not in visited:
+                        visited.add(source)
+                        next_frontier.add(source)
+                        nodes.append({
+                            "id": source,
+                            "label": source_node.get("label", source),
+                            "title": source_node.get("title", ""),
+                            "type": source_node.get("type", "Foreign_Standard"),
+                            "status": "FOREIGN_CODE",
+                            "color": source_node.get("color", "#ea580c")
+                        })
+
+            current_frontier = next_frontier
+            if not current_frontier:
+                break
 
         return {"nodes": nodes, "edges": edges}
 

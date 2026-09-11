@@ -237,17 +237,36 @@ class ClauseGenerator:
         if not resolved_std_code and mapped_foreign_codes:
             resolved_std_code = mapped_foreign_codes[0]["equivalent_is_code"]
 
-        if not resolved_std_code:
-            resolved_std_code = "IS 4984:2016"  # Safe default baseline
-
         # 4. Clean original text (strip brands, replace foreign codes, upgrade obsolete codes)
         sanitized_desc = self.cvc_linter.sanitize_text(original_text)
         for up in upgraded_standards:
             # Replace obsolete code with active code in description
             sanitized_desc = re.sub(rf'\b{re.escape(up["original"])}\b', up["recommended"], sanitized_desc, flags=re.IGNORECASE)
 
-        # 5. Synthesize formal bid-ready clause
         inferred_category = item_category or "Procurement Package"
+
+        # If no standard is resolved, do not inject arbitrary standard.
+        if not resolved_std_code:
+            generic_clause = f"""### HARMONIZED PROCUREMENT SPECIFICATION ({inferred_category.upper()})
+
+1. **TECHNICAL SPECIFICATION:** All goods supplied under this schedule shall strictly adhere to governing Indian Standards (BIS) and statutory Quality Control Orders (QCOs) notified by the Government of India.
+2. **CVC BRAND NEUTRALITY:** In strict accordance with Central Vigilance Commission directives (OM No. 03-05-1-CTE-9) and GFR 2017 Rule 144, all requirements are generic and functional. Proprietary brand names are non-restrictive.
+3. **EQUIVALENCE BENCHMARKS:** Prospective bidders citing international specifications (ASTM, DIN, ISO, BS, EN) shall submit formal technical equivalence certificates pursuant to GFR 2017 Rule 144(vii)."""
+            return {
+                "original_text": original_text,
+                "harmonized_text": f"{sanitized_desc}\n\n{generic_clause}".strip(),
+                "target_standard": None,
+                "removed_brands": detected_brands,
+                "converted_foreign_standards": converted_foreign,
+                "upgraded_obsolete_standards": upgraded_standards,
+                "statutory_clauses_injected": [],
+                "diff_summary": diff_summary,
+                "referenced_regulations": ["GFR 2017 Rule 144", "CVC OM No. 03-05-1-CTE-9"],
+                "checklist": ["Verify generic specifications without proprietary brand bias"],
+                "is_cvc_compliant": True
+            }
+
+        # 5. Synthesize formal bid-ready clause
         clause_data = self.generate_clause(
             item_category=inferred_category,
             standard_code=resolved_std_code,
@@ -283,3 +302,11 @@ class ClauseGenerator:
             "checklist": clause_data["checklist"],
             "is_cvc_compliant": True
         }
+
+    def harmonize_text(self, original_text: str, target_standard: Optional[str] = None, item_category: Optional[str] = None) -> Dict[str, Any]:
+        """Convenience alias for generate_harmonized_diff()."""
+        return self.generate_harmonized_diff(original_text, target_standard, item_category)
+
+    def harmonize_specification(self, original_text: str, target_standard: Optional[str] = None, item_category: Optional[str] = None) -> Dict[str, Any]:
+        """Convenience alias for generate_harmonized_diff()."""
+        return self.generate_harmonized_diff(original_text, target_standard, item_category)

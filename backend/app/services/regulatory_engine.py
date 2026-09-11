@@ -162,7 +162,16 @@ class RegulatoryEngine:
         # 1. Check WITHDRAWN standards
         if norm_code in self.withdrawn_standards or base_code in self.withdrawn_standards:
             w_std = self.withdrawn_standards.get(norm_code) or self.withdrawn_standards.get(base_code)
-            replacement = w_std.get("replacement_standard", "IS 2062:2011")
+            replacement = w_std.get("replacement_standard")
+            notes_str = (
+                f"CRITICAL REGULATORY VIOLATION: Standard '{raw_code}' was officially WITHDRAWN by BIS "
+                f"(withdrawn date: {w_std.get('withdrawn_date', 'N/A')}). It cannot be legally cited in public tenders."
+            )
+            if replacement:
+                notes_str += f" Use replacement standard '{replacement}'."
+            else:
+                notes_str += " No direct single replacement notified by BIS; specify functional requirements conforming to active BIS divisional standards."
+
             return {
                 "specified": raw_code,
                 "normalized_code": norm_code,
@@ -175,11 +184,7 @@ class RegulatoryEngine:
                 "title": w_std.get("title", ""),
                 "active_amendments": [],
                 "superseded_by": replacement,
-                "notes": (
-                    f"CRITICAL REGULATORY VIOLATION: Standard '{raw_code}' was officially WITHDRAWN by BIS "
-                    f"(withdrawn date: {w_std.get('withdrawn_date', 'N/A')}). It cannot be legally cited in public tenders. "
-                    f"Use replacement standard '{replacement}'."
-                )
+                "notes": notes_str
             }
 
         # 2. Check direct CURRENT / ACTIVE match
@@ -483,11 +488,11 @@ class RegulatoryEngine:
         extracted = self.extract_standards_from_text(text)
         detailed_audits = [self.validate_standard(s) for s in extracted]
 
-        current_count = sum(1 for a in detailed_audits if a["lifecycle_state"] == "CURRENT")
-        superseded_count = sum(1 for a in detailed_audits if a["lifecycle_state"] == "SUPERSEDED")
-        withdrawn_count = sum(1 for a in detailed_audits if a["lifecycle_state"] == "WITHDRAWN")
-        unspecified_count = sum(1 for a in detailed_audits if a["lifecycle_state"] == "UNSPECIFIED")
-        qco_mandatory_count = sum(1 for a in detailed_audits if a["is_qco_mandatory"])
+        current_count = sum(1 for a in detailed_audits if a.get("lifecycle_state") == "CURRENT")
+        superseded_count = sum(1 for a in detailed_audits if a.get("lifecycle_state") == "SUPERSEDED")
+        withdrawn_count = sum(1 for a in detailed_audits if a.get("lifecycle_state") == "WITHDRAWN")
+        unspecified_count = sum(1 for a in detailed_audits if a.get("lifecycle_state") == "UNSPECIFIED")
+        qco_mandatory_count = sum(1 for a in detailed_audits if a.get("is_qco_mandatory", False))
 
         # Determine overall compliance risk level
         if withdrawn_count > 0:
@@ -531,3 +536,6 @@ class RegulatoryEngine:
             "statutory_clauses": statutory_clauses,
             "audits": detailed_audits
         }
+
+    # Backward compatibility and API method aliases
+    verify_standard_lifecycle = check_lifecycle

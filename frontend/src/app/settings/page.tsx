@@ -172,7 +172,7 @@ export default function SettingsPage() {
                   Enforce CVC Anti-Tailoring Directives (OM 03-05-1-CTE-9)
                 </span>
                 <span className="text-[12px] text-on-surface-variant">
-                  Strictly flags any single-OEM brand restrictions (e.g. "Only Supreme", "Only ABB") and mandates neutral BIS performance parameters.
+                  Strictly flags any single-OEM brand restrictions (e.g. &quot;Only Supreme&quot;, &quot;Only ABB&quot;) and mandates neutral BIS performance parameters.
                 </span>
               </div>
             </label>
