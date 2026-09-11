@@ -1,6 +1,6 @@
 from contextlib import asynccontextmanager
 from pathlib import Path
-from fastapi import FastAPI, UploadFile, File, Form, Depends, HTTPException, Query
+from fastapi import FastAPI, UploadFile, File, Form, Depends, HTTPException, Query, Request
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from typing import Optional, Dict, Any, List
@@ -177,27 +177,40 @@ def audit_tender_text(payload: TenderAuditRequest):
 
 @app.post("/api/v1/harmonize", dependencies=[Depends(check_rate_limit)])
 @app.post("/api/clause/generate-harmonized", dependencies=[Depends(check_rate_limit)])
-def harmonize_text(
-    payload: Optional[HarmonizeRequest] = None,
-    original_text: Optional[str] = Form(None),
-    target_standard: Optional[str] = Form(None),
-    item_category: Optional[str] = Form(None)
-):
+async def harmonize_text(request: Request):
     """
     Generates side-by-side comparison payload (Original vs Harmonized).
-    Accepts either JSON (HarmonizeRequest) or Form data.
+    Accepts either JSON (HarmonizeRequest) or Form data seamlessly.
     """
-    text = (payload.original_text or payload.text) if payload else original_text
-    std = (payload.target_standard) if payload else target_standard
-    cat = (payload.item_category or payload.category) if payload else item_category
+    content_type = request.headers.get("content-type", "").lower()
+    text = None
+    std = None
+    cat = None
+
+    if "application/json" in content_type:
+        try:
+            body = await request.json()
+            text = body.get("original_text") or body.get("text")
+            std = body.get("target_standard")
+            cat = body.get("item_category") or body.get("category")
+        except Exception:
+            pass
+    else:
+        try:
+            form = await request.form()
+            text = form.get("original_text") or form.get("text")
+            std = form.get("target_standard")
+            cat = form.get("item_category") or form.get("category")
+        except Exception:
+            pass
 
     if not text:
         raise HTTPException(status_code=400, detail="Missing required 'original_text' or 'text' parameter.")
 
     return clause_gen.generate_harmonized_diff(
-        original_text=text,
-        target_standard=std,
-        item_category=cat
+        original_text=str(text).strip(),
+        target_standard=str(std).strip() if std else None,
+        item_category=str(cat).strip() if cat else None
     )
 
 # =============================================================================
