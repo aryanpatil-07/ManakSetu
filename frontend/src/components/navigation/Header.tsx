@@ -9,31 +9,30 @@ export const Header: React.FC = () => {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
   const [searchModalOpen, setSearchModalOpen] = useState(false);
-  const [notifOpen, setNotifOpen] = useState(false);
 
   // Dynamic Breadcrumb Label
   const getBreadcrumb = () => {
     if (pathname.startsWith('/dashboard') || pathname === '/') {
-      return { section: 'Workspace', title: 'Executive Dashboard' };
+      return { section: 'Workspace', title: 'Dashboard' };
     }
     if (pathname.startsWith('/new-analysis')) {
-      return { section: 'Scrutiny', title: 'Tender Scrutiny & Ingestion' };
+      return { section: 'Scrutiny', title: 'Tender Analysis' };
     }
     if (pathname.startsWith('/specification-builder')) {
       return { section: 'Authoring', title: 'Specification Builder' };
     }
     if (pathname.startsWith('/standards-library')) {
-      return { section: 'Registry', title: 'Standards & QCO Library' };
+      return { section: 'Registry', title: 'Standards Library' };
     }
     if (pathname.startsWith('/settings')) {
-      return { section: 'System', title: 'Platform Settings' };
+      return { section: 'System', title: 'Settings' };
     }
-    return { section: 'Workspace', title: 'ManakSetu Workspace' };
+    return { section: 'Workspace', title: 'ManakSetu' };
   };
 
   const breadcrumb = getBreadcrumb();
 
-  // Keyboard shortcut ⌘K / Ctrl+K
+  // Keyboard shortcut Ctrl+K
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
@@ -42,7 +41,6 @@ export const Header: React.FC = () => {
       }
       if (e.key === 'Escape') {
         setSearchModalOpen(false);
-        setNotifOpen(false);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
@@ -62,9 +60,7 @@ export const Header: React.FC = () => {
           <span className="font-body-sm text-body-sm hover:text-on-surface cursor-pointer">
             {breadcrumb.section}
           </span>
-          <span className="material-symbols-outlined text-[16px] text-outline">
-            chevron_right
-          </span>
+          <span className="text-outline">/</span>
           <span className="font-body-sm text-body-sm text-on-surface font-semibold capitalize">
             {breadcrumb.title}
           </span>
@@ -72,13 +68,10 @@ export const Header: React.FC = () => {
 
         {/* Action Elements */}
         <div className="flex items-center gap-unit-lg">
-          {/* Quick Search Input */}
+          {/* Search Input */}
           <div className="relative flex items-center">
-            <span className="material-symbols-outlined absolute left-unit-sm text-[18px] text-outline pointer-events-none">
-              search
-            </span>
             <input
-              className="w-80 h-[38px] pl-9 pr-12 rounded-lg bg-surface border border-outline-variant text-body-sm text-on-surface placeholder:text-outline focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-all"
+              className="w-80 h-[38px] pl-4 pr-12 rounded-lg bg-surface border border-outline-variant text-body-sm text-on-surface placeholder:text-outline focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-all"
               placeholder="Search standards or analyses..."
               type="text"
               value={searchQuery}
@@ -89,53 +82,13 @@ export const Header: React.FC = () => {
               onClick={() => setSearchModalOpen(true)}
               className="absolute right-unit-sm font-code-sm text-[11px] px-1.5 py-0.5 rounded bg-surface-container border border-outline-variant/60 text-on-surface-variant font-medium cursor-pointer"
             >
-              ⌘K
+              Ctrl+K
             </kbd>
-          </div>
-
-          {/* Notifications Trigger */}
-          <div className="relative">
-            <button
-              onClick={() => setNotifOpen(!notifOpen)}
-              className="relative p-2 rounded-lg text-outline hover:text-on-surface hover:bg-surface-container transition-colors"
-              type="button"
-              aria-label="View notifications"
-            >
-              <span className="material-symbols-outlined text-[22px]">notifications</span>
-              <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-secondary-container ring-2 ring-surface-container-lowest" />
-            </button>
-            {notifOpen && (
-              <div className="absolute right-0 mt-2 w-80 bg-surface-container-lowest border border-outline-variant/60 rounded-lg shadow-xl p-3 z-50 animate-fade-in-up">
-                <div className="flex items-center justify-between pb-2 border-b border-outline-variant/40">
-                  <span className="font-headline-md text-body-sm font-bold text-primary">Gazette &amp; Audit Alerts</span>
-                  <span className="font-code-sm text-[11px] px-1.5 py-0.5 rounded bg-secondary-fixed text-secondary font-bold">2 Unread</span>
-                </div>
-                <div className="divide-y divide-outline-variant/30 py-1">
-                  <div className="py-2 text-left cursor-pointer hover:bg-surface-container-low px-1 rounded transition">
-                    <div className="text-[12px] font-semibold text-primary">S.O. 458(E) Gazette Notice</div>
-                    <div className="text-[11px] text-on-surface-variant">Mandatory ISI mark enforcement for 2026 Procurement is active.</div>
-                    <div className="text-[10px] text-outline mt-0.5">14m ago</div>
-                  </div>
-                  <div className="py-2 text-left cursor-pointer hover:bg-surface-container-low px-1 rounded transition">
-                    <div className="text-[12px] font-semibold text-secondary font-medium">17 Outdated Standards Detected</div>
-                    <div className="text-[11px] text-on-surface-variant">Review queue contains tenders citing superseded revision codes.</div>
-                    <div className="text-[10px] text-outline mt-0.5">2h ago</div>
-                  </div>
-                </div>
-                <Link
-                  href="/new-analysis"
-                  onClick={() => setNotifOpen(false)}
-                  className="mt-2 block text-center py-1 text-label-sm font-semibold text-primary hover:underline"
-                >
-                  Launch Tender Scrutiny →
-                </Link>
-              </div>
-            )}
           </div>
 
           <div className="h-6 w-[1px] bg-outline-variant/60" />
 
-          {/* User Profile Summary */}
+          {/* User Profile */}
           <Link href="/settings" className="flex items-center gap-unit-sm cursor-pointer select-none group">
             <img
               alt="Profile"
@@ -147,23 +100,22 @@ export const Header: React.FC = () => {
                 Priya Rao
               </span>
               <span className="font-label-sm text-label-sm text-on-surface-variant leading-none mt-0.5">
-                Procurement Officer
+                Officer
               </span>
             </div>
           </Link>
         </div>
       </header>
 
-      {/* ⌘K Global Quick Search Modal */}
+      {/* Quick Search Modal */}
       {searchModalOpen && (
         <div className="fixed inset-0 bg-primary/40 backdrop-blur-xs z-50 flex items-start justify-center pt-24 px-4">
           <div className="bg-surface-container-lowest border border-outline-variant/80 rounded-lg shadow-2xl w-full max-w-2xl overflow-hidden animate-fade-in-up">
             <div className="p-4 border-b border-outline-variant/50 flex items-center gap-3">
-              <span className="material-symbols-outlined text-outline text-[22px]">search</span>
               <input
                 autoFocus
                 type="text"
-                placeholder="Type a standard number (IS 1180, IS 4984), tender ID, or destination page..."
+                placeholder="Search standards, analyses, or navigate..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full text-body-md text-on-surface focus:outline-none bg-transparent placeholder:text-outline"
@@ -176,17 +128,17 @@ export const Header: React.FC = () => {
               </button>
             </div>
 
-            {/* Quick Links / Filtered Results */}
+            {/* Quick Links */}
             <div className="p-3 max-h-96 overflow-y-auto space-y-1">
               <div className="px-2 py-1 text-[11px] font-bold text-outline uppercase tracking-wider">
-                Core Workbenches
+                Workbenches
               </div>
               {[
-                { title: 'Executive Dashboard', path: '/dashboard', icon: 'dashboard', desc: 'Compliance index, metrics & recent audits' },
-                { title: 'Tender Scrutiny', path: '/new-analysis', icon: 'troubleshoot', desc: 'Tender clause, PDF RFP & Excel BoQ audit' },
-                { title: 'Specification Builder', path: '/specification-builder', icon: 'edit_document', desc: 'Harmonized clauses, redline diff & PDF cert' },
-                { title: 'Standards & QCO Library', path: '/standards-library', icon: 'menu_book', desc: '52+ IS standards, 15+ QCOs & CM/L license check' },
-                { title: 'Platform Settings', path: '/settings', icon: 'settings', desc: 'Officer credentials & BIS synchronization feeds' },
+                { title: 'Dashboard', path: '/dashboard', desc: 'Overview and metrics' },
+                { title: 'Tender Analysis', path: '/new-analysis', desc: 'Audit and scrutiny' },
+                { title: 'Specifications', path: '/specification-builder', desc: 'Create clauses' },
+                { title: 'Standards', path: '/standards-library', desc: 'Reference library' },
+                { title: 'Settings', path: '/settings', desc: 'Configuration' },
               ]
                 .filter((item) =>
                   !searchQuery ||
@@ -199,31 +151,23 @@ export const Header: React.FC = () => {
                     onClick={() => handleSearchSelect(item.path)}
                     className="w-full flex items-center justify-between p-2 rounded hover:bg-surface-container transition-colors text-left"
                   >
-                    <div className="flex items-center gap-3">
-                      <span className="material-symbols-outlined text-[20px] text-primary-container">
-                        {item.icon}
-                      </span>
-                      <div>
-                        <div className="font-headline-md text-body-sm font-semibold text-primary">
-                          {item.title}
-                        </div>
-                        <div className="text-[11px] text-on-surface-variant">{item.desc}</div>
+                    <div>
+                      <div className="font-headline-md text-body-sm font-semibold text-primary">
+                        {item.title}
                       </div>
+                      <div className="text-[11px] text-on-surface-variant">{item.desc}</div>
                     </div>
-                    <span className="material-symbols-outlined text-[16px] text-outline">
-                      arrow_forward
-                    </span>
                   </button>
                 ))}
 
               <div className="pt-2 px-2 py-1 text-[11px] font-bold text-outline uppercase tracking-wider">
-                Featured Standards (Quick-Jump)
+                Standards
               </div>
               {[
-                { code: 'IS 1180 (Part 1):2014', title: 'Outdoor Distribution Transformers 11kV/433V', qco: true },
-                { code: 'IS 4984:2016', title: 'HDPE Pipes for Water Supply (Supersedes 1995)', qco: true },
-                { code: 'IS 2026:2011', title: 'Power Transformers General Requirements', qco: false },
-                { code: 'IS 10500:2012', title: 'Drinking Water Quality Standards', qco: true },
+                { code: 'IS 1180:2014', title: 'Distribution Transformers' },
+                { code: 'IS 4984:2016', title: 'HDPE Pipes' },
+                { code: 'IS 2026:2011', title: 'Power Transformers' },
+                { code: 'IS 10500:2012', title: 'Drinking Water' },
               ]
                 .filter(s => !searchQuery || s.code.toLowerCase().includes(searchQuery.toLowerCase()) || s.title.toLowerCase().includes(searchQuery.toLowerCase()))
                 .map(std => (
@@ -240,11 +184,6 @@ export const Header: React.FC = () => {
                         {std.title}
                       </span>
                     </div>
-                    {std.qco && (
-                      <span className="font-label-eyebrow text-[10px] px-1.5 py-0.5 rounded bg-tertiary-fixed text-tertiary font-bold">
-                        QCO Mandatory
-                      </span>
-                    )}
                   </button>
                 ))}
             </div>
